@@ -1,0 +1,34 @@
+---
+import { NotionBlocksMarkdownParser } from "@notion-stuff/blocks-markdown-parser";
+import Layout from "../../layouts/Layout.astro";
+import { richTextAsPlainText } from "@jitl/notion-api";
+import { Projects } from "../../lib/notion";
+import { marked } from "marked";
+
+export async function getStaticPaths() {
+  const notionMdParser = NotionBlocksMarkdownParser.getInstance();
+  const params = [];
+  for await (const project of Projects.query({
+    sorts: [Projects.sort.published.descending],
+  })) {
+    await Projects.downloadAssets(project);
+    params.push({
+      params: {
+        slug: project.frontmatter.slug,
+      },
+      props: {
+        title: richTextAsPlainText(project.frontmatter.title),
+        post: marked.parse(notionMdParser.parse(project.content.children)),
+      },
+    });
+  }
+
+  return params;
+}
+
+const { post, title } = Astro.props;
+---
+
+<Layout title={title}>
+  <Fragment set:html={post} />
+</Layout>
