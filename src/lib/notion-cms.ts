@@ -1,6 +1,7 @@
 import {
   AssetRequest,
   CMS,
+  CMSPage,
   getAssetRequestKey,
   inferDatabaseSchema,
   NotionClient,
@@ -48,10 +49,15 @@ export const Projects = new CMS({
   },
 });
 
-export function getAssetPath(cms: CMS<unknown>, assetRequest: AssetRequest) {
+export function getAssetPath(cms: CMS<any>, assetRequest: AssetRequest) {
+  // e461ce21-5ebb-4e71-a2a4-264a221735ef
   const assets = cms.assets;
   if (!assets) throw new Error("Assets not configured");
   const filename = getAssetRequestKey(assetRequest);
   if (!filename) return undefined;
   return `/assets/${filename}`;
+}
+
+export function remapAssetPath(cmsPage: CMSPage<any>) {
+  console.log(cmsPage);
 }

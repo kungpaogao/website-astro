@@ -2,8 +2,9 @@
 import { NotionBlocksMarkdownParser } from "@notion-stuff/blocks-markdown-parser";
 import Layout from "../../layouts/Layout.astro";
 import { richTextAsPlainText } from "@jitl/notion-api";
-import { Projects } from "../../lib/notion";
+import { getAssetPath, Projects } from "../../lib/notion-cms";
 import { marked } from "marked";
+import { parse, parsePage } from "../../lib/notion-parse";
 
 export async function getStaticPaths() {
   const notionMdParser = NotionBlocksMarkdownParser.getInstance();
@@ -11,6 +12,8 @@ export async function getStaticPaths() {
   for await (const project of Projects.query({
     sorts: [Projects.sort.published.descending],
   })) {
+    // getAssetPath()
+
     await Projects.downloadAssets(project);
     params.push({
       params: {
@@ -18,7 +21,7 @@ export async function getStaticPaths() {
       },
       props: {
         title: richTextAsPlainText(project.frontmatter.title),
-        post: marked.parse(notionMdParser.parse(project.content.children)),
+        post: marked.parse(parsePage(project.content)),
       },
     });
   }
@@ -30,5 +33,7 @@ const { post, title } = Astro.props;
 ---
 
 <Layout title={title}>
-  <Fragment set:html={post} />
+  <div class="prose">
+    <Fragment set:html={post} />
+  </div>
 </Layout>

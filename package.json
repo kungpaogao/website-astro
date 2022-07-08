@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@astrojs/solid-js": "^0.2.0",
@@ -14,12 +16,14 @@
     "@jitl/notion-api": "^0.2.2",
     "@notion-stuff/blocks-markdown-parser": "^6.0.0",
     "@notionhq/client": "^1.0.4",
+    "@tailwindcss/typography": "^0.5.2",
     "astro": "^1.0.0-beta.63",
     "marked": "^4.0.17",
     "prettier": "^2.7.1",
     "prettier-plugin-astro": "^0.1.1",
     "prettier-plugin-tailwindcss": "^0.1.11",
-    "solid-js": "^1.3.6"
+    "solid-js": "^1.3.6",
+    "vitest": "^0.17.1"
   },
   "dependencies": {}
 }
