@@ -1,14 +1,12 @@
 import {
-  BlockObjectResponse,
-  RichTextItemResponse,
-} from "@notionhq/client/build/src/api-endpoints";
-// import { getAssetPath, getAssetPathCMS } from "./notion-cms";
+  BlockWithChildren,
+  CMS,
+  PageWithChildren,
+  RichText,
+} from "@jitl/notion-api";
+import { getAssetPath, getAssetPathCMS } from "./notion-cms";
 
-export type BlockObjectResponseWithChildren = BlockObjectResponse & {
-  children?: BlockObjectResponse[];
-};
-
-export type RichText = RichTextItemResponse[];
+// https://github.com/nartc/notion-stuff/blob/905af932a1e376997775e0288d5c833f90298260/libs/blocks-markdown-parser/src/lib/blocks-markdown-parser.ts
 
 const INDENT = "  ";
 const EOL = "\n";
@@ -101,14 +99,15 @@ export function parseListItem(
  * @returns
  */
 export function parse(
-  block: BlockObjectResponseWithChildren,
+  cms: CMS<any, any>,
+  block: BlockWithChildren,
   depth = 0
 ): string {
   let children: string[] = [];
 
   if (block.has_children && block.children) {
     children = block.children.map(
-      (child) => INDENT.repeat(depth + 2).concat(parse(child, depth + 2)),
+      (child) => INDENT.repeat(depth + 2).concat(parse(cms, child, depth + 2)),
       EOL
     );
   }
@@ -187,18 +186,18 @@ export function parse(
       }
       if (type === "file") {
         const url = block.image.file.url;
-        // const filetype = block.image.file.url
-        //   .split("/")
-        //   .pop()
-        //   .split("?")[0]
-        //   .split(".")
-        //   .pop();
-        // // const srcCMS = getAssetPathCMS(cms, block.image).then((v) =>
-        //   console.log(v)
-        // );
+        const filetype = block.image.file.url
+          .split("/")
+          .pop()
+          .split("?")[0]
+          .split(".")
+          .pop();
+        const srcCMS = getAssetPathCMS(cms, block.image).then((v) =>
+          console.log(v)
+        );
 
-        // const src = getAssetPath(block.image);
-        return `<Image src="${url}" />`;
+        const src = getAssetPath(block.image);
+        return `<Image src="${src}" />`;
       }
       return "";
     case "video":
@@ -222,6 +221,6 @@ export function parse(
   }
 }
 
-export function parseBlocks(blocks: BlockObjectResponse[]): string {
-  return blocks.map((block) => parse(block)).join("");
+export function parsePage(cms: CMS<any, any>, page: PageWithChildren): string {
+  return page.children.map((block) => parse(cms, block)).join("");
 }
