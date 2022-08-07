@@ -8,9 +8,16 @@ import {
   RichTextPropertyItemObjectResponse,
   TitlePropertyItemObjectResponse,
 } from "@notionhq/client/build/src/api-endpoints";
+import * as fs from "fs";
+import fetch from "node-fetch";
+import * as mime from "mime-types";
+import * as path from "path";
 
 const { NOTION_TOKEN, NOTION_PROJECTS_DATABASE, NOTION_PAGES_DATABASE } =
   import.meta.env;
+
+// TODO: parametrize base path
+const ASSET_BASE_PATH = "public/assets/";
 
 const notion = new Client({
   auth: NOTION_TOKEN,
@@ -126,28 +133,77 @@ async function getBlockChildren(blockId: string) {
 }
 
 /**
+ * It downloads the asset from Notion, saves it to the `/assets` folder, and
+ * returns the path to the asset
+ * @param {string} blockId - the id of the block
+ * @param {string} url - The URL of the asset to download
+ * @returns path to asset
+ */
+export async function downloadAsset(
+  blockId: string,
+  url: string
+): Promise<string> {
+  try {
+    const res = await fetch(url);
+    const ext = mime.extension(res.headers.get("content-type")) || "unknown";
+    const filename = `file.${blockId}.${ext}`;
+
+    //if file already exists, do not rewrite
+    // see: https://github.com/justjake/monorepo/blob/d1e87174827005fa7fd6d158a0a1d7e86dd2a396/packages/notion-api/src/lib/assets.ts#L460
+    const files = await fs.promises.readdir(ASSET_BASE_PATH);
+    if (!files.find((file) => file === filename)) {
+      const dest = path.join(ASSET_BASE_PATH, filename);
+      const file = fs.createWriteStream(dest);
+      res.body.pipe(file);
+    }
+
+    return `/assets/${filename}`;
+  } catch (e) {
+    // on error, just return Notion URL
+    return url;
+  }
+}
+
+/**
  * It takes a block ID, gets the children of that block, and then gets the children
  * of each of those children
  * @param {string} blockId - The ID of the block you want to get the children of.
  * @returns An array of block objects.
  */
-async function getPostContent(blockId: string) {
+export async function getPostContent(blockId: string) {
   let content = await getBlockChildren(blockId);
 
   return await Promise.all(
-    content.map(async (child) => {
-      const fullChild = ensureFullResponse<
+    content.map(async (blockResponse) => {
+      const block = ensureFullResponse<
         BlockObjectResponse,
         PartialBlockObjectResponse
-      >(child);
+      >(blockResponse);
 
-      if (fullChild.has_children) {
-        fullChild[fullChild.type].children = await getBlockChildren(
-          fullChild.id
-        );
+      // if local file, download the file and remap the url to local path
+      const blockType = block.type;
+      if (
+        blockType === "image" ||
+        blockType === "video" ||
+        blockType === "audio" ||
+        blockType === "pdf"
+        // ignore file because we don't want all file types
+        // || blockType === "file"
+      ) {
+        if (block[blockType].type === "file") {
+          block[blockType].file.url = await downloadAsset(
+            block.id,
+            block[blockType].file.url
+          );
+        }
       }
 
-      return fullChild;
+      // if block has children, recursively call getBlockChildren
+      if (block.has_children) {
+        block[block.type].children = await getBlockChildren(block.id);
+      }
+
+      return block;
     })
   );
 }

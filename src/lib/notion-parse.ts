@@ -1,8 +1,8 @@
 import {
   BlockObjectResponse,
+  ParagraphBlockObjectResponse,
   RichTextItemResponse,
 } from "@notionhq/client/build/src/api-endpoints";
-// import { getAssetPath, getAssetPathCMS } from "./notion-cms";
 
 export type BlockObjectResponseWithChildren = BlockObjectResponse & {
   children?: BlockObjectResponse[];
@@ -10,10 +10,12 @@ export type BlockObjectResponseWithChildren = BlockObjectResponse & {
 
 export type RichText = RichTextItemResponse[];
 
+export type ApiColor = ParagraphBlockObjectResponse["paragraph"]["color"];
+
 const INDENT = "  ";
 const EOL = "\n";
 
-export function parseColor(color: string, text: string): string {
+export function parseColor(color: ApiColor, text: string): string {
   let className = "";
   switch (color) {
     case "gray":
@@ -113,7 +115,7 @@ export function parse(
     );
   }
 
-  // TODO: put EOL before each block
+  // TODO: put EOL before each block?
   switch (block.type) {
     case "paragraph":
       return parseRichTextBlock(block.paragraph.rich_text).concat(
@@ -180,31 +182,29 @@ export function parse(
       const plainTextCaption = parseRichTextBlock(caption);
       return `[${plainTextCaption || url}](${url})`.concat(EOL);
     case "image":
-      // const path = getAssetPath(cms, block)
-      const { type } = block.image;
-      if (type === "external") {
-        return "";
-      }
-      if (type === "file") {
-        const url = block.image.file.url;
-        // const filetype = block.image.file.url
-        //   .split("/")
-        //   .pop()
-        //   .split("?")[0]
-        //   .split(".")
-        //   .pop();
-        // // const srcCMS = getAssetPathCMS(cms, block.image).then((v) =>
-        //   console.log(v)
-        // );
-
-        // const src = getAssetPath(block.image);
-        return `<Image src="${url}" />`;
-      }
-      return "";
+      return `<Image src="${block.image[block.image.type].url}" />`;
     case "video":
+      return `<video controls>
+                <source src="${block.video[block.video.type].url}">
+              </video>`;
     case "pdf":
+      // https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html/23681394#23681394
+      const src = block.pdf[block.pdf.type].url;
+      return `<object data="${src}" type="application/pdf" width="100%">
+                <embed src="${src}">
+                  <p>This browser doesn't support embedded PDFs.</p>
+                </embed>
+              </object>`;
     case "file":
+      return `[${parseRichTextBlock(block.file.caption) || "link to file"}](${
+        block.file[block.file.type].url
+      })`;
     case "audio":
+      return `<audio controls src="${block.audio[block.audio.type].url}">
+                Your browser does not support the <code>audio</code> element.
+              </audio>`;
+    case "link_preview":
+      return `[${block.link_preview.url}](${block.link_preview.url})`;
     case "breadcrumb":
     case "column_list":
     case "column":
@@ -212,7 +212,6 @@ export function parse(
     case "table":
     case "table_row":
     case "bookmark":
-    case "link_preview":
     case "template":
     case "synced_block":
     case "child_page":
