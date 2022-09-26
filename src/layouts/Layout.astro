@@ -1,5 +1,6 @@
 ---
 import Navigation from "../components/Navigation";
+import "../styles/fonts.css";
 
 export interface Props {
   title: string;
@@ -21,7 +22,7 @@ const { title } = Astro.props as Props;
     <div class="mx-auto max-w-3xl">
       <Navigation />
       <main class="px-3">
-        <slot></slot>
+        <slot />
       </main>
     </div>
   </body>

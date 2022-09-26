@@ -196,22 +196,22 @@ export function parse(
                 </embed>
               </object>`;
     case "file":
-      return `[${parseRichTextBlock(block.file.caption) || "link to file"}](${
-        block.file[block.file.type].url
-      })`;
+      return `<div>[${
+        parseRichTextBlock(block.file.caption) || "link to file"
+      }](${block.file[block.file.type].url})</div>`;
     case "audio":
       return `<audio controls src="${block.audio[block.audio.type].url}">
                 Your browser does not support the <code>audio</code> element.
               </audio>`;
+    case "bookmark":
     case "link_preview":
-      return `[${block.link_preview.url}](${block.link_preview.url})`;
+      return `<div>[${block[block.type].url}](${block[block.type].url})</div>`;
     case "breadcrumb":
     case "column_list":
     case "column":
     case "link_to_page":
     case "table":
     case "table_row":
-    case "bookmark":
     case "template":
     case "synced_block":
     case "child_page":

@@ -1,6 +1,5 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-// import { getAssetPath, Projects } from "../../lib/notion-cms";
 import { marked } from "marked";
 import { parseBlocks } from "../../lib/notion-parse";
 import { getProjectPaths } from "../../lib/notion-cms";
@@ -21,7 +20,7 @@ const { post, title } = Astro.props;
 ---
 
 <Layout title={title}>
-  <div class="prose">
+  <div class="prose w-full max-w-full">
     <Fragment set:html={post} />
   </div>
 </Layout>
