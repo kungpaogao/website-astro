@@ -10,7 +10,7 @@ const Navigation = () => {
         </label>
       </div>
       <div class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out peer-checked:max-h-28 md:max-h-[none]">
-        <ul class="flex flex-col gap-x-3 border-b border-gray-200 p-3 font-semibold md:flex-row md:border-none">
+        <ul class="flex flex-col gap-x-3 border-b border-gray-200 p-3 text-xl font-semibold md:flex-row md:border-none md:text-base">
           <a href="/" class="hidden font-normal hover:animate-pulse md:block">
             高
           </a>
