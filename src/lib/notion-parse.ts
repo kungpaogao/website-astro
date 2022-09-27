@@ -63,6 +63,8 @@ export function parseRichTextBlock(richText: RichText): string {
     .map((token) => {
       let markdown = token.plain_text;
 
+      if (token.href) markdown = `[${markdown}](${token.href})`;
+
       const { bold, italic, strikethrough, underline, code, color } =
         token.annotations;
 
@@ -118,7 +120,8 @@ export function parse(
   // TODO: put EOL before each block?
   switch (block.type) {
     case "paragraph":
-      return parseRichTextBlock(block.paragraph.rich_text).concat(
+      return EOL.concat(
+        parseRichTextBlock(block.paragraph.rich_text),
         EOL,
         ...children
       );

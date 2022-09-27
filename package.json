@@ -18,6 +18,7 @@
     "@notion-stuff/blocks-markdown-parser": "^6.0.0",
     "@notionhq/client": "^2.1.1",
     "@tailwindcss/typography": "^0.5.2",
+    "@types/marked": "^4.0.7",
     "@types/node-fetch": "^2.6.2",
     "astro": "^1.1.1",
     "marked": "^4.0.19",

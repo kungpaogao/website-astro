@@ -13,8 +13,7 @@ import fetch from "node-fetch";
 import * as mime from "mime-types";
 import * as path from "path";
 
-const { NOTION_TOKEN, NOTION_PROJECTS_DATABASE, NOTION_PAGES_DATABASE } =
-  import.meta.env;
+const { NOTION_TOKEN, NOTION_PROJECTS_DATABASE } = import.meta.env;
 
 // TODO: parametrize base path
 const ASSET_BASE_PATH = "public/assets/";
@@ -148,7 +147,7 @@ export async function downloadAsset(
     const ext = mime.extension(res.headers.get("content-type")) || "unknown";
     const filename = `file.${blockId}.${ext}`;
 
-    //if file already exists, do not rewrite
+    // if file already exists, do not rewrite
     // see: https://github.com/justjake/monorepo/blob/d1e87174827005fa7fd6d158a0a1d7e86dd2a396/packages/notion-api/src/lib/assets.ts#L460
     const files = await fs.promises.readdir(ASSET_BASE_PATH);
     if (!files.find((file) => file === filename)) {
@@ -165,12 +164,11 @@ export async function downloadAsset(
 }
 
 /**
- * It takes a block ID, gets the children of that block, and then gets the children
- * of each of those children
- * @param {string} blockId - The ID of the block you want to get the children of.
- * @returns An array of block objects.
+ * Gets full content of a block
+ * @param {string} blockId - The ID of the block you want to get the content of
+ * @returns An array of block objects
  */
-export async function getPostContent(blockId: string) {
+export async function getBlock(blockId: string) {
   let content = await getBlockChildren(blockId);
 
   return await Promise.all(
@@ -200,7 +198,7 @@ export async function getPostContent(blockId: string) {
 
       // if block has children, recursively call getBlockChildren
       if (block.has_children) {
-        block[block.type].children = await getBlockChildren(block.id);
+        (block as any).children = await getBlockChildren(block.id);
       }
 
       return block;
@@ -245,7 +243,7 @@ export async function getProjectPaths() {
       },
       props: {
         title: titleResponse.map((text) => text.title.plain_text).join(""),
-        post: await getPostContent(project.id),
+        post: await getBlock(project.id),
       },
     };
   });

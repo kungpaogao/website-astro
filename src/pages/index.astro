@@ -1,7 +1,16 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import { getBlock } from "../lib/notion-cms";
+import { parseBlocks } from "../lib/notion-parse";
+import { marked } from "marked";
+
+const PAGE_ID = "b509f953-88e8-4863-a95d-103eceab812e";
+
+const content = marked.parse(parseBlocks(await getBlock(PAGE_ID)));
 ---
 
 <Layout title="Andrew Gao">
-	Hello my name is Andrew.
+  <div class="prose">
+    <Fragment set:html={content} />
+  </div>
 </Layout>

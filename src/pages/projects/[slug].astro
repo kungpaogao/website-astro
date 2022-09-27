@@ -5,9 +5,9 @@ import { parseBlocks } from "../../lib/notion-parse";
 import { getProjectPaths } from "../../lib/notion-cms";
 
 export async function getStaticPaths() {
-  const params = await getProjectPaths();
+  const paths = await getProjectPaths();
 
-  return params.map(({ params, props }) => ({
+  return paths.map(({ params, props }) => ({
     params,
     props: {
       title: props.title,
