@@ -144,6 +144,7 @@ export function parse(
         EOL
       );
     case "to_do":
+      // TODO: make this accessible by making the rich text the label
       return parseListItem(
         block.to_do.rich_text,
         block.to_do.checked ? "- [x] " : "- [ ] ",
@@ -185,7 +186,11 @@ export function parse(
       const plainTextCaption = parseRichTextBlock(caption);
       return `[${plainTextCaption || url}](${url})`.concat(EOL);
     case "image":
-      return `<Image src="${block.image[block.image.type].url}" />`;
+      const imageAlt = parseRichTextBlock(block.image.caption) || "image";
+      // TODO: make sure this is actually optimizing the images
+      return `<Image src="${
+        block.image[block.image.type].url
+      }" alt="${imageAlt}" />`;
     case "video":
       return `<video controls>
                 <source src="${block.video[block.video.type].url}">
@@ -193,7 +198,8 @@ export function parse(
     case "pdf":
       // https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html/23681394#23681394
       const src = block.pdf[block.pdf.type].url;
-      return `<object data="${src}" type="application/pdf" width="100%">
+      const pdfAlt = parseRichTextBlock(block.pdf.caption) || "pdf file";
+      return `<object data="${src}" type="application/pdf" width="100%" alt="${pdfAlt}">
                 <embed src="${src}">
                   <p>This browser doesn't support embedded PDFs.</p>
                 </embed>
