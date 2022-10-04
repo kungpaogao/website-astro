@@ -5,13 +5,13 @@ import { parseBlocks } from "../lib/notion-parse";
 import { marked } from "marked";
 
 const PAGE_ID = parsePageUrl(
-  "https://www.notion.so/kungpaogao/home-b509f95388e84863a95d103eceab812e"
+  "https://www.notion.so/kungpaogao/about-bd0d4055c64d47f0bb0c01160ce7239e"
 );
 
 const content = marked.parse(parseBlocks(await getBlock(PAGE_ID)));
 ---
 
-<Layout title="Home">
+<Layout title="About">
   <div class="prose">
     <Fragment set:html={content} />
   </div>
