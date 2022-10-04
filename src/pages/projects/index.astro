@@ -1,25 +1,21 @@
 ---
-// import { Projects } from "../../lib/notion-cms";
 import Layout from "../../layouts/Layout.astro";
 import { getProjectPaths } from "../../lib/notion-cms";
 
-// const projects = await asyncIterableToArray(
-//   Projects.query({
-//     sorts: [Projects.sort.published.descending],
-//   })
-// );
 const projects = await getProjectPaths();
 ---
 
-<Layout title="Projects | Andrew Gao">
+<Layout title="Projects">
   <h1 class="text-2xl">Projects</h1>
   <div class="flex flex-col gap-3 items-start mt-3">
-    {projects.map((project) => (
-      <div>
-        <a class="underline" href={`/projects/${project.params.slug}`}>
-          <h2>{project.props.title}</h2>
-        </a>
-      </div>
-    ))}
+    {
+      projects.map((project) => (
+        <div>
+          <a class="underline" href={`/projects/${project.params.slug}`}>
+            <h2>{project.props.title}</h2>
+          </a>
+        </div>
+      ))
+    }
   </div>
 </Layout>
