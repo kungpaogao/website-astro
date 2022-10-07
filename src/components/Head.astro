@@ -1,0 +1,49 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  pathname: string;
+  imageUrl?: string;
+}
+
+const {
+  title,
+  description,
+  pathname,
+  imageUrl = "/background.jpg",
+} = Astro.props as Props;
+
+const canonicalURL = new URL(pathname, Astro.url);
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width" />
+
+<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+<title>{title} | Andrew Gao</title>
+<link rel="canonical" href={canonicalURL} />
+
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+<meta name="generator" content={Astro.generator} />
+
+<!-- apple -->
+<meta name="apple-mobile-web-app-title" content="Gao" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<!-- og -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:secure_url" content={imageUrl} />
+
+<!-- twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonicalURL} />
+<meta property="twitter:site" content="@ndrewgao" />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={imageUrl} />
+<meta property="twitter:image:alt" content={title} />
