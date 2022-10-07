@@ -1,13 +1,14 @@
 ---
-import Layout, { Props as LayoutProps } from "../layouts/Layout.astro";
+import { Props } from "../components/Head.astro";
+import Layout from "../layouts/Layout.astro";
 
-const layoutProps: LayoutProps = {
+const headProps: Props = {
   title: "404",
   description: "404 Not found",
-  pathname: "/404",
+  path: "404",
 };
 ---
 
-<Layout {layoutProps}>
+<Layout {...headProps}>
   <div>oops, page not found :(</div>
 </Layout>

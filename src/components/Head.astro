@@ -2,18 +2,18 @@
 export interface Props {
   title: string;
   description: string;
-  pathname: string;
+  path: string;
   imageUrl?: string;
 }
 
 const {
-  title,
-  description,
-  pathname,
-  imageUrl = "/background.jpg",
+  title = "Website",
+  description = "This is the website of Andrew Gao",
+  path = "/",
+  imageUrl = new URL("/background.jpg", Astro.site),
 } = Astro.props as Props;
 
-const canonicalURL = new URL(pathname, Astro.url);
+const canonicalURL = new URL(path, Astro.site);
 ---
 
 <meta charset="UTF-8" />
