@@ -1,5 +1,6 @@
 import {
   BlockObjectResponse,
+  PageObjectResponse,
   ParagraphBlockObjectResponse,
   RichTextItemResponse,
 } from "@notionhq/client/build/src/api-endpoints";
@@ -11,6 +12,8 @@ export type BlockObjectResponseWithChildren = BlockObjectResponse & {
 export type RichText = RichTextItemResponse[];
 
 export type ApiColor = ParagraphBlockObjectResponse["paragraph"]["color"];
+
+export type PagePropertyResponse = PageObjectResponse["properties"]["key"];
 
 const INDENT = "  ";
 const EOL = "\n";
@@ -56,6 +59,10 @@ export function parseColor(color: ApiColor, text: string): string {
       className = "bg-red-200";
   }
   return `<span class="${className}>${text}</span>`;
+}
+
+export function richTextToPlainText(richText: RichText): string {
+  return richText.map((token) => token.plain_text).join("");
 }
 
 export function parseRichTextBlock(richText: RichText): string {
@@ -113,7 +120,7 @@ export function parse(
   if (block.has_children && block.children) {
     children = block.children.map(
       (child) => INDENT.repeat(depth + 2).concat(parse(child, depth + 2)),
-      EOL
+      EOL // TODO: this seems like a bug and shouldn't be here
     );
   }
 
@@ -226,10 +233,24 @@ export function parse(
     case "child_page":
     case "child_database":
     case "unsupported":
+    default:
       return "";
   }
 }
 
 export function parseBlocks(blocks: BlockObjectResponse[]): string {
   return blocks.map((block) => parse(block)).join("");
+}
+
+export function parseProperty(property: PagePropertyResponse): string {
+  switch (property.type) {
+    case "title":
+      return richTextToPlainText(property.title);
+    case "rich_text":
+      return richTextToPlainText(property.rich_text);
+    case "number":
+      return property.number.toString();
+    default:
+      return "unsupported";
+  }
 }

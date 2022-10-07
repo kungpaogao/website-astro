@@ -18,7 +18,7 @@ const { NOTION_TOKEN, NOTION_PROJECTS_DATABASE } = import.meta.env;
 // TODO: parametrize base path
 const ASSET_BASE_PATH = "public/assets/";
 
-const notion = new Client({
+export const notion = new Client({
   auth: NOTION_TOKEN,
 });
 
@@ -72,7 +72,7 @@ async function getPropertyValue(pageId: string, propertyId: string) {
  * @returns The function ensureFullResponse is returning the result as an extract
  * of T and { parent: {} }.
  */
-function ensureFullResponse<T, PT>(result: T | PT): T {
+export function ensureFullResponse<T, PT>(result: T | PT): T {
   return result as Extract<T, { parent: {} }>;
 }
 
@@ -175,6 +175,8 @@ export async function downloadAsset(
  * @returns An array of block objects
  */
 export async function getBlock(blockId: string) {
+  // TODO: add check to see if page is public
+
   let content = await getBlockChildren(blockId);
 
   return await Promise.all(
@@ -255,28 +257,4 @@ export async function getProjectPaths() {
   });
 
   return await Promise.all(params);
-}
-
-/**
- * It takes a Notion URL and returns the properly formatted page id. This is
- * important because it allows the human-readable/accessible URL to be placed
- * in the corresponding file.
- *
- * For example, any of the following:
- *
- * - https://www.notion.so/kungpaogao/about-bd0d4055c64d47f0bb0c01160ce7239e
- * - about-bd0d4055c64d47f0bb0c01160ce7239e
- * - bd0d4055c64d47f0bb0c01160ce7239e
- *
- * should become: `bd0d4055-c64d-47f0-bb0c-01160ce7239e`
- *
- * @param {string} url - The URL of the page you want to get the ID of
- * @returns A string
- */
-export function parsePageUrl(url: string): string {
-  const cleanSlash = url.split("/");
-  const cleanDash = cleanSlash[cleanSlash.length - 1].split("-");
-  const sl = (start?: number, end?: number) =>
-    cleanDash[cleanDash.length - 1].slice(start, end);
-  return `${sl(0, 8)}-${sl(8, 12)}-${sl(12, 16)}-${sl(16, 20)}-${sl(20)}`;
 }

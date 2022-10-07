@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { parsePageUrl } from "./notion-cms";
+import { parsePageUrl } from "./notion-cms-page";
 
 test("parse notion url test", () => {
   const expected = `bd0d4055-c64d-47f0-bb0c-01160ce7239e`;
