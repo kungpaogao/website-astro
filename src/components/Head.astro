@@ -7,7 +7,7 @@ export interface Props {
 }
 
 const {
-  title = "Website",
+  title = "Andrew Gao",
   description = "This is the website of Andrew Gao",
   path = "/",
   // imageUrl = new URL("/background.jpg", Astro.site),
@@ -28,22 +28,30 @@ const canonicalURL = new URL(path, Astro.site);
 <meta name="description" content={description} />
 <meta name="generator" content={Astro.generator} />
 
+<!-- robots -->
+<meta name="robots" content="index,follow" />
+<meta name="googlebot" content="index,follow" />
+
 <!-- apple -->
 <meta name="apple-mobile-web-app-title" content="Gao" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 
 <!-- og -->
+<meta property="og:locale" content="en_US" />
 <meta property="og:type" content="website" />
+<meta property="og:site_name" content={title} />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={imageUrl} />
 <meta property="og:image:secure_url" content={imageUrl} />
+<meta property="og:image:alt" content={title} />
 
 <!-- twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={canonicalURL} />
 <meta property="twitter:site" content="@ndrewgao" />
+<meta property="twitter:creator" content="@ndrewgao" />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={imageUrl} />
