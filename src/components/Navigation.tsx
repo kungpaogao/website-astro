@@ -66,11 +66,13 @@ type NavigationItemProps = {
   className?: string;
 };
 
-const NavigationItem: Component<NavigationItemProps> = (props) => (
-  <li
-    class={`text-gray-500 transition-colors hover:text-black ${props.className}`}
-  >
-    <a href={props.href}>{props.children}</a>
+const NavigationItem: Component<NavigationItemProps> = ({
+  className = "",
+  href,
+  children,
+}) => (
+  <li class={`text-gray-500 transition-colors hover:text-black ${className}`}>
+    <a href={href}>{children}</a>
   </li>
 );
 
