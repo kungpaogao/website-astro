@@ -10,7 +10,8 @@ const {
   title = "Website",
   description = "This is the website of Andrew Gao",
   path = "/",
-  imageUrl = new URL("/background.jpg", Astro.site),
+  // imageUrl = new URL("/background.jpg", Astro.site),
+  imageUrl = "https://assets.vercel.com/image/upload/front/vercel/twitter-card.png",
 } = Astro.props as Props;
 
 const canonicalURL = new URL(path, Astro.site);
