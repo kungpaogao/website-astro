@@ -14,16 +14,17 @@ const {
 } = Astro.props as Props;
 
 const canonicalURL = new URL(path, Astro.site);
+const fullTitle = `${title} | Andrew Gao`;
 ---
 
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width" />
 
 <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-<title>{title} | Andrew Gao</title>
+<title>{fullTitle}</title>
 <link rel="canonical" href={canonicalURL} />
 
-<meta name="title" content={title} />
+<meta name="title" content={fullTitle} />
 <meta name="description" content={description} />
 <meta name="generator" content={Astro.generator} />
 
@@ -38,20 +39,20 @@ const canonicalURL = new URL(path, Astro.site);
 <!-- og -->
 <meta property="og:locale" content="en_US" />
 <meta property="og:type" content="website" />
-<meta property="og:site_name" content={title} />
+<meta property="og:site_name" content={fullTitle} />
 <meta property="og:url" content={canonicalURL} />
-<meta property="og:title" content={title} />
+<meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={imageUrl} />
 <meta property="og:image:secure_url" content={imageUrl} />
-<meta property="og:image:alt" content={title} />
+<meta property="og:image:alt" content={fullTitle} />
 
 <!-- twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={canonicalURL} />
 <meta property="twitter:site" content="@ndrewgao" />
 <meta property="twitter:creator" content="@ndrewgao" />
-<meta property="twitter:title" content={title} />
+<meta property="twitter:title" content={fullTitle} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={imageUrl} />
-<meta property="twitter:image:alt" content={title} />
+<meta property="twitter:image:alt" content={fullTitle} />

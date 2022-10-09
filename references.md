@@ -11,8 +11,11 @@
 ### seo
 
 - https://github.com/littlesticks/simple-blog-astro/blob/main/src/components/BaseHead.astro
+- https://vercel.com/
 
 ## inspiration
 
 - https://linear.app/integrations
--
+- https://brianlovin.com/
+- https://emilkowal.ski/
+- https://paco.me/
