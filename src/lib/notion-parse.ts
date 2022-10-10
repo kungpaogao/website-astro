@@ -18,6 +18,9 @@ export type PagePropertyResponse = PageObjectResponse["properties"]["key"];
 const INDENT = "  ";
 const EOL = "\n";
 
+// see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#raw_strings
+const html = (strings, ...values) => String.raw({ raw: strings }, ...values);
+
 export function parseColor(color: ApiColor, text: string): string {
   let className = "";
   switch (color) {
@@ -158,14 +161,19 @@ export function parse(
         children
       );
     case "toggle":
-      // TODO: make this dynamic with html
-      return `<details><summary>${parseRichTextBlock(
-        block.toggle.rich_text
-      )}</summary>`.concat(EOL, ...children, "</details>");
+      return html`
+        <details>
+          <summary>${parseRichTextBlock(block.toggle.rich_text)}</summary>
+          ${children.join("").trim()}
+        </details>
+      `
+        .trim()
+        .concat(EOL);
     case "equation":
       return block.equation.expression.concat(EOL, ...children, EOL);
     case "code":
       return "```".concat(
+        block.code.language,
         EOL,
         parseRichTextBlock(block.code.rich_text),
         EOL,
@@ -195,33 +203,62 @@ export function parse(
     case "image":
       const imageAlt = parseRichTextBlock(block.image.caption) || "image";
       // TODO: make sure this is actually optimizing the images
-      return `<Image src="${
-        block.image[block.image.type].url
-      }" alt="${imageAlt}" />`;
+      // TODO: can't use lit-html here because of formatting??
+      return `
+      <Image src="${block.image[block.image.type].url}" alt="${imageAlt}" />
+      `.trim();
     case "video":
-      return `<video controls>
-                <source src="${block.video[block.video.type].url}">
-              </video>`;
+      return html`
+        <video controls>
+          <source src="${block.video[block.video.type].url}" />
+        </video>
+      `.trim();
     case "pdf":
       // https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html/23681394#23681394
       const src = block.pdf[block.pdf.type].url;
-      const pdfAlt = parseRichTextBlock(block.pdf.caption) || "pdf file";
-      return `<object data="${src}" type="application/pdf" width="100%" alt="${pdfAlt}">
-                <embed src="${src}">
-                  <p>This browser doesn't support embedded PDFs.</p>
-                </embed>
-              </object>`;
+      const labelId = `label-${block.id}`;
+      const pdfLabel = parseRichTextBlock(block.pdf.caption) || "pdf file";
+      return html`
+        <span id="${labelId}">${pdfLabel}</span>
+        <object
+          data="${src}"
+          type="application/pdf"
+          width="100%"
+          aria-labelledby="${labelId}"
+        >
+          <embed src="${src}" />
+          <p>This browser doesn't support embedded PDFs.</p>
+        </object>
+      `
+        .trim()
+        .concat(EOL);
     case "file":
-      return `<div>[${
-        parseRichTextBlock(block.file.caption) || "link to file"
-      }](${block.file[block.file.type].url})</div>`;
+      // TODO: don't support files because we don't want to download and serve
+      // from website
+      /*
+      return EOL.concat(
+        `[${parseRichTextBlock(block.file.caption) || "link to file"}](${
+          block.file[block.file.type].url
+        })
+      `,
+        EOL
+      );
+      */
+      return "";
     case "audio":
-      return `<audio controls src="${block.audio[block.audio.type].url}">
-                Your browser does not support the <code>audio</code> element.
-              </audio>`;
+      return html`
+        <audio controls src="${block.audio[block.audio.type].url}">
+          Your browser does not support the <code>audio</code> element.
+        </audio>
+      `
+        .trim()
+        .concat(EOL);
     case "bookmark":
     case "link_preview":
-      return `<div>[${block[block.type].url}](${block[block.type].url})</div>`;
+      return EOL.concat(
+        `[${block[block.type].url}](${block[block.type].url})`,
+        EOL
+      );
     case "breadcrumb":
     case "column_list":
     case "column":
