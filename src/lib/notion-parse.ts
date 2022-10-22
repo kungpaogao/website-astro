@@ -19,7 +19,8 @@ const INDENT = "  ";
 const EOL = "\n";
 
 // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#raw_strings
-const html = (strings, ...values) => String.raw({ raw: strings }, ...values);
+const html = (strings, ...values) =>
+  String.raw({ raw: strings }, ...values).trim();
 
 export function parseColor(color: ApiColor, text: string): string {
   let className = "";
@@ -103,9 +104,14 @@ export function parseHeading(
 export function parseListItem(
   richText: RichText,
   symbol: string,
-  children: string[]
+  children: string[],
+  renderRichText: (parsed: string) => string = (parsed) => parsed
 ): string {
-  return symbol.concat(parseRichTextBlock(richText), EOL, ...children);
+  return symbol.concat(
+    renderRichText(parseRichTextBlock(richText)),
+    EOL,
+    ...children
+  );
 }
 
 /**
@@ -158,7 +164,8 @@ export function parse(
       return parseListItem(
         block.to_do.rich_text,
         block.to_do.checked ? "- [x] " : "- [ ] ",
-        children
+        children,
+        (parsed) => `<label>${parsed}</label>`
       );
     case "toggle":
       return html`
@@ -166,10 +173,9 @@ export function parse(
           <summary>${parseRichTextBlock(block.toggle.rich_text)}</summary>
           ${children.join("").trim()}
         </details>
-      `
-        .trim()
-        .concat(EOL);
+      `.concat(EOL);
     case "equation":
+      // TODO: use https://www.npmjs.com/package/marked-katex-extension
       return block.equation.expression.concat(EOL, ...children, EOL);
     case "code":
       return "```".concat(
@@ -212,7 +218,7 @@ export function parse(
         <video controls>
           <source src="${block.video[block.video.type].url}" />
         </video>
-      `.trim();
+      `;
     case "pdf":
       // https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html/23681394#23681394
       const src = block.pdf[block.pdf.type].url;
@@ -229,9 +235,7 @@ export function parse(
           <embed src="${src}" />
           <p>This browser doesn't support embedded PDFs.</p>
         </object>
-      `
-        .trim()
-        .concat(EOL);
+      `.concat(EOL);
     case "file":
       // TODO: don't support files because we don't want to download and serve
       // from website
@@ -250,9 +254,7 @@ export function parse(
         <audio controls src="${block.audio[block.audio.type].url}">
           Your browser does not support the <code>audio</code> element.
         </audio>
-      `
-        .trim()
-        .concat(EOL);
+      `.concat(EOL);
     case "bookmark":
     case "link_preview":
       return EOL.concat(
