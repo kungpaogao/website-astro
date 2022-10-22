@@ -1,11 +1,11 @@
 /** @jsxImportSource react */
 import satori from "satori";
+import fs from "fs/promises";
+import { join } from "path";
 
 async function loadFont(filename) {
-  const res = await fetch(
-    new URL(`../../public/fonts/${filename}`, import.meta.url)
-  );
-  return res.arrayBuffer();
+  const fontPath = join(process.cwd(), "public", "fonts", filename);
+  return fs.readFile(fontPath);
 }
 
 const manropeMedium = await loadFont("Manrope-Medium.ttf");
