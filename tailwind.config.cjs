@@ -9,6 +9,27 @@ module.exports = {
       fontFamily: {
         sans: ["Manrope", ...defaultTheme.fontFamily.sans],
       },
+      // https://github.com/tailwindlabs/tailwindcss-typography/blob/master/src/styles.js
+      // https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js
+      typography: (theme) => ({
+        DEFAULT: {
+          css: {
+            p: {
+              lineHeight: theme("lineHeight.relaxed"),
+              marginTop: theme("spacing.3"),
+              marginBottom: theme("spacing.3"),
+            },
+            ul: {
+              marginTop: theme("spacing.3"),
+              marginBottom: theme("spacing.3"),
+            },
+            ol: {
+              marginTop: theme("spacing.3"),
+              marginBottom: theme("spacing.3"),
+            },
+          },
+        },
+      }),
       keyframes: {
         "slide-down": {
           "0%": { opacity: 0, transform: "translateY(-10px)" },
