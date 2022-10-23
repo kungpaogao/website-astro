@@ -5,13 +5,12 @@ import {
   PartialBlockObjectResponse,
   PartialPageObjectResponse,
   QueryDatabaseParameters,
-  RichTextPropertyItemObjectResponse,
-  TitlePropertyItemObjectResponse,
 } from "@notionhq/client/build/src/api-endpoints";
 import * as fs from "fs";
 import fetch from "node-fetch";
 import * as mime from "mime-types";
 import * as path from "path";
+import { getPageProperties } from "./notion-cms-page";
 
 const { NOTION_TOKEN, NOTION_PROJECTS_DATABASE } = import.meta.env;
 
@@ -21,46 +20,6 @@ const ASSET_BASE_PATH = "public/assets/";
 export const notion = new Client({
   auth: NOTION_TOKEN,
 });
-
-/**
- * It takes a page ID and a property ID, and returns the value of the property
- * see: https://github.com/makenotion/notion-sdk-js/blob/6ce697f29de208b4c6d4cad23d4ab7b28862c93f/examples/database-email-update/index.js#L168
- * @param {string} pageId - the id of the page you want to get the property value
- * from
- * @param {string} propertyId - the id of the property you want to get the value of
- * @returns An array of property items.
- */
-async function getPropertyValue(pageId: string, propertyId: string) {
-  let propertyItem = await notion.pages.properties.retrieve({
-    page_id: pageId,
-    property_id: propertyId,
-  });
-  if (propertyItem.object === "property_item") {
-    return propertyItem;
-  }
-
-  let nextCursor = propertyItem.next_cursor;
-  const results = propertyItem.results;
-
-  while (nextCursor !== null) {
-    propertyItem = await notion.pages.properties.retrieve({
-      page_id: pageId,
-      property_id: propertyId,
-      start_cursor: nextCursor,
-    });
-
-    // this should never happen, but this just makes sure the type is correct
-    // below
-    if (propertyItem.object === "property_item") {
-      break;
-    }
-
-    nextCursor = propertyItem.next_cursor;
-    results.push(...propertyItem.results);
-  }
-
-  return results;
-}
 
 /**
  * If the result is a partial response, return the full response.
@@ -179,7 +138,7 @@ export async function getBlock(blockId: string) {
 
   let content = await getBlockChildren(blockId);
 
-  return await Promise.all(
+  return Promise.all(
     content.map(async (blockResponse) => {
       const block = ensureFullResponse<
         BlockObjectResponse,
@@ -236,25 +195,18 @@ export async function getProjectPaths() {
   });
 
   const params = projects.map(async (project) => {
-    const slugResponse = (await getPropertyValue(
-      project.id,
-      project.properties.slug.id
-    )) as RichTextPropertyItemObjectResponse[];
-    const titleResponse = (await getPropertyValue(
-      project.id,
-      project.properties.title.id
-    )) as TitlePropertyItemObjectResponse[];
+    const pageProperties = await getPageProperties(project.id);
 
     return {
       params: {
-        slug: slugResponse.map((text) => text.rich_text.plain_text).join(""),
+        slug: pageProperties.slug,
       },
       props: {
-        title: titleResponse.map((text) => text.title.plain_text).join(""),
         post: await getBlock(project.id),
+        properties: pageProperties,
       },
     };
   });
 
-  return await Promise.all(params);
+  return Promise.all(params);
 }

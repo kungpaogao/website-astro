@@ -29,7 +29,7 @@ export function parsePageUrl(url: string): string {
   return `${sl(0, 8)}-${sl(8, 12)}-${sl(12, 16)}-${sl(16, 20)}-${sl(20)}`;
 }
 
-export async function getPageProperties(pageId: string) {
+export async function getPageProperties(pageId: string): Promise<any> {
   const response = await notion.pages.retrieve({ page_id: pageId });
   const fullResponse = ensureFullResponse<
     PageObjectResponse,

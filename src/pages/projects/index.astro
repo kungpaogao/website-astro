@@ -1,11 +1,17 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getProjectPaths } from "../../lib/notion-cms";
+import { getPageProperties, parsePageUrl } from "../../lib/notion-cms-page";
 
+const PAGE_ID = parsePageUrl(
+  "https://www.notion.so/kungpaogao/Projects-043bbef2e61041a583d68ce2551cee0f"
+);
+
+const properties = await getPageProperties(PAGE_ID);
 const projects = await getProjectPaths();
 ---
 
-<Layout title="Projects">
+<Layout {...properties}>
   <div class="prose">
     <h1>Projects</h1>
     <div class="flex flex-col gap-3 items-start mt-3">
@@ -16,7 +22,7 @@ const projects = await getProjectPaths();
               class="text-lg underline"
               href={`/projects/${project.params.slug}`}
             >
-              {project.props.title}
+              {project.props.properties.title}
             </a>
           </div>
         ))

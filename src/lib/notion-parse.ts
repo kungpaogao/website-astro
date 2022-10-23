@@ -289,6 +289,12 @@ export function parseProperty(property: PagePropertyResponse): string {
       return richTextToPlainText(property.rich_text);
     case "number":
       return property.number.toString();
+    case "url":
+      return property.url;
+    case "formula":
+      if (property.formula.type === "string") {
+        return property.formula.string;
+      }
     default:
       return "unsupported";
   }

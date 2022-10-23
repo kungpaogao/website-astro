@@ -10,16 +10,16 @@ export async function getStaticPaths() {
   return paths.map(({ params, props }) => ({
     params,
     props: {
-      title: props.title,
       post: marked.parse(parseBlocks(props.post)),
+      properties: props.properties,
     },
   }));
 }
 
-const { post, title } = Astro.props;
+const { post, properties } = Astro.props;
 ---
 
-<Layout title={title}>
+<Layout {...properties}>
   <div class="prose w-full max-w-full">
     <Fragment set:html={post} />
   </div>
