@@ -18,9 +18,13 @@ const { title, description, path, imageUrl } = Astro.props as Props;
   </head>
 
   <body>
-    <div class="mx-auto max-w-3xl">
-      <Navigation client:idle />
-      <main class="px-3 py-7 break-words">
+    <div>
+      <Navigation
+        client:idle
+        className="sticky top-0 w-full"
+        contentClassName="mx-auto max-w-3xl md:px-3 px-5"
+      />
+      <main class="mx-auto max-w-3xl md:px-3 px-5 py-7 break-words">
         <slot />
       </main>
     </div>

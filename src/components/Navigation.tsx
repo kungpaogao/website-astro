@@ -7,7 +7,15 @@ import {
 } from "solid-js";
 import { md } from "../styles/breakpoints";
 
-const Navigation = () => {
+type NavigationProps = {
+  className?: string;
+  contentClassName?: string;
+};
+
+const Navigation: Component<NavigationProps> = ({
+  className = "",
+  contentClassName = "",
+}) => {
   const [width, setWidth] = createSignal(0);
   const [checked, setChecked] = createSignal(false);
 
@@ -28,7 +36,11 @@ const Navigation = () => {
   onCleanup(() => window.removeEventListener(event, callback));
 
   return (
-    <nav>
+    <nav
+      class={`border-b border-slate-300 border-opacity-25 bg-white 
+      bg-opacity-70 backdrop-blur-md ${className}`}
+    >
+      {/* input that controls the state of the collapsing menu */}
       <input
         type="checkbox"
         checked={checked()}
@@ -36,13 +48,22 @@ const Navigation = () => {
         class="peer hidden"
         id="menu-checkbox"
       />
+      {/* container for the menu icon that acts as the clickable label for 
+      the input */}
       <div class="flex">
-        <label class="p-3 md:hidden" for="menu-checkbox">
+        <label class="py-3 px-5 md:hidden" for="menu-checkbox">
           <img src="/menu.svg" alt="Menu button" />
         </label>
       </div>
-      <div class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out peer-checked:max-h-28 md:max-h-[none]">
-        <div class="flex flex-col border-b border-gray-200 p-3 text-xl font-semibold md:flex-row  md:border-none md:text-base">
+      {/* actual navigation content */}
+      <div
+        class={`max-h-0 overflow-hidden transition-all duration-300 ease-in-out 
+        peer-checked:max-h-28 md:max-h-[none] ${contentClassName}`}
+      >
+        <div
+          class="flex flex-col border-b border-slate-300 border-opacity-25 
+        py-3 text-xl font-semibold md:flex-row md:border-none md:text-lg"
+        >
           <a href="/" class="hidden font-normal hover:animate-pulse md:block">
             高
           </a>
@@ -71,7 +92,7 @@ const NavigationItem: Component<NavigationItemProps> = ({
   href,
   children,
 }) => (
-  <li class={`text-gray-500 transition-colors hover:text-black ${className}`}>
+  <li class={`text-slate-600 transition hover:text-black ${className}`}>
     <a href={href}>{children}</a>
   </li>
 );
