@@ -10,5 +10,28 @@ const headProps: Props = {
 ---
 
 <Layout {...headProps}>
-  <div>oops, page not found :(</div>
+  <div>
+    <h1
+      class="absolute mix-blend-screen -z-[1] text-red-400 md:text-[40vw] text-[50vw] w-full leading-[170%] md:leading-[90%] top-0 left-0 text-center font-semibold"
+    >
+      404
+    </h1>
+  </div>
+  <div
+    class="absolute text-sky-400 -z-[2] md:text-[20vw] text-[40vw] font-bold bg-blend-hard-light top-0"
+  >
+    <h2>oops</h2>
+  </div>
+  <div class="text-2xl text-slate-700 font-bold inline-block">
+    <p class="bg-white bg-opacity-70 backdrop-blur-md px-2 py-1 rounded-md">
+      page not found :(
+    </p>
+    <p class="pt-2">
+      <a
+        href="/"
+        class="underline bg-white bg-opacity-70 backdrop-blur-md hover:bg-opacity-100 px-2 py-1 rounded-md transition"
+        >go home →</a
+      >
+    </p>
+  </div>
 </Layout>
