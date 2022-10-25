@@ -4,7 +4,9 @@ import { marked } from "marked";
 const renderer = {
   listitem(text: string, task: boolean, _checked: boolean) {
     if (task && text.includes("<label>")) {
-      return "<li><label>" + text.replace("<label>", "") + "</li>";
+      return (
+        "<li class='todo-item'><label>" + text.replace("<label>", "") + "</li>"
+      );
     }
 
     return false;

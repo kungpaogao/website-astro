@@ -1,0 +1,8 @@
+.todo-item {
+  list-style: none !important;
+}
+
+input[type="checkbox"]:disabled {
+  margin-left: -1rem;
+  margin-right: 1rem;
+}
