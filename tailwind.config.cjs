@@ -27,6 +27,12 @@ module.exports = {
               marginTop: theme("spacing.3"),
               marginBottom: theme("spacing.3"),
             },
+            "blockquote p:first-of-type::before": {
+              content: "normal",
+            },
+            "blockquote p:last-of-type::after": {
+              content: "normal",
+            },
           },
         },
       }),
