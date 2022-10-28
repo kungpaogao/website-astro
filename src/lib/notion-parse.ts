@@ -127,9 +127,8 @@ export function parse(
   let children: string[] = [];
 
   if (block.has_children && block.children) {
-    children = block.children.map(
-      (child) => INDENT.repeat(depth + 2).concat(parse(child, depth + 2)),
-      EOL // TODO: this seems like a bug and shouldn't be here
+    children = block.children.map((child) =>
+      INDENT.repeat(depth + 2).concat(parse(child, depth + 2))
     );
   }
 
@@ -207,12 +206,9 @@ export function parse(
       const plainTextCaption = parseRichTextBlock(caption);
       return `[${plainTextCaption || url}](${url})`.concat(EOL);
     case "image":
-      const imageAlt = parseRichTextBlock(block.image.caption) || "image";
-      // TODO: make sure this is actually optimizing the images
-      // TODO: can't use lit-html here because of formatting??
-      return `
-      <Image src="${block.image[block.image.type].url}" alt="${imageAlt}" />
-      `.trim();
+      const imgAlt = parseRichTextBlock(block.image.caption) || "image";
+      const imgSrc = block.image[block.image.type].url;
+      return html`<img src="${imgSrc}" alt="${imgAlt}" />`;
     case "video":
       return html`
         <video controls>

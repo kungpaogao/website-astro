@@ -6,16 +6,10 @@ import {
   PartialPageObjectResponse,
   QueryDatabaseParameters,
 } from "@notionhq/client/build/src/api-endpoints";
-import * as fs from "fs";
-import fetch from "node-fetch";
-import * as mime from "mime-types";
-import * as path from "path";
 import { getPageProperties } from "./notion-cms-page";
+import { downloadAsset, getImageSrc } from "./notion-cms-asset";
 
 const { NOTION_TOKEN, NOTION_PROJECTS_DATABASE } = import.meta.env;
-
-// TODO: parametrize base path
-const ASSET_BASE_PATH = "public/assets/";
 
 export const notion = new Client({
   auth: NOTION_TOKEN,
@@ -97,38 +91,6 @@ async function getBlockChildren(blockId: string) {
 }
 
 /**
- * It downloads the asset from Notion, saves it to the `/assets` folder, and
- * returns the path to the asset
- * @param {string} blockId - the id of the block
- * @param {string} url - The URL of the asset to download
- * @returns path to asset
- */
-export async function downloadAsset(
-  blockId: string,
-  url: string
-): Promise<string> {
-  try {
-    const res = await fetch(url);
-    const ext = mime.extension(res.headers.get("content-type")) || "unknown";
-    const filename = `file.${blockId}.${ext}`;
-
-    // if file already exists, do not rewrite
-    // see: https://github.com/justjake/monorepo/blob/d1e87174827005fa7fd6d158a0a1d7e86dd2a396/packages/notion-api/src/lib/assets.ts#L460
-    const files = await fs.promises.readdir(ASSET_BASE_PATH);
-    if (!files.find((file) => file === filename)) {
-      const dest = path.join(ASSET_BASE_PATH, filename);
-      const file = fs.createWriteStream(dest);
-      res.body.pipe(file);
-    }
-
-    return `/assets/${filename}`;
-  } catch (e) {
-    // on error, just return Notion URL
-    return url;
-  }
-}
-
-/**
  * Gets full content of a block
  * @param {string} blockId - The ID of the block you want to get the content of
  * @returns An array of block objects
@@ -147,8 +109,10 @@ export async function getBlock(blockId: string) {
 
       // if local file, download the file and remap the url to local path
       const blockType = block.type;
-      if (
-        blockType === "image" ||
+      if (blockType === "image") {
+        const imageType = block.image.type;
+        block.image[imageType].url = await getImageSrc(block);
+      } else if (
         blockType === "video" ||
         blockType === "audio" ||
         blockType === "pdf"
