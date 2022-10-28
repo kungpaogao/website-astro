@@ -20,6 +20,7 @@
     "@tailwindcss/typography": "^0.5.2",
     "@types/marked": "^4.0.7",
     "@types/node-fetch": "^2.6.2",
+    "@types/probe-image-size": "^7.2.0",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "astro": "^1.1.1",
@@ -30,6 +31,8 @@
     "prettier": "^2.7.1",
     "prettier-plugin-astro": "^0.5.3",
     "prettier-plugin-tailwindcss": "^0.1.11",
+    "probe-image-size": "^7.2.3",
+    "sharp": "^0.31.1",
     "solid-js": "^1.5.1",
     "vitest": "^0.23.4"
   },

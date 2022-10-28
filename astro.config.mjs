@@ -7,5 +7,12 @@ import react from "@astrojs/react";
 // https://astro.build/config
 export default defineConfig({
   site: "https://www.andrewgao.org/",
-  integrations: [solid(), tailwind(), image(), react()],
+  integrations: [
+    solid(),
+    tailwind(),
+    react(),
+    image({
+      serviceEntryPoint: "@astrojs/image/sharp",
+    }),
+  ],
 });
