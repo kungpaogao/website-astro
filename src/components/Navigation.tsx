@@ -19,26 +19,26 @@ const Navigation: Component<NavigationProps> = ({
   const [width, setWidth] = createSignal(0);
   const [checked, setChecked] = createSignal(false);
 
-  const callback = () => {
+  const resetChecked = () => {
     setWidth(window.innerWidth);
     if (width() >= md) {
       setChecked(false);
     }
   };
 
-  const event = "resize";
+  const resizeEvent = "resize";
 
   onMount(() => {
-    callback();
-    window.addEventListener(event, callback);
+    resetChecked();
+    window.addEventListener(resizeEvent, resetChecked);
   });
 
-  onCleanup(() => window.removeEventListener(event, callback));
+  onCleanup(() => window.removeEventListener(resizeEvent, resetChecked));
 
   return (
     <nav
-      class={`border-b border-slate-300 border-opacity-25 bg-white 
-      bg-opacity-70 backdrop-blur-md ${className}`}
+      class={`border-b border-slate-300 border-opacity-50 bg-white 
+      bg-opacity-70 backdrop-blur backdrop-saturate-150 ${className}`}
     >
       {/* input that controls the state of the collapsing menu */}
       <input
