@@ -4,7 +4,7 @@
     src: url("/fonts/Manrope-Variable.woff2") format("woff2-variations");
     font-style: normal;
     font-weight: 100 900;
-    font-display: swap;
+    font-display: optional;
     font-stretch: 75% 125%;
     font-named-instance: "Regular";
   }
