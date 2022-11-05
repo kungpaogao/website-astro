@@ -1,4 +1,4 @@
-import {
+import type {
   PageObjectResponse,
   PartialPageObjectResponse,
 } from "@notionhq/client/build/src/api-endpoints";

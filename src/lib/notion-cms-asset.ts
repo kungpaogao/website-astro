@@ -4,7 +4,7 @@ import path from "path";
 import fetch from "node-fetch";
 import { once } from "events";
 import mime from "mime-types";
-import { ImageBlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import type { ImageBlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { getImage } from "@astrojs/image";
 import { ASSET_BASE_PATH } from "./constants";
 

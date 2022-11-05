@@ -7,10 +7,10 @@ import {
 } from "solid-js";
 import { md } from "../styles/breakpoints";
 
-type NavigationProps = {
+interface NavigationProps {
   className?: string;
   contentClassName?: string;
-};
+}
 
 const Navigation: Component<NavigationProps> = ({
   className = "",
@@ -81,11 +81,11 @@ const Navigation: Component<NavigationProps> = ({
   );
 };
 
-type NavigationItemProps = {
+interface NavigationItemProps {
   href: string;
   children: JSXElement;
   className?: string;
-};
+}
 
 const NavigationItem: Component<NavigationItemProps> = ({
   className = "",

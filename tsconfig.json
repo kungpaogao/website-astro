@@ -3,6 +3,7 @@
   "compilerOptions": {
     "types": ["@astrojs/image/client"],
     "jsx": "preserve",
-    "jsxImportSource": "solid-js"
+    "jsxImportSource": "solid-js",
+    "importsNotUsedAsValues": "error"
   }
 }
