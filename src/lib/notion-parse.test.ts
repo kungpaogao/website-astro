@@ -1,4 +1,8 @@
-import { BlockWithChildren, RichText, RichTextToken } from "@jitl/notion-api";
+import type {
+  BlockWithChildren,
+  RichText,
+  RichTextToken,
+} from "@jitl/notion-api";
 import { expect, test } from "vitest";
 import * as sample from "../../public/tests/sample.json";
 import { parse, parseRichTextBlock } from "./notion-parse";
