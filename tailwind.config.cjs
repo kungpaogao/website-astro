@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 const defaultTheme = require("tailwindcss/defaultTheme");
 
+const textPadding = "3px 0px";
+const headingLineHeight = "1.3";
+const paragraphLineHeight = "1.5";
+
 module.exports = {
   content: ["./src/**/*.{astro,html,js,jsx,md,svelte,ts,tsx,vue}"],
   darkMode: "class",
@@ -15,17 +19,44 @@ module.exports = {
         DEFAULT: {
           css: {
             p: {
-              lineHeight: theme("lineHeight.relaxed"),
-              marginTop: theme("spacing.3"),
-              marginBottom: theme("spacing.3"),
+              lineHeight: paragraphLineHeight,
+              // marginTop: theme("spacing.3"),
+              // marginBottom: theme("spacing.3"),
+              margin: "0",
+              padding: textPadding,
             },
             ul: {
-              marginTop: theme("spacing.3"),
-              marginBottom: theme("spacing.3"),
+              margin: "0 !important",
             },
             ol: {
-              marginTop: theme("spacing.3"),
-              marginBottom: theme("spacing.3"),
+              margin: "0 !important",
+            },
+            li: {
+              margin: "0 !important",
+              paddingTop: textPadding,
+              paddingBottom: textPadding,
+            },
+            hr: {
+              // height: 13px
+              margin: "6.5px 0px",
+            },
+            h1: {
+              lineHeight: headingLineHeight,
+              marginTop: "2rem !important", // 2em
+              marginBottom: "4px", // 4px
+              padding: textPadding,
+            },
+            h2: {
+              lineHeight: headingLineHeight,
+              marginTop: "1.4rem", // 1.4em
+              marginBottom: "1px", // 1px
+              padding: textPadding,
+            },
+            h3: {
+              lineHeight: headingLineHeight,
+              marginTop: "1rem !important", // 1em
+              marginBottom: "1px", // 1px
+              padding: textPadding,
             },
             "blockquote p:first-of-type::before": {
               content: "normal",

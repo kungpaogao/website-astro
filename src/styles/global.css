@@ -2,7 +2,12 @@
   list-style: none !important;
 }
 
+.todo-done {
+  text-decoration: line-through;
+  color: theme("colors.slate.500") !important;
+}
+
 input[type="checkbox"]:disabled {
   margin-left: -1rem;
-  margin-right: 1rem;
+  margin-right: 0.25rem;
 }

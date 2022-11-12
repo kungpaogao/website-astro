@@ -135,11 +135,11 @@ export function parse(
   // TODO: put EOL before each block?
   switch (block.type) {
     case "paragraph":
-      return EOL.concat(
-        parseRichTextBlock(block.paragraph.rich_text),
-        EOL,
-        ...children
-      );
+      let paragraphRichText = parseRichTextBlock(block.paragraph.rich_text);
+      if (paragraphRichText === "") {
+        paragraphRichText = "<br>".concat(EOL);
+      }
+      return EOL.concat(paragraphRichText, EOL, ...children);
     case "heading_1":
       return EOL.concat(parseHeading(block.heading_1.rich_text, 1, children));
     case "heading_2":
@@ -159,12 +159,15 @@ export function parse(
         EOL
       );
     case "to_do":
-      // TODO: make this accessible by making the rich text the label
+      const toDoIsChecked = block.to_do.checked;
       return parseListItem(
         block.to_do.rich_text,
-        block.to_do.checked ? "- [x] " : "- [ ] ",
+        toDoIsChecked ? "- [x] " : "- [ ] ",
         children,
-        (parsed) => `<label>${parsed}</label>`
+        (parsed) =>
+          toDoIsChecked
+            ? html`<label><span class="todo-done">${parsed}</span></label>`
+            : html`<label>${parsed}</label>`
       );
     case "toggle":
       return html`
@@ -195,7 +198,7 @@ export function parse(
         EOL
       );
     case "divider":
-      return "---".concat(EOL, ...children);
+      return "___".concat(EOL, ...children);
     case "table_of_contents":
       // TODO: generate TOC from headings?
       // return JSON.stringify(block.table_of_contents);
