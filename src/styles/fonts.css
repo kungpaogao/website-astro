@@ -9,3 +9,10 @@
     font-named-instance: "Regular";
   }
 }
+
+@font-face {
+  font-family: "Minipax";
+  src: url("/fonts/Minipax-Medium.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+}

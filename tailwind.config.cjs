@@ -4,6 +4,7 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 const textPadding = "3px 0px";
 const headingLineHeight = "1.3";
 const paragraphLineHeight = "1.5";
+const headerFontFamily = "Minipax";
 
 module.exports = {
   content: ["./src/**/*.{astro,html,js,jsx,md,svelte,ts,tsx,vue}"],
@@ -12,6 +13,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ["Manrope", ...defaultTheme.fontFamily.sans],
+        serif: ["Minipax", ...defaultTheme.fontFamily.serif],
       },
       // https://github.com/tailwindlabs/tailwindcss-typography/blob/master/src/styles.js
       // https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js
@@ -41,18 +43,21 @@ module.exports = {
               margin: "6.5px 0px",
             },
             h1: {
+              fontFamily: headerFontFamily,
               lineHeight: headingLineHeight,
               marginTop: "2rem !important", // 2em
               marginBottom: "4px", // 4px
               padding: textPadding,
             },
             h2: {
+              fontFamily: headerFontFamily,
               lineHeight: headingLineHeight,
-              marginTop: "1.4rem", // 1.4em
+              marginTop: "1.4rem !important", // 1.4em
               marginBottom: "1px", // 1px
               padding: textPadding,
             },
             h3: {
+              fontFamily: headerFontFamily,
               lineHeight: headingLineHeight,
               marginTop: "1rem !important", // 1em
               marginBottom: "1px", // 1px
