@@ -10,11 +10,17 @@ async function loadFont(filename) {
 
 const manropeMedium = await loadFont("Manrope-Medium.ttf");
 const manropeBold = await loadFont("Manrope-Bold.ttf");
+const maShanZhengRegular = await loadFont("MaShanZheng-Regular.ttf");
 
 export async function generateImage(text) {
   const svg = await satori(
-    <div style={{ display: "flex" }}>
-      <h2 tw="text-sky-500">{text}</h2>
+    <div
+      style={{
+        display: "flex",
+        backgroundColor: "white",
+      }}
+    >
+      <h2 tw="text-black text-lg">{text}</h2>
     </div>,
     {
       // width: 1200,
@@ -33,6 +39,12 @@ export async function generateImage(text) {
           data: manropeBold,
           style: "normal",
           weight: 800,
+        },
+        {
+          name: "MaShanZheng",
+          data: maShanZhengRegular,
+          style: "normal",
+          weight: 400,
         },
       ],
     }
