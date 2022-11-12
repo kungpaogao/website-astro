@@ -1,0 +1,18 @@
+---
+import type { Props } from "../components/Head.astro";
+import Layout from "../layouts/Layout.astro";
+import { generateImage } from "../lib/satori";
+
+const layoutProps: Props = {
+  title: "Design",
+  description: "This is a place where I test out components.",
+  path: "/design",
+};
+
+const img = await generateImage("高");
+---
+
+<Layout {...layoutProps}>
+  <p>a nice place to test out designs :)</p>
+  <Fragment set:html={img} />
+</Layout>
