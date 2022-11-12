@@ -1,0 +1,21 @@
+---
+import { getProjectPaths } from "../../lib/notion-cms";
+
+export async function getStaticPaths() {
+  const paths = await getProjectPaths();
+
+  return paths.map(({ params, props }) => ({
+    params,
+    props: {
+      post: props.post,
+      properties: props.properties,
+    },
+  }));
+}
+
+const { post } = Astro.props;
+---
+
+<pre>
+  {JSON.stringify(post, null, 2)}
+</pre>
