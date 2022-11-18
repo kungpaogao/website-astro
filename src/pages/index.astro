@@ -14,7 +14,7 @@ const content = marked.parse(parseBlocks(await getBlock(PAGE_ID)));
 ---
 
 <Layout {...properties}>
-  <div class="prose prose-slate prose-h1:mb-3 prose-h2:mt-0">
+  <div class="prose prose-slate">
     <Fragment set:html={content} />
   </div>
 </Layout>
