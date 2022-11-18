@@ -8,9 +8,8 @@ async function loadFont(filename) {
   return fs.readFile(fontPath);
 }
 
-const manropeMedium = await loadFont("Manrope-Medium.ttf");
-const manropeBold = await loadFont("Manrope-Bold.ttf");
-const maShanZhengRegular = await loadFont("MaShanZheng-Regular.ttf");
+const interMedium = await loadFont("Inter-Medium.woff");
+const maShanZhengRegular = await loadFont("MaShanZheng-Regular.woff");
 
 export async function generateImage(text) {
   const svg = await satori(
@@ -29,16 +28,10 @@ export async function generateImage(text) {
       height: 200,
       fonts: [
         {
-          name: "Manrope",
-          data: manropeMedium,
+          name: "Inter",
+          data: interMedium,
           style: "normal",
           weight: 500,
-        },
-        {
-          name: "Manrope",
-          data: manropeBold,
-          style: "normal",
-          weight: 800,
         },
         {
           name: "MaShanZheng",
