@@ -4,7 +4,6 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 const textPadding = "3px 0px";
 const headingLineHeight = "1.3";
 const paragraphLineHeight = "1.5";
-const headerFontFamily = "Minipax";
 
 module.exports = {
   content: ["./src/**/*.{astro,html,js,jsx,md,svelte,ts,tsx,vue}"],
@@ -12,8 +11,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Manrope", ...defaultTheme.fontFamily.sans],
-        serif: ["Minipax", ...defaultTheme.fontFamily.serif],
+        sans: ["Inter", "MaShanZheng", ...defaultTheme.fontFamily.sans],
+        serif: ["Newsreader", ...defaultTheme.fontFamily.serif],
       },
       // https://github.com/tailwindlabs/tailwindcss-typography/blob/master/src/styles.js
       // https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js
@@ -43,21 +42,24 @@ module.exports = {
               margin: "6.5px 0px",
             },
             h1: {
-              fontFamily: headerFontFamily,
+              fontFamily: theme("fontFamily.serif").join(","),
+              fontWeight: theme("fontWeight.medium"),
               lineHeight: headingLineHeight,
               marginTop: "2rem !important", // 2em
               marginBottom: "4px", // 4px
               padding: textPadding,
             },
             h2: {
-              fontFamily: headerFontFamily,
+              fontFamily: theme("fontFamily.serif").join(","),
+              fontWeight: theme("fontWeight.medium"),
               lineHeight: headingLineHeight,
               marginTop: "1.4rem !important", // 1.4em
               marginBottom: "1px", // 1px
               padding: textPadding,
             },
             h3: {
-              fontFamily: headerFontFamily,
+              fontFamily: theme("fontFamily.serif").join(","),
+              fontWeight: theme("fontWeight.medium"),
               lineHeight: headingLineHeight,
               marginTop: "1rem !important", // 1em
               marginBottom: "1px", // 1px
@@ -67,6 +69,17 @@ module.exports = {
               content: "normal",
             },
             "blockquote p:last-of-type::after": {
+              content: "normal",
+            },
+            code: {
+              backgroundColor: theme("colors.slate.100"),
+              padding: "1px 3px",
+              borderRadius: theme("borderRadius.sm"),
+            },
+            "code::before": {
+              content: "normal",
+            },
+            "code::after": {
               content: "normal",
             },
           },
