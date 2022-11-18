@@ -64,7 +64,10 @@ const Navigation: Component<NavigationProps> = ({
           class="flex flex-col border-b border-slate-300 border-opacity-25 
         py-3 text-xl font-semibold md:flex-row md:border-none md:text-lg"
         >
-          <a href="/" class="hidden font-normal hover:animate-pulse md:block">
+          <a
+            href="/"
+            class="hidden text-2xl font-normal hover:animate-pulse md:block"
+          >
             高
           </a>
           <span class="flex-1" />
@@ -92,7 +95,9 @@ const NavigationItem: Component<NavigationItemProps> = ({
   href,
   children,
 }) => (
-  <li class={`text-slate-600 transition hover:text-black ${className}`}>
+  <li
+    class={`flex items-center text-slate-600 transition hover:text-black ${className}`}
+  >
     <a href={href}>{children}</a>
   </li>
 );
