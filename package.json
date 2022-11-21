@@ -11,8 +11,8 @@
     "coverage": "vitest run --coverage"
   },
   "devDependencies": {
-    "@astrojs/image": "^0.11.4",
-    "@astrojs/solid-js": "^1.2.2",
+    "@astrojs/image": "^0.11.6",
+    "@astrojs/solid-js": "^1.2.3",
     "@astrojs/tailwind": "^2.1.2",
     "@jitl/notion-api": "^0.2.2",
     "@notion-stuff/blocks-markdown-parser": "^6.0.0",
@@ -22,10 +22,10 @@
     "@types/node-fetch": "^2.6.2",
     "@types/probe-image-size": "^7.2.0",
     "@types/react": "^18.0.25",
-    "@types/react-dom": "^18.0.8",
-    "astro": "^1.6.7",
+    "@types/react-dom": "^18.0.9",
+    "astro": "^1.6.10",
     "autoprefixer": "^10.4.13",
-    "marked": "^4.2.2",
+    "marked": "^4.2.3",
     "mime-types": "^2.1.35",
     "node-fetch": "^3.3.0",
     "prettier": "^2.7.1",
@@ -34,7 +34,7 @@
     "probe-image-size": "^7.2.3",
     "sharp": "^0.31.2",
     "solid-js": "^1.6.2",
-    "vitest": "^0.25.1"
+    "vitest": "^0.25.2"
   },
   "dependencies": {
     "@astrojs/react": "^1.2.2",
