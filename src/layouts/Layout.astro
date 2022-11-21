@@ -1,11 +1,16 @@
 ---
-import type { Props } from "../components/Head.astro";
+import clsx from "clsx";
+import type { Props as HeadProps } from "../components/Head.astro";
 import Head from "../components/Head.astro";
 import Navigation from "../components/Navigation";
 import "../styles/global.css";
 import "../styles/fonts.css";
 
-const { title, description, path, imageUrl } = Astro.props as Props;
+interface Props extends HeadProps {
+  className?: string;
+}
+
+const { title, description, path, imageUrl, className } = Astro.props as Props;
 ---
 
 <!DOCTYPE html>
@@ -24,9 +29,9 @@ const { title, description, path, imageUrl } = Astro.props as Props;
       <Navigation
         client:idle
         className="sticky top-0 w-full"
-        contentClassName="mx-auto max-w-3xl md:px-3 px-5"
+        contentClassName="mx-auto max-w-prose md:px-0 px-5"
       />
-      <main class="mx-auto max-w-3xl md:px-3 px-5 py-7 break-words">
+      <main class={clsx("px-5 py-7", "md:px-0", className)}>
         <slot />
       </main>
     </div>

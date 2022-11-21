@@ -12,7 +12,7 @@ const layoutProps: Props = {
 const img = await generateImage("高 is my last name");
 ---
 
-<Layout {...layoutProps}>
+<Layout {...layoutProps} className="mx-auto max-w-prose">
   <p>a nice place to test out designs :)</p>
   <Fragment set:html={img} />
 </Layout>

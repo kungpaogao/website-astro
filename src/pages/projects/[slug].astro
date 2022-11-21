@@ -19,8 +19,6 @@ export async function getStaticPaths() {
 const { post, properties } = Astro.props;
 ---
 
-<Layout {...properties}>
-  <div class="prose prose-slate w-full max-w-full">
-    <Fragment set:html={post} />
-  </div>
+<Layout {...properties} className="prose mx-auto">
+  <Fragment set:html={post} />
 </Layout>

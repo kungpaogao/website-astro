@@ -11,22 +11,20 @@ const properties = await getPageProperties(PAGE_ID);
 const projects = await getProjectPaths();
 ---
 
-<Layout {...properties}>
-  <div class="prose prose-slate">
-    <h1>Projects</h1>
-    <div class="flex flex-col gap-3 items-start mt-3">
-      {
-        projects.map((project) => (
-          <div>
-            <a
-              class="text-lg underline"
-              href={`/projects/${project.params.slug}`}
-            >
-              {project.props.properties.title}
-            </a>
-          </div>
-        ))
-      }
-    </div>
+<Layout {...properties} className="prose mx-auto">
+  <h1>Projects</h1>
+  <div class="flex flex-col gap-3 items-start mt-3">
+    {
+      projects.map((project) => (
+        <div>
+          <a
+            class="text-lg underline"
+            href={`/projects/${project.params.slug}`}
+          >
+            {project.props.properties.title}
+          </a>
+        </div>
+      ))
+    }
   </div>
 </Layout>

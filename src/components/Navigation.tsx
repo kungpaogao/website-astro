@@ -50,7 +50,7 @@ const Navigation: Component<NavigationProps> = ({
       />
       {/* container for the menu icon that acts as the clickable label for 
       the input */}
-      <div class="flex">
+      <div class="mx-auto flex max-w-prose">
         <label class="py-3 px-5 md:hidden" for="menu-checkbox">
           <img src="/menu.svg" alt="Menu button" />
         </label>
