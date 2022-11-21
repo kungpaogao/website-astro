@@ -1,10 +1,6 @@
-import {
-  Component,
-  createSignal,
-  JSXElement,
-  onCleanup,
-  onMount,
-} from "solid-js";
+import clsx from "clsx";
+import type { Component, JSXElement } from "solid-js";
+import { createSignal, onCleanup, onMount } from "solid-js";
 import { md } from "../styles/breakpoints";
 
 interface NavigationProps {
@@ -37,8 +33,11 @@ const Navigation: Component<NavigationProps> = ({
 
   return (
     <nav
-      class={`border-b border-slate-300 border-opacity-50 bg-white 
-      bg-opacity-70 backdrop-blur backdrop-saturate-150 ${className}`}
+      class={clsx(
+        "border-b border-slate-300 border-opacity-50",
+        "bg-white bg-opacity-70 backdrop-blur backdrop-saturate-150",
+        className
+      )}
     >
       {/* input that controls the state of the collapsing menu */}
       <input
@@ -57,8 +56,12 @@ const Navigation: Component<NavigationProps> = ({
       </div>
       {/* actual navigation content */}
       <div
-        class={`max-h-0 overflow-hidden transition-all duration-300 ease-in-out 
-        peer-checked:max-h-28 md:max-h-[none] ${contentClassName}`}
+        class={clsx(
+          "max-h-0 overflow-hidden",
+          "transition-all duration-300 ease-in-out",
+          "peer-checked:max-h-28 md:max-h-[none]",
+          contentClassName
+        )}
       >
         <div
           class="flex flex-col border-b border-slate-300 border-opacity-25 
@@ -96,7 +99,7 @@ const NavigationItem: Component<NavigationItemProps> = ({
   children,
 }) => (
   <li
-    class={`flex items-center text-slate-600 transition hover:text-black ${className}`}
+    class={clsx("flex items-center transition", "hover:text-black", className)}
   >
     <a href={href}>{children}</a>
   </li>
