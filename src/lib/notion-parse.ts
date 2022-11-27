@@ -1,76 +1,86 @@
+import type { BlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import type {
-  BlockObjectResponse,
-  PageObjectResponse,
-  ParagraphBlockObjectResponse,
-  RichTextItemResponse,
-} from "@notionhq/client/build/src/api-endpoints";
-
-export type BlockObjectResponseWithChildren = BlockObjectResponse & {
-  children?: BlockObjectResponse[];
-};
-
-export type RichText = RichTextItemResponse[];
-
-export type ApiColor = ParagraphBlockObjectResponse["paragraph"]["color"];
-
-export type PagePropertyResponse = PageObjectResponse["properties"]["key"];
+  ApiColor,
+  BlockObjectResponseWithChildren,
+  PagePropertyResponse,
+  RichText,
+  RichTextBlock,
+} from "./notion-types";
+import { html } from "./html";
 
 const INDENT = "  ";
 const EOL = "\n";
-
-// see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#raw_strings
-const html = (strings, ...values) =>
-  String.raw({ raw: strings }, ...values).trim();
 
 export function parseColor(color: ApiColor, text: string): string {
   let className = "";
   switch (color) {
     case "gray":
-      className = "text-gray-500";
+      className = "!text-gray-500";
+      break;
     case "brown":
-      className = "text-stone-500";
+      className = "!text-stone-500";
+      break;
     case "orange":
-      className = "text-orange-500";
+      className = "!text-orange-500";
+      break;
     case "yellow":
-      className = "text-yellow-500";
+      className = "!text-yellow-500";
+      break;
     case "green":
-      className = "text-green-500";
+      className = "!text-green-500";
+      break;
     case "blue":
-      className = "text-blue-500";
+      className = "!text-blue-500";
+      break;
     case "purple":
-      className = "text-purple-500";
+      className = "!text-purple-500";
+      break;
     case "pink":
-      className = "text-pink-500";
+      className = "!text-pink-500";
+      break;
     case "red":
-      className = "text-red-500";
+      className = "!text-red-500";
+      break;
     case "gray_background":
-      className = "bg-gray-200";
+      className = "!bg-gray-200";
+      break;
     case "brown_background":
-      className = "bg-stone-200";
+      className = "!bg-stone-200";
+      break;
     case "orange_background":
-      className = "bg-orange-200";
+      className = "!bg-orange-200";
+      break;
     case "yellow_background":
-      className = "bg-yellow-200";
+      className = "!bg-yellow-200";
+      break;
     case "green_background":
-      className = "bg-green-200";
+      className = "!bg-green-200";
+      break;
     case "blue_background":
-      className = "bg-blue-200";
+      className = "!bg-blue-200";
+      break;
     case "purple_background":
-      className = "bg-purple-200";
+      className = "!bg-purple-200";
+      break;
     case "pink_background":
-      className = "bg-pink-200";
+      className = "!bg-pink-200";
+      break;
     case "red_background":
-      className = "bg-red-200";
+      className = "!bg-red-200";
+      break;
   }
-  return `<span class="${className}>${text}</span>`;
+  return html`<span class="${className}">${text}</span>`;
 }
 
 export function richTextToPlainText(richText: RichText): string {
   return richText.map((token) => token.plain_text).join("");
 }
 
-export function parseRichTextBlock(richText: RichText): string {
-  return richText
+export function parseRichTextBlock({
+  rich_text,
+  color: blockColor = "default",
+}: RichTextBlock): string {
+  return rich_text
     .map((token) => {
       let markdown = token.plain_text;
 
@@ -79,12 +89,14 @@ export function parseRichTextBlock(richText: RichText): string {
       const { bold, italic, strikethrough, underline, code, color } =
         token.annotations;
 
-      if (code) markdown = `\`${markdown}\``;
+      if (code) markdown = `<code>${markdown}</code>`;
       if (bold) markdown = `<b>${markdown}</b>`;
       if (italic) markdown = `<i>${markdown}</i>`;
       if (strikethrough) markdown = `<s>${markdown}</s>`;
       if (underline) markdown = `<u>${markdown}</u>`;
-      if (color != "default") markdown = parseColor(color, markdown);
+      if (color !== "default") markdown = parseColor(color, markdown);
+
+      if (blockColor !== "default") markdown = parseColor(blockColor, markdown);
 
       return markdown;
     })
@@ -92,23 +104,23 @@ export function parseRichTextBlock(richText: RichText): string {
 }
 
 export function parseHeading(
-  richText: RichText,
+  richTextBlock: RichTextBlock,
   level: number,
   children: string[]
 ): string {
   return "#"
     .repeat(level)
-    .concat(" ", parseRichTextBlock(richText), EOL, ...children, EOL);
+    .concat(" ", parseRichTextBlock(richTextBlock), EOL, ...children, EOL);
 }
 
 export function parseListItem(
-  richText: RichText,
+  richTextBlock: RichTextBlock,
   symbol: string,
   children: string[],
   renderRichText: (parsed: string) => string = (parsed) => parsed
 ): string {
   return symbol.concat(
-    renderRichText(parseRichTextBlock(richText)),
+    renderRichText(parseRichTextBlock(richTextBlock)),
     EOL,
     ...children
   );
@@ -135,25 +147,25 @@ export function parse(
   // TODO: put EOL before each block?
   switch (block.type) {
     case "paragraph":
-      let paragraphRichText = parseRichTextBlock(block.paragraph.rich_text);
+      let paragraphRichText = parseRichTextBlock(block.paragraph);
       if (paragraphRichText === "") {
         paragraphRichText = "<br>".concat(EOL);
       }
       return EOL.concat(paragraphRichText, EOL, ...children);
     case "heading_1":
-      return EOL.concat(parseHeading(block.heading_1.rich_text, 1, children));
+      return EOL.concat(parseHeading(block.heading_1, 1, children));
     case "heading_2":
-      return EOL.concat(parseHeading(block.heading_2.rich_text, 2, children));
+      return EOL.concat(parseHeading(block.heading_2, 2, children));
     case "heading_3":
-      return EOL.concat(parseHeading(block.heading_3.rich_text, 3, children));
+      return EOL.concat(parseHeading(block.heading_3, 3, children));
     case "bulleted_list_item":
-      return parseListItem(block.bulleted_list_item.rich_text, "- ", children);
+      return parseListItem(block.bulleted_list_item, "- ", children);
     case "numbered_list_item":
-      return parseListItem(block.numbered_list_item.rich_text, "1. ", children);
+      return parseListItem(block.numbered_list_item, "1. ", children);
     case "quote":
       return EOL.concat(
         "> ",
-        parseRichTextBlock(block.quote.rich_text),
+        parseRichTextBlock(block.quote),
         EOL,
         children.map((child) => ">".concat(child)).join(""),
         EOL
@@ -161,7 +173,7 @@ export function parse(
     case "to_do":
       const toDoIsChecked = block.to_do.checked;
       return parseListItem(
-        block.to_do.rich_text,
+        block.to_do,
         toDoIsChecked ? "- [x] " : "- [ ] ",
         children,
         (parsed) =>
@@ -170,9 +182,10 @@ export function parse(
             : html`<label>${parsed}</label>`
       );
     case "toggle":
+      // TODO: fix this because this doesn't work for children :,(
       return html`
         <details>
-          <summary>${parseRichTextBlock(block.toggle.rich_text)}</summary>
+          <summary>${parseRichTextBlock(block.toggle)}</summary>
           ${children.join("").trim()}
         </details>
       `.concat(EOL);
@@ -183,7 +196,7 @@ export function parse(
       return "```".concat(
         block.code.language,
         EOL,
-        parseRichTextBlock(block.code.rich_text),
+        parseRichTextBlock(block.code),
         EOL,
         "```",
         EOL
@@ -192,7 +205,7 @@ export function parse(
       // TODO: custom callout div + style
       return "```".concat(
         EOL,
-        parseRichTextBlock(block.callout.rich_text),
+        parseRichTextBlock(block.callout),
         EOL,
         "```",
         EOL
@@ -206,10 +219,11 @@ export function parse(
     case "embed":
       // return `<iframe src="${block.embed.url}"></iframe>`;
       const { url, caption } = block.embed;
-      const plainTextCaption = parseRichTextBlock(caption);
+      const plainTextCaption = parseRichTextBlock({ rich_text: caption });
       return `[${plainTextCaption || url}](${url})`.concat(EOL);
     case "image":
-      const imgAlt = parseRichTextBlock(block.image.caption) || "image";
+      const imgAlt =
+        parseRichTextBlock({ rich_text: block.image.caption }) || "image";
       const imgSrc = block.image[block.image.type].url;
       return html`<img src="${imgSrc}" alt="${imgAlt}" />`;
     case "video":
@@ -222,7 +236,8 @@ export function parse(
       // https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html/23681394#23681394
       const src = block.pdf[block.pdf.type].url;
       const labelId = `label-${block.id}`;
-      const pdfLabel = parseRichTextBlock(block.pdf.caption) || "pdf file";
+      const pdfLabel =
+        parseRichTextBlock({ rich_text: block.pdf.caption }) || "pdf file";
       return html`
         <span id="${labelId}">${pdfLabel}</span>
         <object
