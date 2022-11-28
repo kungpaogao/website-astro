@@ -147,7 +147,7 @@ export function parse(
     case "paragraph":
       let paragraphRichText = parseRichTextBlock(block.paragraph);
       if (paragraphRichText === "") {
-        paragraphRichText = "<br>".concat(EOL);
+        paragraphRichText = html`<br />`.concat(EOL);
       }
       return EOL.concat(paragraphRichText, EOL, ...children);
     case "heading_1":
@@ -223,13 +223,13 @@ export function parse(
       const imgAlt =
         parseRichTextBlock({ rich_text: block.image.caption }) || "image";
       const imgSrc = block.image[block.image.type].url;
-      return html`<img src="${imgSrc}" alt="${imgAlt}" />`;
+      return html`<img src="${imgSrc}" alt="${imgAlt}" />`.concat(EOL);
     case "video":
       return html`
         <video controls>
           <source src="${block.video[block.video.type].url}" />
         </video>
-      `;
+      `.concat(EOL);
     case "pdf":
       // https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html/23681394#23681394
       const src = block.pdf[block.pdf.type].url;
