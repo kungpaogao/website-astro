@@ -35,7 +35,7 @@ export function ensureFullResponse<T, PT>(result: T | PT): T {
  * @param {QueryDatabaseParameters} options - QueryDatabaseParameters
  * @returns An array of pages
  */
-async function queryNotionDatabase(
+export async function queryNotionDatabase(
   options: QueryDatabaseParameters
 ): Promise<PageObjectResponse[]> {
   const pages: PageObjectResponse[] = [];

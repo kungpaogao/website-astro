@@ -1,0 +1,26 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { fetchPostsAsMdx } from "../../lib/notion-fetch";
+
+export async function getStaticPaths() {
+  await fetchPostsAsMdx();
+  const posts = await Astro.glob("../../content/projects/*.mdx");
+
+  return posts.map((post) => ({
+    params: {
+      slug: post.frontmatter.slug,
+    },
+    props: {
+      properties: post.frontmatter,
+      post,
+    },
+  }));
+}
+
+const { post, properties } = Astro.props;
+const { Content } = post;
+---
+
+<Layout {...properties} className="prose mx-auto">
+  <Content />
+</Layout>

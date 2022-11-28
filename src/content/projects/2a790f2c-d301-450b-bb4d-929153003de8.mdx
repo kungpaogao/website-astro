@@ -1,0 +1,208 @@
+---
+lastEditedTime: '2022-11-28T05:41:00.000Z'
+published: '2022-11-27'
+description: 'Post about building this website'
+path: '/projects/here'
+dates: ''
+tags: 'dev,test'
+public: 'true'
+slug: 'here'
+image: 'null'
+title: 'This website'
+---
+
+# Here: this website
+
+
+This website is an experiment using [Notion](https://www.notion.so/) as a [CMS](https://en.wikipedia.org/wiki/Content_management_system). This allows me to have a much better editing experience, which should encourage me to keep the content more up to date.
+
+The process for updating content is easy as editing in Notion and triggering a rebuild/redeploy.
+
+The site is built using [Astro](https://astro.build/), which statically generates the site and helps me minimize the amount of JavaScript that’s sent to the client.
+
+You can find the [source code to this site on GitHub](https://github.com/kungpaogao/website-astro).
+
+<br />
+
+
+Below is what I used to test the Notion parser that I “wrote” (copied a lot of code from existing solutions) to convert Notion blocks to Markdown, which is then converted to HTML using [marked](https://www.npmjs.com/package/marked).
+___
+
+## tasks
+
+- [ ] <label>[content] add more content to website</label>
+    - [ ] <label>add blog :)</label>
+- [ ] <label>[dev] make parsing more robust</label>
+    - [x] <label><span class="todo-done">accessibility</span></label>
+    - [ ] <label>more predictable formatting - tests should be easy to write</label>
+    - [x] <label><span class="todo-done">support empty lines</span></label>
+    - [ ] <label>support callouts</label>
+- [ ] <label>[dev] optimize updating content - check page update date</label>
+- [ ] <label>[dev] fix image optimization - use <code>getPicture</code></label>
+- [ ] <label>[dev] use [satori](https://github.com/vercel/satori) for social media cards</label>
+- [ ] <label>[design] use more semantic tokens for spacing (sm, md, lg, etc.)</label>
+- [ ] <label>[design] add syntax highlighting</label>
+- [x] <label><span class="todo-done">[design] finalize font selection - maybe use a serif</span></label>
+- [ ] <label>[design] gutters (on mobile) for readability + better polish</label>
+
+### ✅ done
+
+- [x] <label><span class="todo-done">[design] do something fun with gradients or colors and transparency?? on the homepage/elsewhere</span></label>
+- [x] <label><span class="todo-done">[design] fix font and line height to be more readable</span></label>
+- [x] <label><span class="todo-done">[dev] improve SEO - still not showing up in top results on google</span></label>
+    - [x] <label><span class="todo-done">[https://developers.google.com/search/docs/crawling-indexing/robots/create-robots-txt](https://developers.google.com/search/docs/crawling-indexing/robots/create-robots-txt)</span></label>
+
+<br />
+
+___
+
+# heading 1
+
+
+## heading 2
+
+
+### heading 3
+
+
+<br />
+
+
+rich text testing <b>bold text</b> <i>italic text</i> <u>underline text</u> <s>strikethrough text</s> <u><s><i><b>all four styles</b></i></s></u>
+
+<br />
+
+
+rainbow text
+
+<span class="!text-red-500">red</span>
+
+<span class="!text-pink-500">pink</span>
+
+<span class="!text-purple-500">purple</span>
+
+<span class="!text-blue-500">blue</span>
+
+<span class="!text-green-500">green but </span><span class="!text-green-500"><span class="!text-red-500">override to be red</span></span>
+
+<span class="!text-yellow-500">yellow</span>
+
+<span class="!text-orange-500">orange</span>
+
+<span class="!text-stone-500">brown</span>
+
+<span class="!text-gray-500">gray</span>
+
+default
+
+<br />
+
+
+colored <span class="!text-yellow-500">[link text](/33c13e28fa684f59ab90c8a0b179c398)</span><span class="!text-yellow-500"> but this is also colored text</span>
+
+<br />
+
+
+colorful list text:
+- <span class="!text-red-500">red</span>
+- <span class="!text-pink-500">pink</span>
+- <span class="!text-purple-500">purple</span>
+- <span class="!text-blue-500">blue</span>
+- <span class="!text-green-500">green but </span><span class="!text-green-500"><span class="!text-red-500">override to be red</span></span>
+- <span class="!text-yellow-500">yellow</span>
+- <span class="!text-orange-500">orange</span>
+- <span class="!text-stone-500">brown</span>
+- <span class="!text-gray-500">gray</span>
+- default
+
+<br />
+
+
+paragraph text
+- unorganized list
+- another item
+- another item
+    - nested item
+1. organized list
+1. another item
+    1. nested item
+
+> quote
+>    - nested item in quote
+>    1. hello world
+>    1. hello world 2
+
+
+inline <code>code block</code> this is like <code>code thingy</code>
+```typescript
+function parse() {
+	return "hello world";
+}
+```
+<details>
+          <summary>some summary</summary>
+          some details about something
+    
+who knows
+    
+<br />
+        </details>
+
+<br />
+
+
+E = mc^2
+
+<br />
+
+```
+<span class="!bg-gray-200">hello
+hello
+hello</span>
+```
+
+<br />
+
+
+## links
+
+
+testing links in the paragraph. ([this stuff in the parentheses](https://robinhood.com/us/en/)) should link to [robinhood.com](http://robinhood.com) (as should this link).
+
+## todo list
+
+- [x] <label><span class="todo-done">work on this website</span></label>
+- [ ] <label>finish this website</label>
+    - [ ] <label>no actually though</label>
+
+<br />
+
+___
+
+multiple images and files below
+<img src="/_image?f=webp&w=1648&h=2124&href=%2Fassets%2Ffile.6d021db5-5225-4247-9b4f-2566731ad2da.png" alt="Arc browser badge for Andrew with subtitle ‘Vague Big Shot’" />
+<img src="/_image?f=webp&w=1542&h=1644&href=%2Fassets%2Ffile.f9a0b66f-20ab-4308-8d21-fafe79226db3.jpeg" alt="Watercolor painting by Hayao Miyazaki" />
+<video controls>
+          <source src="/assets/file.9ad42c18-94fe-4a22-8162-4f54b77081f0.qt" />
+        </video>
+<span id="label-71fcdbac-7108-4015-959c-5bd48c4ff0b0">PDF file containing EQ settings for the Sennheiser HD599 headphones</span>
+        <object
+          data="/assets/file.71fcdbac-7108-4015-959c-5bd48c4ff0b0.pdf"
+          type="application/pdf"
+          width="100%"
+          aria-labelledby="label-71fcdbac-7108-4015-959c-5bd48c4ff0b0"
+        >
+          <embed src="/assets/file.71fcdbac-7108-4015-959c-5bd48c4ff0b0.pdf" />
+          <p>This browser doesn't support embedded PDFs.</p>
+        </object>
+
+[http://google.com](http://google.com)
+<audio controls src="/assets/file.08db2e1c-f6d4-4470-ae42-1dc291439a6c.mpga">
+          Your browser does not support the <code>audio</code> element.
+        </audio>
+
+[https://soundcloud.com/herbbeatz/moving?in=kungpaogao/sets/corncorncorn](https://soundcloud.com/herbbeatz/moving?in=kungpaogao/sets/corncorncorn)
+[https://www.google.com/maps/place/Breakneck+Hill+Conservation+Land,+Southborough,+MA+01772/@42.2724994,-71.5345255,14z/data=!4m5!3m4!1s0x89e38a6ff7c803af:0x88e2e02613bc306f!8m2!3d42.2853249!4d-71.5145283](https://www.google.com/maps/place/Breakneck+Hill+Conservation+Land,+Southborough,+MA+01772/@42.2724994,-71.5345255,14z/data=!4m5!3m4!1s0x89e38a6ff7c803af:0x88e2e02613bc306f!8m2!3d42.2853249!4d-71.5145283)
+
+<br />
+
