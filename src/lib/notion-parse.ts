@@ -7,9 +7,7 @@ import type {
   RichTextBlock,
 } from "./notion-types";
 import { html } from "./html";
-
-const INDENT = "  ";
-const EOL = "\n";
+import { EOL, INDENT } from "./constants";
 
 export function parseColor(color: ApiColor, text: string): string {
   let className = "";
@@ -305,6 +303,18 @@ export function parseProperty(property: PagePropertyResponse): string {
       return property.number.toString();
     case "url":
       return property.url;
+    case "checkbox":
+      return property.checkbox ? "true" : "false";
+    case "email":
+      return property.email;
+    case "last_edited_time":
+      return property.last_edited_time;
+    case "created_time":
+      return property.created_time;
+    case "date":
+      return property.date.start;
+    case "multi_select":
+      return property.multi_select.map((select) => select.name).join(",");
     case "formula":
       if (property.formula.type === "string") {
         return property.formula.string;
