@@ -16,7 +16,9 @@ export default defineConfig({
     image({
       serviceEntryPoint: "@astrojs/image/sharp",
     }),
-    sitemap(),
+    sitemap({
+      filter: (page) => !page.includes(".json"),
+    }),
     mdx(),
   ],
 });
