@@ -30,6 +30,7 @@
     "prettier-plugin-astro": "^0.7.0",
     "prettier-plugin-tailwindcss": "^0.2.0",
     "probe-image-size": "^7.2.3",
+    "rehype-accessible-emojis": "^0.3.2",
     "sharp": "^0.31.2",
     "solid-js": "^1.6.2",
     "vitest": "^0.25.3"

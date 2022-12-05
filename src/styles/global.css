@@ -2,6 +2,10 @@
   list-style: none !important;
 }
 
+.task-list-item {
+  list-style: none !important;
+}
+
 .todo-done {
   text-decoration: line-through;
   color: theme("colors.slate.500") !important;

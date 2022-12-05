@@ -6,6 +6,8 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import mdx from "@astrojs/mdx";
 
+import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://www.andrewgao.org/",
@@ -21,4 +23,8 @@ export default defineConfig({
     }),
     mdx(),
   ],
+  markdown: {
+    extendDefaultPlugins: true,
+    rehypePlugins: [rehypeAccessibleEmojis],
+  },
 });
