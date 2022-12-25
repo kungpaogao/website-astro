@@ -1,5 +1,6 @@
 ---
 import type { Props } from "../components/Head.astro";
+import { BottomNavigation } from "../components/BottomNavigation";
 import Layout from "../layouts/Layout.astro";
 import { generateImage } from "../lib/satori";
 
@@ -10,9 +11,12 @@ const layoutProps: Props = {
 };
 
 const img = await generateImage("高 is my last name");
+const gao = await generateImage("高", 24, 24);
 ---
 
-<Layout {...layoutProps} className="mx-auto max-w-prose">
+<Layout {...layoutProps}>
   <p>a nice place to test out designs :)</p>
   <Fragment set:html={img} />
+  <Fragment set:html={gao} />
+  <BottomNavigation className="absolute bottom-0 left-0 right-0" />
 </Layout>

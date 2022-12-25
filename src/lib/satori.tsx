@@ -11,7 +11,7 @@ async function loadFont(filename) {
 const interMedium = await loadFont("Inter-Medium.woff");
 const maShanZhengRegular = await loadFont("MaShanZheng-Regular.woff");
 
-export async function generateImage(text) {
+export async function generateImage(text: string, width = 200, height = 200) {
   const svg = await satori(
     <div
       style={{
@@ -19,13 +19,13 @@ export async function generateImage(text) {
         backgroundColor: "white",
       }}
     >
-      <h2 tw="text-black text-lg">{text}</h2>
+      <span tw="text-black text-xl p-1">{text}</span>
     </div>,
     {
       // width: 1200,
       // height: 630,
-      width: 200,
-      height: 200,
+      width: width,
+      height: height,
       fonts: [
         {
           name: "Inter",
