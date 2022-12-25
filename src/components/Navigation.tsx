@@ -65,10 +65,7 @@ const Navigation: Component<NavigationProps> = ({
             setChecked(true);
           }}
         >
-          <span
-            class="absolute h-[1px] w-[1px] overflow-hidden text-clip"
-            aria-hidden="true"
-          >
+          <span class="absolute h-0 w-0 overflow-hidden text-clip">
             Open navigation menu
           </span>
         </a>
@@ -85,10 +82,7 @@ const Navigation: Component<NavigationProps> = ({
             setChecked(false);
           }}
         >
-          <span
-            class="absolute h-[1px] w-[1px] overflow-hidden text-clip"
-            aria-hidden="true"
-          >
+          <span class="absolute h-0 w-0 overflow-hidden text-clip">
             Close navigation menu
           </span>
         </a>
@@ -119,7 +113,7 @@ const Navigation: Component<NavigationProps> = ({
             <NavigationItem href="/">
               <Icon iconName="gao" className="h-7 w-7 hover:fill-gray-500" />
             </NavigationItem>
-            <span class="flex-1" />
+            <li class="flex-1" aria-hidden="true" />
             <NavigationItem href="/projects">Projects</NavigationItem>
             <NavigationItem href="/about">About</NavigationItem>
           </ul>
