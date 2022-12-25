@@ -50,7 +50,10 @@ const Navigation: Component<NavigationProps> = ({
       />
       {/* container for the menu icon that acts as the clickable label for 
       the input */}
-      <div id="nav-menu-container" class="relative mx-auto flex max-w-prose">
+      <div
+        id="nav-menu-container"
+        class="relative mx-auto flex max-w-prose md:hidden"
+      >
         {/* use target pseudo-class to hide and show links without JS */}
         <a
           id="nav-menu-open"
@@ -86,7 +89,7 @@ const Navigation: Component<NavigationProps> = ({
             Close navigation menu
           </span>
         </a>
-        <label class="py-3 px-5 md:hidden" for="nav-menu-state">
+        <label class="py-3 px-5" for="nav-menu-state">
           <Icon iconName="menu" className="h-6 w-6" />
         </label>
       </div>
