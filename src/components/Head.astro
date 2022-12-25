@@ -14,7 +14,7 @@ const {
 } = Astro.props as Props;
 
 const canonicalURL = new URL(path, Astro.site);
-const fullTitle = `${title} | Andrew Gao`;
+const fullTitle = path === "/" ? "Andrew Gao" : `${title} | Andrew Gao`;
 ---
 
 <meta charset="UTF-8" />
