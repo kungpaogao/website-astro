@@ -15,3 +15,11 @@ input[type="checkbox"]:disabled {
   margin-left: -1rem;
   margin-right: 0.25rem;
 }
+
+#nav-menu-state:target ~ #nav-menu-container #nav-menu-open {
+  display: none;
+}
+
+#nav-menu-state:target ~ #nav-menu-container #nav-menu-close {
+  display: block;
+}

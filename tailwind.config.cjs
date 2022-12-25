@@ -11,7 +11,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", "MaShanZheng", ...defaultTheme.fontFamily.sans],
+        sans: ["Inter", ...defaultTheme.fontFamily.sans],
         serif: ["Newsreader", ...defaultTheme.fontFamily.serif],
       },
       // https://github.com/tailwindlabs/tailwindcss-typography/blob/master/src/styles.js

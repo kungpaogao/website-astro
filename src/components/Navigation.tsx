@@ -2,6 +2,7 @@ import clsx from "clsx";
 import type { Component, JSXElement } from "solid-js";
 import { createSignal, onCleanup, onMount } from "solid-js";
 import { md } from "../styles/breakpoints";
+import { Icon } from "./Icon";
 
 interface NavigationProps {
   className?: string;
@@ -45,13 +46,54 @@ const Navigation: Component<NavigationProps> = ({
         checked={checked()}
         onChange={(e) => setChecked(e.currentTarget.checked)}
         class="peer hidden"
-        id="menu-checkbox"
+        id="nav-menu-state"
       />
       {/* container for the menu icon that acts as the clickable label for 
       the input */}
-      <div class="mx-auto flex max-w-prose">
-        <label class="py-3 px-5 md:hidden" for="menu-checkbox">
-          <img src="/menu.svg" alt="Menu button" />
+      <div id="nav-menu-container" class="relative mx-auto flex max-w-prose">
+        {/* use target pseudo-class to hide and show links without JS */}
+        <a
+          id="nav-menu-open"
+          class={clsx(
+            "absolute top-0 left-0 z-10 h-12 w-16",
+            checked() && "hidden"
+          )}
+          href="#nav-menu-state"
+          role="button"
+          onClick={(e) => {
+            e.preventDefault();
+            setChecked(true);
+          }}
+        >
+          <span
+            class="absolute h-[1px] w-[1px] overflow-hidden text-clip"
+            aria-hidden="true"
+          >
+            Open navigation menu
+          </span>
+        </a>
+        <a
+          id="nav-menu-close"
+          class={clsx(
+            "absolute top-0 left-0 z-10 h-12 w-16",
+            checked() ? "block" : "hidden"
+          )}
+          href="#"
+          role="button"
+          onClick={(e) => {
+            e.preventDefault();
+            setChecked(false);
+          }}
+        >
+          <span
+            class="absolute h-[1px] w-[1px] overflow-hidden text-clip"
+            aria-hidden="true"
+          >
+            Close navigation menu
+          </span>
+        </a>
+        <label class="py-3 px-5 md:hidden" for="nav-menu-state">
+          <Icon iconName="menu" className="h-6 w-6" />
         </label>
       </div>
       {/* actual navigation content */}
@@ -59,25 +101,25 @@ const Navigation: Component<NavigationProps> = ({
         class={clsx(
           "max-h-0 overflow-hidden",
           "transition-all duration-300 ease-in-out",
-          "peer-checked:max-h-28 md:max-h-[none]",
+          // show when checkbox is targeted or checked
+          "peer-target:max-h-28 peer-checked:max-h-28",
+          "md:max-h-[none]",
           contentClassName
         )}
       >
         <div
-          class="flex flex-col border-b border-slate-300 border-opacity-25 
-        py-3 text-xl font-semibold md:flex-row md:border-none md:text-lg"
+          class={clsx(
+            "flex flex-col py-3",
+            "border-b border-slate-300 border-opacity-25",
+            "text-xl font-semibold",
+            "md:flex-row md:border-none md:text-lg"
+          )}
         >
-          <a
-            href="/"
-            class="hidden text-2xl font-normal hover:animate-pulse md:block"
-          >
-            高
-          </a>
-          <span class="flex-1" />
-          <ul class="flex flex-col gap-x-3 md:flex-row">
-            <NavigationItem href="/" className="md:hidden">
-              Home
+          <ul class="flex flex-col gap-x-3 md:w-full md:flex-row">
+            <NavigationItem href="/">
+              <Icon iconName="gao" className="h-7 w-7 hover:fill-gray-500" />
             </NavigationItem>
+            <span class="flex-1" />
             <NavigationItem href="/projects">Projects</NavigationItem>
             <NavigationItem href="/about">About</NavigationItem>
           </ul>
@@ -99,7 +141,11 @@ const NavigationItem: Component<NavigationItemProps> = ({
   children,
 }) => (
   <li
-    class={clsx("flex items-center transition", "hover:text-black", className)}
+    class={clsx(
+      "flex items-center",
+      "hover:text-gray-500 hover:underline",
+      className
+    )}
   >
     <a href={href}>{children}</a>
   </li>
