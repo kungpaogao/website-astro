@@ -52,10 +52,12 @@ const Navigation: Component<NavigationProps> = ({
   return (
     <nav
       class={clsx(
-        "border-gray-300 border-opacity-50 transition-all",
+        "border-b border-gray-300 border-opacity-50",
+        "transition-[border] duration-300",
         { "border-b": isBorderVisible() && !checked() },
         { "border-b-0": !isBorderVisible() || checked() },
         "bg-white bg-opacity-70 backdrop-blur backdrop-saturate-150",
+        checked() && "bg-opacity-100",
         className
       )}
     >
