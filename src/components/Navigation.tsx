@@ -145,7 +145,7 @@ const Navigation: Component<NavigationProps> = ({
           "peer-target:flex peer-target:border-b",
           "peer-checked:flex peer-checked:border-b",
           "absolute right-0 left-0 md:static",
-          "bg-white",
+          "bg-white md:bg-transparent",
           "border-gray-300 border-opacity-50",
           contentClassName
         )}
