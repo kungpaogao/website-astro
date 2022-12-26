@@ -14,5 +14,9 @@ const content = marked.parse(parseBlocks(await getBlock(PAGE_ID)));
 ---
 
 <Layout {...properties} className="prose mx-auto">
-  <Fragment set:html={content} />
+  <div
+    class="font-medium prose-p:text-xl prose-ul:text-xl prose-ul:leading-relaxed"
+  >
+    <Fragment set:html={content} />
+  </div>
 </Layout>
