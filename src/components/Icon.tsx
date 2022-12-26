@@ -2,7 +2,7 @@ import clsx from "clsx";
 import type { Component, JSX } from "solid-js";
 
 interface IconProps {
-  iconName: "home" | "project" | "about" | "gao" | "menu";
+  iconName: "home" | "project" | "about" | "gao" | "menu" | "close";
   strokeWidth?: number;
   strokeLinecap?: "butt" | "round" | "square" | "inherit";
   strokeLinejoin?:
@@ -34,6 +34,8 @@ const Icon: Component<IconProps> = (props) => {
       return <GaoIcon {...props} />;
     case "menu":
       return <MenuIcon {...props} />;
+    case "close":
+      return <CloseIcon {...props} />;
   }
 };
 
@@ -92,6 +94,16 @@ const MenuIcon: Component<IconProps> = (props) => {
       <line x1="40" y1="128" x2="216" y2="128"></line>
       <line x1="40" y1="64" x2="216" y2="64"></line>
       <line x1="40" y1="192" x2="216" y2="192"></line>
+    </Svg>
+  );
+};
+
+const CloseIcon: Component<IconProps> = (props) => {
+  return (
+    <Svg {...props}>
+      <title>close icon</title>
+      <line x1="200" y1="56" x2="56" y2="200"></line>
+      <line x1="200" y1="200" x2="56" y2="56"></line>
     </Svg>
   );
 };
