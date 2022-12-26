@@ -35,7 +35,11 @@ const Navigation: Component<NavigationProps> = ({
   onMount(() => {
     setScroll(0);
     onResize();
-    window.location.hash = "";
+    history.replaceState(
+      "",
+      "",
+      window.location.pathname + window.location.search
+    );
     window.addEventListener(resizeEvent, onResize);
     window.addEventListener(scrollEvent, onScroll);
   });
@@ -135,7 +139,7 @@ const Navigation: Component<NavigationProps> = ({
       <ul
         id="nav-list"
         class={clsx(
-          "flex-col gap-x-3 gap-y-2 pt-3 pb-5",
+          "flex-col gap-x-3 gap-y-2 pt-3 pb-5 md:pb-3",
           "md:mx-auto md:flex md:w-full md:max-w-prose md:flex-row",
           "hidden",
           "peer-target:flex peer-target:border-b",
