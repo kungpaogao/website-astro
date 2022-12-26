@@ -35,7 +35,6 @@ const Navigation: Component<NavigationProps> = ({
   onMount(() => {
     setScroll(0);
     onResize();
-    window.location.hash = "";
     window.addEventListener(resizeEvent, onResize);
     window.addEventListener(scrollEvent, onScroll);
   });
@@ -49,8 +48,8 @@ const Navigation: Component<NavigationProps> = ({
     <nav
       class={clsx(
         "border-gray-300 border-opacity-50 transition-all",
-        { "border-b": isBorderVisible() && !checked() },
-        { "border-b-0": !isBorderVisible() || checked() },
+        isBorderVisible() && "border-b",
+        !isBorderVisible() && "border-b-0",
         "bg-white bg-opacity-70 backdrop-blur backdrop-saturate-150",
         className
       )}
@@ -59,8 +58,7 @@ const Navigation: Component<NavigationProps> = ({
         class={clsx(
           "absolute top-0 left-0",
           "h-full w-full",
-          "border-b border-gray-300 border-opacity-50",
-          "peer-target:border-b-0 peer-checked:border-b-0"
+          "border-b border-gray-300 border-opacity-50"
         )}
         aria-hidden="true"
       />
@@ -76,23 +74,20 @@ const Navigation: Component<NavigationProps> = ({
       the input */}
       <div
         id="nav-menu-container"
-        class={clsx(
-          "relative mx-auto flex max-w-prose md:hidden",
-          "peer-target:bg-white peer-checked:bg-white"
-        )}
+        class="relative mx-auto flex max-w-prose md:hidden"
       >
         {/* use target pseudo-class to hide and show links without JS */}
         <a
+          id="nav-menu-open"
           class={clsx(
             "absolute top-0 left-0 z-10 h-12 w-16",
-            checked() && "hidden",
-            "nav-menu-open"
+            checked() && "hidden"
           )}
           href="#nav-menu-state"
           role="button"
           onClick={(e) => {
             e.preventDefault();
-            setChecked(!checked());
+            setChecked(true);
           }}
         >
           <span class="absolute h-0 w-0 overflow-hidden text-clip">
@@ -100,16 +95,16 @@ const Navigation: Component<NavigationProps> = ({
           </span>
         </a>
         <a
+          id="nav-menu-close"
           class={clsx(
             "absolute top-0 left-0 z-10 h-12 w-16",
-            checked() ? "block" : "hidden",
-            "nav-menu-close"
+            checked() ? "block" : "hidden"
           )}
           href="#"
           role="button"
           onClick={(e) => {
             e.preventDefault();
-            setChecked(!checked());
+            setChecked(false);
           }}
         >
           <span class="absolute h-0 w-0 overflow-hidden text-clip">
@@ -117,42 +112,65 @@ const Navigation: Component<NavigationProps> = ({
           </span>
         </a>
         <label class="py-3 px-5" for="nav-menu-state">
-          <Icon
-            iconName="menu"
-            className={clsx("h-6 w-6", checked() && "hidden", "nav-menu-open")}
-          />
-          <Icon
-            iconName="close"
-            className={clsx(
-              "h-6 w-6",
-              checked() ? "block" : "hidden",
-              "nav-menu-close"
-            )}
-          />
+          <Icon iconName="menu" className="h-6 w-6" />
         </label>
       </div>
       {/* actual navigation content */}
-      <ul
-        id="nav-list"
+      <div
         class={clsx(
-          "flex-col gap-x-3 gap-y-2 pt-3 pb-5",
-          "md:mx-auto md:flex md:w-full md:max-w-prose md:flex-row",
-          "hidden",
-          "peer-target:flex peer-target:border-b",
-          "peer-checked:flex peer-checked:border-b",
-          "absolute right-0 left-0 md:static",
-          "bg-white",
-          "border-gray-300 border-opacity-50",
-          contentClassName
+          // "max-h-0",
+          "transition-all duration-300 ease-in-out",
+          // show when checkbox is targeted or checked
+          // "peer-target:max-h-28 peer-checked:max-h-28",
+          "absolute left-0 top-0 right-0 bottom-0 h-full",
+          "peer-target:h-full peer-target:bg-cyan-200 peer-checked:h-full"
+          // "md:max-h-[none]",
+          // "mx-auto max-w-prose",
+          // contentClassName
         )}
+        id="nav-content"
       >
-        <NavigationItem href="/">
-          <Icon iconName="gao" className="h-7 w-7 hover:fill-gray-500" />
-        </NavigationItem>
-        <li class="hidden flex-1 md:block" aria-hidden="true" />
-        <NavigationItem href="/projects">Projects</NavigationItem>
-        <NavigationItem href="/about">About</NavigationItem>
-      </ul>
+        {/* <div
+          class={clsx(
+            "border border-red-500",
+            "absolute left-0 top-0 right-0 z-20 flex flex-col bg-white px-5 py-3",
+            "text-xl font-semibold",
+            "md:relative md:flex-row md:text-lg",
+            "max-w-prose"
+            )}
+          > */}
+        {/* <div
+          class={clsx(
+            // "border border-red-500 bg-pink-100",
+            "absolute left-0 right-0 mx-auto block max-w-prose"
+          )}
+        > */}
+        <ul
+          class={clsx(
+            "absolute top-12 left-0",
+            "border border-blue-500",
+            // "flex flex-col gap-x-3",
+            "md:flex-row",
+            "text-xl font-semibold",
+            "py-3"
+          )}
+        >
+          <NavigationItem href="/">
+            <Icon
+              iconName="gao"
+              className={clsx(
+                "h-7 w-7",
+                // "hover:rounded-full hover:bg-cyan-300"
+                "hover:fill-gray-500"
+              )}
+            />
+          </NavigationItem>
+          {/* <li class="flex-1" aria-hidden="true" /> */}
+          <NavigationItem href="/projects">Projects</NavigationItem>
+          <NavigationItem href="/about">About</NavigationItem>
+        </ul>
+        {/* </div> */}
+      </div>
     </nav>
   );
 };
@@ -164,16 +182,13 @@ interface NavigationItemProps {
 }
 
 const NavigationItem: Component<NavigationItemProps> = ({
-  className,
+  className = "",
   href,
   children,
 }) => (
   <li
     class={clsx(
-      "flex items-center px-5",
-      "text-xl font-semibold md:text-lg",
-      "mx-auto w-full max-w-[650px]",
-      "md:w-auto md:max-w-none md:px-0",
+      "flex items-center",
       "hover:text-gray-500 hover:underline",
       className
     )}

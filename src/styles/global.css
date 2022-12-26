@@ -16,10 +16,11 @@ input[type="checkbox"]:disabled {
   margin-right: 0.25rem;
 }
 
-#nav-menu-state:target ~ #nav-menu-container #nav-menu-open {
+/* handling visibility when javascript is disabled */
+#nav-menu-state:target ~ #nav-menu-container .nav-menu-open {
   display: none;
 }
 
-#nav-menu-state:target ~ #nav-menu-container #nav-menu-close {
+#nav-menu-state:target ~ #nav-menu-container .nav-menu-close {
   display: block;
 }

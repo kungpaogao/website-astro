@@ -25,15 +25,9 @@ const { title, description, path, imageUrl, className } = Astro.props as Props;
   </head>
 
   <body>
-    <div>
-      <Navigation
-        client:idle
-        className="sticky top-0 w-full"
-        contentClassName="mx-auto max-w-prose md:px-0 px-5"
-      />
-      <main class={clsx("px-5 py-7", "md:px-0", className)}>
-        <slot />
-      </main>
-    </div>
+    <Navigation client:idle className="sticky top-0 w-full" />
+    <main class={clsx("px-5 py-7", "md:px-0", className)}>
+      <slot />
+    </main>
   </body>
 </html>
