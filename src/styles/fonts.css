@@ -16,10 +16,3 @@
     src: url("/fonts/Newsreader-Variable.woff2") format("woff2");
   }
 }
-
-@font-face {
-  font-family: "MaShanZheng";
-  src: url("/fonts/MaShanZheng-Regular.woff2") format("woff2");
-  font-display: swap;
-  font-style: normal;
-}
