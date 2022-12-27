@@ -1,37 +1,35 @@
-import type {
-  BlockWithChildren,
-  RichText,
-  RichTextToken,
-} from "@jitl/notion-api";
+import type { RichTextBlock } from "../notion-types";
 import { expect, test } from "vitest";
-import * as sample from "../../public/tests/sample.json";
-import { parse, parseRichTextBlock } from "./notion-parse";
+import * as sample from "../../../public/tests/sample.json";
+import { parse, parseRichTextBlock } from "../notion-parse";
+import type { TextRichTextItemResponse } from "@notionhq/client/build/src/api-endpoints";
 
-const RICH_TEXT_BASE: RichText = [
-  {
-    type: "text",
-    text: { content: "paragraph text", link: null },
-    annotations: {
-      bold: false,
-      italic: false,
-      strikethrough: false,
-      underline: false,
-      code: false,
-      color: "default",
+const RICH_TEXT_BASE: RichTextBlock = {
+  rich_text: [
+    {
+      type: "text",
+      text: { content: "paragraph text", link: null },
+      annotations: {
+        bold: false,
+        italic: false,
+        strikethrough: false,
+        underline: false,
+        code: false,
+        color: "default",
+      },
+      plain_text: "hello world",
+      href: null,
     },
-    plain_text: "hello world",
-    href: null,
-  },
-];
+  ],
+};
 
-function annotateAll(richText: RichText, annotations: any): RichText {
-  return richText.map(
-    (token) =>
-      ({
-        ...token,
-        annotations: { ...token.annotations, ...annotations },
-      } as RichTextToken)
-  );
+function annotateAll(richText: RichTextBlock, annotations: any): RichTextBlock {
+  return {
+    rich_text: richText.rich_text.map((token: TextRichTextItemResponse) => ({
+      ...token,
+      annotations: { ...token.annotations, ...annotations },
+    })),
+  };
 }
 
 test("parse rich text simple", () => {
@@ -123,9 +121,7 @@ paragraph text
 
 `;
 
-  const output = sample.children
-    .map((block) => parse(block as BlockWithChildren))
-    .join("");
+  const output = sample.children.map((block) => parse(block as any)).join("");
 
   expect(output).toBe(expected);
 });
