@@ -13,10 +13,10 @@ const properties = await getPageProperties(PAGE_ID);
 const content = marked.parse(parseBlocks(await getBlock(PAGE_ID)));
 ---
 
-<Layout {...properties} className="prose mx-auto">
-  <div
-    class="font-medium prose-p:text-xl prose-ul:text-xl prose-ul:leading-relaxed"
-  >
-    <Fragment set:html={content} />
-  </div>
+<Layout
+  {...properties}
+  className="prose mx-auto prose-p:pt-2"
+  bodyClassName="bg-sky-100"
+>
+  <Fragment set:html={content} />
 </Layout>

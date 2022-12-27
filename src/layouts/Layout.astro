@@ -8,9 +8,11 @@ import "../styles/fonts.css";
 
 interface Props extends HeadProps {
   className?: string;
+  bodyClassName?: string;
 }
 
-const { title, description, path, imageUrl, className } = Astro.props as Props;
+const { title, description, path, imageUrl, className, bodyClassName } =
+  Astro.props as Props;
 ---
 
 <!DOCTYPE html>
@@ -24,7 +26,7 @@ const { title, description, path, imageUrl, className } = Astro.props as Props;
     />
   </head>
 
-  <body>
+  <body class={clsx(bodyClassName)}>
     <Navigation client:idle className="sticky top-0 w-full" />
     <main class={clsx("px-5 py-7", "md:px-0", className)}>
       <slot />
