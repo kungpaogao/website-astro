@@ -7,6 +7,7 @@ import sitemap from "@astrojs/sitemap";
 import mdx from "@astrojs/mdx";
 
 import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
+import { accessibleListItem } from "./src/lib/remark-rehype-accessible-list-item";
 
 // https://astro.build/config
 export default defineConfig({
@@ -21,7 +22,15 @@ export default defineConfig({
     sitemap({
       filter: (page) => !page.includes(".json"),
     }),
-    mdx(),
+    mdx({
+      remarkRehype: {
+        handlers: {
+          listItem(h, node, parent) {
+            return accessibleListItem(h, node, parent);
+          },
+        },
+      },
+    }),
   ],
   markdown: {
     extendDefaultPlugins: true,
