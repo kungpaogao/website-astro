@@ -1,24 +1,25 @@
 ---
+import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import { fetchPostsAsMdx } from "../../lib/notion-fetch";
 
 export async function getStaticPaths() {
   await fetchPostsAsMdx();
-  const posts = await Astro.glob("../../content/projects/*.mdx");
+  const posts = await getCollection("projects");
 
   return posts.map((post) => ({
     params: {
-      slug: post.frontmatter.slug,
+      slug: post.slug,
     },
     props: {
-      properties: post.frontmatter,
-      post,
+      properties: post.data,
+      render: post.render,
     },
   }));
 }
 
-const { post, properties } = Astro.props;
-const { Content } = post;
+const { properties, render } = Astro.props;
+const { Content } = await render();
 ---
 
 <Layout {...properties} className="prose mx-auto break-words">

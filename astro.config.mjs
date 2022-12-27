@@ -11,6 +11,9 @@ import { accessibleListItem } from "./src/lib/remark-rehype-accessible-list-item
 
 // https://astro.build/config
 export default defineConfig({
+  experimental: {
+    contentCollections: true,
+  },
   site: "https://www.andrewgao.org/",
   integrations: [
     solid(),
