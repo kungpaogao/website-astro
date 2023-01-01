@@ -4,6 +4,11 @@
     "types": ["@astrojs/image/client"],
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "importsNotUsedAsValues": "error"
+    "importsNotUsedAsValues": "error",
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@assets/*": ["src/assets/*"]
+    }
   }
 }

@@ -25,18 +25,17 @@ export default defineConfig({
     sitemap({
       filter: (page) => !page.includes(".json"),
     }),
-    mdx({
-      remarkRehype: {
-        handlers: {
-          listItem(h, node, parent) {
-            return accessibleListItem(h, node, parent);
-          },
-        },
-      },
-    }),
+    mdx(),
   ],
   markdown: {
     extendDefaultPlugins: true,
     rehypePlugins: [rehypeAccessibleEmojis],
+    remarkRehype: {
+      handlers: {
+        listItem(h, node, parent) {
+          return accessibleListItem(h, node, parent);
+        },
+      },
+    },
   },
 });
