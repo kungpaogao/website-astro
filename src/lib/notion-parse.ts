@@ -176,8 +176,8 @@ export function parse(
         children,
         (parsed) =>
           toDoIsChecked
-            ? html`<label><span class="todo-done">${parsed}</span></label>`
-            : html`<label>${parsed}</label>`
+            ? html`<span class="todo-done">${parsed}</span>`
+            : parsed
       );
     case "toggle":
       // TODO: fix this because this doesn't work for children :,(
@@ -222,8 +222,18 @@ export function parse(
     case "image":
       const imgAlt =
         parseRichTextBlock({ rich_text: block.image.caption }) || "image";
-      const imgSrc = block.image[block.image.type].url;
-      return html`<img src="${imgSrc}" alt="${imgAlt}" />`.concat(EOL);
+      const imgUrl = block.image[block.image.type].url.split("?");
+      const imgSrc = imgUrl[0];
+      const imgParams = new URLSearchParams(imgUrl[1]);
+      if (!imgParams) {
+        return html`<img src="${imgSrc}" alt="${imgAlt}"`.concat(EOL);
+      } else {
+        return `<Image src=${imgSrc} width="${imgParams.get(
+          "w"
+        )}" height="${imgParams.get(
+          "h"
+        )}" format="webp" alt="${imgAlt}" />`.concat(EOL);
+      }
     case "video":
       return html`
         <video controls>
@@ -249,17 +259,6 @@ export function parse(
         </object>
       `.concat(EOL);
     case "file":
-      // TODO: don't support files because we don't want to download and serve
-      // from website
-      /*
-      return EOL.concat(
-        `[${parseRichTextBlock(block.file.caption) || "link to file"}](${
-          block.file[block.file.type].url
-        })
-      `,
-        EOL
-      );
-      */
       return "";
     case "audio":
       return html`
@@ -270,7 +269,8 @@ export function parse(
     case "bookmark":
     case "link_preview":
       return EOL.concat(
-        `[${block[block.type].url}](${block[block.type].url})`,
+        `> [${block[block.type].url}](${block[block.type].url})`,
+        EOL,
         EOL
       );
     case "breadcrumb":

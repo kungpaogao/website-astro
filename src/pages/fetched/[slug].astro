@@ -1,10 +1,15 @@
 ---
+import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
-import { fetchPostsAsMdx } from "../../lib/notion-fetch";
+import { downloadPostsAsMdx } from "../../lib/notion-download";
+
+interface Props {
+  post: CollectionEntry<"projects">;
+}
 
 export async function getStaticPaths() {
-  await fetchPostsAsMdx();
+  await downloadPostsAsMdx();
   const posts = await getCollection("projects");
 
   return posts.map((post) => ({
@@ -12,16 +17,15 @@ export async function getStaticPaths() {
       slug: post.slug,
     },
     props: {
-      properties: post.data,
-      render: post.render,
+      post: post,
     },
   }));
 }
 
-const { properties, render } = Astro.props;
-const { Content } = await render();
+const { post } = Astro.props;
+const { Content } = await post.render();
 ---
 
-<Layout {...properties} className="prose mx-auto break-words">
+<Layout {...post.data as any} className="prose mx-auto break-words">
   <Content />
 </Layout>

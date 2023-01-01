@@ -4,9 +4,7 @@ import path from "path";
 import fetch from "node-fetch";
 import { once } from "events";
 import mime from "mime-types";
-import type { ImageBlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
-import { getImage } from "@astrojs/image";
-import { ASSET_BASE_PATH } from "./constants";
+import { ASSET_PUBLIC_PATH, ASSET_SRC_PATH } from "./constants";
 
 /**
  * It downloads the asset from Notion, saves it to the `/assets` folder, and
@@ -15,32 +13,46 @@ import { ASSET_BASE_PATH } from "./constants";
  * @param {string} url - The URL of the asset to download
  * @returns path to asset
  */
-export async function downloadAsset(
+export async function getAssetUrl(
   blockId: string,
-  url: string
+  url: string,
+  isImage: boolean = false
 ): Promise<string> {
   try {
-    const files = await fs.promises.readdir(ASSET_BASE_PATH);
+    const downloadPath = isImage ? ASSET_SRC_PATH : ASSET_PUBLIC_PATH;
+
+    const files = await fs.promises.readdir(downloadPath);
     let filename = files.find((file) => file.includes(blockId));
 
-    // if file already exists, do not fetch and overwrite
-    // see: https://github.com/justjake/monorepo/blob/d1e87174827005fa7fd6d158a0a1d7e86dd2a396/packages/notion-api/src/lib/assets.ts#L460
     if (!filename) {
-      // TODO: maybe use probe-image-size here to prevent duplicate requests
-      // TODO: cache the image sizes in some directory?
+      // if file doesn't exist, fetch and overwrite
+      // see: https://github.com/justjake/monorepo/blob/d1e87174827005fa7fd6d158a0a1d7e86dd2a396/packages/notion-api/src/lib/assets.ts#L460
       const res = await fetch(url);
-      // probe-image-size also returns mime-type
       const ext = mime.extension(res.headers.get("content-type")) || "unknown";
       filename = `file.${blockId}.${ext}`;
+      console.log("Downloading new asset:", filename);
 
-      const dest = path.join(ASSET_BASE_PATH, filename);
+      const dest = path.join(downloadPath, filename);
       const file = fs.createWriteStream(dest);
       await once(res.body.pipe(file), "finish");
     }
 
-    return `/assets/${filename}`;
+    if (isImage) {
+      // special handling for images
+      const { width, height } = await getImageDimensions(filename, true);
+      const params = new URLSearchParams({
+        w: width.toString(),
+        h: height.toString(),
+      });
+      const src = path.join("@assets", filename);
+      return `{import("${src}")}`.concat(`?${params}`);
+    }
+
+    const assetUrl = path.join("/assets", filename);
+    return assetUrl;
   } catch (e) {
     // on error, just return Notion URL
+    console.error(e);
     return url;
   }
 }
@@ -55,29 +67,11 @@ async function getImageDimensions(
   let result: probe.ProbeResult;
 
   if (isFile) {
-    result = await probe(fs.createReadStream(path.join("public", src)));
+    // if it's a file, src should be a filename
+    result = await probe(fs.createReadStream(path.join(ASSET_SRC_PATH, src)));
   } else {
     result = await probe(src);
   }
 
   return { width: result.width, height: result.height };
-}
-
-export async function getImageSrc(
-  block: ImageBlockObjectResponse
-): Promise<string> {
-  const imageType = block.image.type;
-  const imageUrl = block.image[imageType].url;
-  const isFile = imageType === "file";
-  const src = isFile ? await downloadAsset(block.id, imageUrl) : imageUrl;
-  // TODO: this seems inefficient but at least it only happens at build time
-  const { width, height } = await getImageDimensions(src, isFile);
-  const img = await getImage({
-    src: src,
-    width: width,
-    height: height,
-    format: "webp",
-  });
-
-  return img.src;
 }

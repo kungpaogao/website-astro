@@ -1,5 +1,5 @@
 ---
-lastEditedTime: '2022-12-27T04:46:00.000Z'
+lastEditedTime: '2022-12-27T04:47:00.000Z'
 published: '2022-11-27'
 description: 'Post about building this website'
 path: '/projects/here'
@@ -10,6 +10,8 @@ slug: 'here'
 image: 'null'
 title: 'This website'
 ---
+import { Image } from '@astrojs/image/components';
+
 
 # Here: this website
 
@@ -32,7 +34,7 @@ ___
 
 - [ ] [content] add more content to website
     - [ ] add blog :)
-- [ ] download and use local mdx
+- [ ] [dev] download and use local mdx
 - [ ] [dev] make parsing more robust
     - [x] <span class="todo-done">accessibility</span>
     - [x] <span class="todo-done">support empty lines</span>
@@ -181,8 +183,8 @@ testing links in the paragraph. ([this stuff in the parentheses](https://robinho
 ___
 
 multiple images and files below
-<img src="/_image?f=webp&w=1648&h=2124&href=%2Fassets%2Ffile.6d021db5-5225-4247-9b4f-2566731ad2da.png" alt="Arc browser badge for Andrew with subtitle ‘Vague Big Shot’" />
-<img src="/_image?f=webp&w=1542&h=1644&href=%2Fassets%2Ffile.f9a0b66f-20ab-4308-8d21-fafe79226db3.jpeg" alt="Watercolor painting by Hayao Miyazaki" />
+<Image src={import("@assets/file.6d021db5-5225-4247-9b4f-2566731ad2da.png")} width="1648" height="2124" format="webp" alt="Arc browser badge for Andrew with subtitle ‘Vague Big Shot’" />
+<Image src={import("@assets/file.f9a0b66f-20ab-4308-8d21-fafe79226db3.jpeg")} width="1542" height="1644" format="webp" alt="Watercolor painting by Hayao Miyazaki" />
 <video controls>
           <source src="/assets/file.9ad42c18-94fe-4a22-8162-4f54b77081f0.qt" />
         </video>
@@ -197,12 +199,14 @@ multiple images and files below
           <p>This browser doesn't support embedded PDFs.</p>
         </object>
 
-[http://google.com](http://google.com)
+> [http://google.com](http://google.com)
+
 <audio controls src="/assets/file.08db2e1c-f6d4-4470-ae42-1dc291439a6c.mpga">
           Your browser does not support the <code>audio</code> element.
         </audio>
 
-[https://soundcloud.com/herbbeatz/moving?in=kungpaogao/sets/corncorncorn](https://soundcloud.com/herbbeatz/moving?in=kungpaogao/sets/corncorncorn)
+> [https://soundcloud.com/herbbeatz/moving?in=kungpaogao/sets/corncorncorn](https://soundcloud.com/herbbeatz/moving?in=kungpaogao/sets/corncorncorn)
+
 [https://www.google.com/maps/place/Breakneck+Hill+Conservation+Land,+Southborough,+MA+01772/@42.2724994,-71.5345255,14z/data=!4m5!3m4!1s0x89e38a6ff7c803af:0x88e2e02613bc306f!8m2!3d42.2853249!4d-71.5145283](https://www.google.com/maps/place/Breakneck+Hill+Conservation+Land,+Southborough,+MA+01772/@42.2724994,-71.5345255,14z/data=!4m5!3m4!1s0x89e38a6ff7c803af:0x88e2e02613bc306f!8m2!3d42.2853249!4d-71.5145283)
 
 <br />

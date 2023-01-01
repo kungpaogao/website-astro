@@ -32,7 +32,7 @@ function pagePropertiesToFrontmatter(
  * @param {string} [srcContentPath=projects] - The path to the directory where the
  * MDX files will be written
  */
-export async function fetchPostsAsMdx(
+export async function downloadPostsAsMdx(
   databaseId: string = NOTION_PROJECTS_DATABASE,
   srcContentPath: string = "projects"
 ) {
@@ -56,32 +56,38 @@ export async function fetchPostsAsMdx(
     ],
   });
 
-  posts.forEach(async (post) => {
-    const shouldUpdate = await shouldUpdateLocalFile(
-      post.last_edited_time,
-      srcContentPath,
-      post.id
-    );
-
-    if (shouldUpdate) {
-      const postBlocks = await getBlock(post.id);
-      const pageProperties = await getPageProperties(post.id);
-      const postFrontmatter = pagePropertiesToFrontmatter(
-        pageProperties,
-        post.last_edited_time
+  return Promise.all(
+    posts.map(async (post) => {
+      const shouldUpdate = await shouldUpdateLocalFile(
+        post.last_edited_time,
+        srcContentPath,
+        post.id
       );
 
-      const postMdx = postFrontmatter.concat(parseBlocks(postBlocks));
+      if (shouldUpdate) {
+        const postBlocks = await getBlock(post.id);
+        const pageProperties = await getPageProperties(post.id);
+        const postFrontmatter = pagePropertiesToFrontmatter(
+          pageProperties,
+          post.last_edited_time
+        );
 
-      const dest = path
-        .join("src", "content", srcContentPath, post.id)
-        .concat(".mdx");
+        const postImports = postFrontmatter.concat(
+          "import { Image } from '@astrojs/image/components';\n\n"
+        );
 
-      console.log("Writing to file:", dest);
+        const postMdx = postImports.concat(parseBlocks(postBlocks));
 
-      return fsPromises.writeFile(dest, postMdx);
-    }
-  });
+        const dest = path
+          .join("src", "content", srcContentPath, post.id)
+          .concat(".mdx");
+
+        console.log("Writing to file:", dest);
+
+        return fsPromises.writeFile(dest, postMdx);
+      }
+    })
+  );
 }
 
 async function shouldUpdateLocalFile(
@@ -102,7 +108,7 @@ async function shouldUpdateLocalFile(
 
     let lastEditedTime: string;
 
-    // TODO: optimize this for better build times
+    // TODO: optimize this for better build times - could store in json file every time we update instead of reading from file
     const lineListener = (line) => {
       if (line.includes("lastEditedTime")) {
         lastEditedTime = line.substring(line.indexOf(": ") + 2);

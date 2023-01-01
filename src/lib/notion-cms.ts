@@ -7,7 +7,7 @@ import type {
   QueryDatabaseParameters,
 } from "@notionhq/client/build/src/api-endpoints";
 import { getPageProperties } from "./notion-cms-page";
-import { downloadAsset, getImageSrc } from "./notion-cms-asset";
+import { getAssetUrl } from "./notion-cms-asset";
 
 const { NOTION_TOKEN, NOTION_PROJECTS_DATABASE } = import.meta.env;
 
@@ -107,22 +107,20 @@ export async function getBlock(blockId: string) {
         PartialBlockObjectResponse
       >(blockResponse);
 
-      // if local file, download the file and remap the url to local path
       const blockType = block.type;
-      if (blockType === "image") {
-        const imageType = block.image.type;
-        block.image[imageType].url = await getImageSrc(block);
-      } else if (
+      if (
+        // only download these supported file types (excludes "file")
+        blockType === "image" ||
         blockType === "video" ||
         blockType === "audio" ||
         blockType === "pdf"
-        // ignore file because we don't want all file types
-        // || blockType === "file"
       ) {
         if (block[blockType].type === "file") {
-          block[blockType].file.url = await downloadAsset(
+          // if local file, download the file and remap the url to local path
+          block[blockType].file.url = await getAssetUrl(
             block.id,
-            block[blockType].file.url
+            block[blockType].file.url,
+            blockType === "image"
           );
         }
       }
@@ -137,6 +135,9 @@ export async function getBlock(blockId: string) {
   );
 }
 
+/**
+ * DEPRECATED - to be replaced with notion-download operations
+ */
 export async function getProjectPaths() {
   const projects = await queryNotionDatabase({
     database_id: NOTION_PROJECTS_DATABASE,
