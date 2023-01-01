@@ -1,5 +1,5 @@
 ---
-lastEditedTime: '2022-12-27T04:47:00.000Z'
+lastEditedTime: '2023-01-01T07:07:00.000Z'
 published: '2022-11-27'
 description: 'Post about building this website'
 path: '/projects/here'
@@ -27,20 +27,20 @@ You can find the [source code to this site on GitHub](https://github.com/kungpao
 <br />
 
 
-Below is what I used to test the Notion parser that I “wrote” (copied a lot of code from existing solutions) to convert Notion blocks to Markdown, which is then converted to HTML using [marked](https://www.npmjs.com/package/marked).
+Below is what I used to test the Notion parser that I “wrote” (copied a lot of code from existing solutions) to convert Notion blocks to Markdown, which is then rendered using Astro’s built-in support for Markdown (underneath the hood, it uses <code>remark-rehype</code>).
 ___
 
 ## tasks
 
 - [ ] [content] add more content to website
     - [ ] add blog :)
-- [ ] [dev] download and use local mdx
+- [x] <span class="todo-done">[dev] download and use local mdx</span>
 - [ ] [dev] make parsing more robust
     - [x] <span class="todo-done">accessibility</span>
     - [x] <span class="todo-done">support empty lines</span>
     - [ ] more predictable formatting - tests should be easy to write
     - [ ] support callouts
-- [ ] [dev] fix image optimization - use <code>getPicture</code>
+- [x] <span class="todo-done">[dev] fix image optimization - use <code>getPicture</code></span>
 - [ ] [dev] use [satori](https://github.com/vercel/satori) for social media cards
 - [ ] [design] use more semantic tokens for spacing (sm, md, lg, etc.)
 - [x] <span class="todo-done">[dev] optimize updating content - check page update date (part of mdx migration)</span>

@@ -1,6 +1,6 @@
 ---
+import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
-import { getProjectPaths } from "../../lib/notion-cms";
 import { getPageProperties, parsePageUrl } from "../../lib/notion-cms-page";
 
 const PAGE_ID = parsePageUrl(
@@ -8,20 +8,17 @@ const PAGE_ID = parsePageUrl(
 );
 
 const properties = await getPageProperties(PAGE_ID);
-const projects = await getProjectPaths();
+const projects = await getCollection("projects");
 ---
 
 <Layout {...properties} className="prose mx-auto">
   <h1>Projects</h1>
-  <div class="flex flex-col gap-3 items-start mt-3">
+  <div class="mt-3 flex flex-col items-start gap-3">
     {
       projects.map((project) => (
         <div>
-          <a
-            class="text-lg underline"
-            href={`/projects/${project.params.slug}`}
-          >
-            {project.props.properties.title}
+          <a class="text-lg underline" href={`/projects/${project.slug}`}>
+            {project.data.title}
           </a>
         </div>
       ))

@@ -1,24 +1,31 @@
 ---
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
-import { marked } from "../../lib/marked";
-import { parseBlocks } from "../../lib/notion-parse";
-import { getProjectPaths } from "../../lib/notion-cms";
+import { downloadPostsAsMdx } from "../../lib/notion-download";
+
+interface Props {
+  post: CollectionEntry<"projects">;
+}
 
 export async function getStaticPaths() {
-  const paths = await getProjectPaths();
+  await downloadPostsAsMdx();
+  const posts = await getCollection("projects");
 
-  return paths.map(({ params, props }) => ({
-    params,
+  return posts.map((post) => ({
+    params: {
+      slug: post.slug,
+    },
     props: {
-      post: marked.parse(parseBlocks(props.post)),
-      properties: props.properties,
+      post: post,
     },
   }));
 }
 
-const { post, properties } = Astro.props;
+const { post } = Astro.props;
+const { Content } = await post.render();
 ---
 
-<Layout {...properties} className="prose mx-auto break-words">
-  <Fragment set:html={post} />
+<Layout {...post.data as any} className="prose mx-auto break-words">
+  <Content />
 </Layout>
