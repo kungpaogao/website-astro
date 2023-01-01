@@ -43,6 +43,7 @@ module.exports = {
             },
             h1: {
               fontFamily: theme("fontFamily.serif").join(","),
+              fontSize: "1.875em",
               fontWeight: theme("fontWeight.medium"),
               lineHeight: headingLineHeight,
               marginTop: "2rem !important", // 2em
@@ -51,6 +52,7 @@ module.exports = {
             },
             h2: {
               fontFamily: theme("fontFamily.serif").join(","),
+              fontSize: "1.5em",
               fontWeight: theme("fontWeight.medium"),
               lineHeight: headingLineHeight,
               marginTop: "1.4rem !important", // 1.4em
@@ -59,6 +61,7 @@ module.exports = {
             },
             h3: {
               fontFamily: theme("fontFamily.serif").join(","),
+              fontSize: "1.25em",
               fontWeight: theme("fontWeight.medium"),
               lineHeight: headingLineHeight,
               marginTop: "1rem !important", // 1em

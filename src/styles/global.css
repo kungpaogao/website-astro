@@ -1,10 +1,14 @@
+html {
+  background-color: theme("colors.stone.100");
+}
+
 .task-list-item {
   list-style: none !important;
 }
 
 .task-list-item-done {
   text-decoration: line-through;
-  color: theme("colors.slate.500") !important;
+  color: theme("colors.gray.500") !important;
 }
 
 input[type="checkbox"]:disabled.task-list-item-checkbox {
