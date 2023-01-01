@@ -5,7 +5,9 @@ const renderer = {
   listitem(text: string, task: boolean, _checked: boolean) {
     if (task && text.includes("<label>")) {
       return (
-        "<li class='todo-item'><label>" + text.replace("<label>", "") + "</li>"
+        "<li class='task-list-item'><label>" +
+        text.replace("<label>", "") +
+        "</li>"
       );
     }
 
