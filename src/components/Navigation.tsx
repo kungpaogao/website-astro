@@ -56,7 +56,7 @@ const Navigation: Component<NavigationProps> = ({
         "transition-[border] duration-300",
         { "border-b": isBorderVisible() && !checked() },
         { "border-b-0": !isBorderVisible() || checked() },
-        "bg-white bg-opacity-70 backdrop-blur backdrop-saturate-150",
+        "bg-stone-100 bg-opacity-70 backdrop-blur backdrop-saturate-150",
         checked() && "bg-opacity-100",
         className
       )}
@@ -84,13 +84,14 @@ const Navigation: Component<NavigationProps> = ({
         id="nav-menu-container"
         class={clsx(
           "relative mx-auto flex max-w-prose md:hidden",
-          "peer-target:bg-white peer-checked:bg-white"
+          "peer-target:bg-white peer-checked:bg-white",
+          "z-30"
         )}
       >
         {/* use target pseudo-class to hide and show links without JS */}
         <a
           class={clsx(
-            "absolute top-0 left-0 z-10 h-12 w-16",
+            "absolute top-0 left-0 z-50 h-12 w-16",
             checked() && "hidden",
             "nav-menu-open"
           )}
@@ -107,7 +108,7 @@ const Navigation: Component<NavigationProps> = ({
         </a>
         <a
           class={clsx(
-            "absolute top-0 left-0 z-10 h-12 w-16",
+            "absolute top-0 left-0 z-50 h-12 w-16",
             checked() ? "block" : "hidden",
             "nav-menu-close"
           )}
@@ -144,6 +145,7 @@ const Navigation: Component<NavigationProps> = ({
           "flex-col gap-x-3 gap-y-2 pt-3 pb-5 md:pb-3",
           "md:mx-auto md:flex md:w-full md:max-w-prose md:flex-row",
           "hidden",
+          "z-30",
           "peer-target:flex peer-target:border-b",
           "peer-checked:flex peer-checked:border-b",
           "absolute right-0 left-0 md:static",
@@ -159,6 +161,24 @@ const Navigation: Component<NavigationProps> = ({
         <NavigationItem href="/projects">Projects</NavigationItem>
         <NavigationItem href="/about">About</NavigationItem>
       </ul>
+      {/* background shade */}
+      <div
+        class={clsx(
+          "absolute top-0 left-0 right-0 bottom-0 h-[100vh]",
+          "bg-black bg-opacity-0 backdrop-blur-sm",
+          "transition-opacity",
+          "hidden md:hidden",
+          "peer-target:block peer-checked:block",
+          "peer-target:bg-opacity-50 peer-checked:bg-opacity-50"
+        )}
+        onClick={() => {
+          setChecked(!checked());
+        }}
+        aria-hidden="true"
+      >
+        {/* a little hack to fill out the area behind nav bar */}
+        <div class="h-12 bg-white" aria-hidden="true" />
+      </div>
     </nav>
   );
 };
