@@ -7,6 +7,7 @@ import { all } from "mdast-util-to-hast";
 import type { H } from "mdast-util-to-hast";
 import type { List, ListItem } from "mdast";
 import type { Element, ElementContent, Properties } from "hast";
+import clsx from "clsx";
 
 export function accessibleListItem(h: H, node: ListItem, parent: List) {
   const result = all(h, node);
@@ -28,25 +29,29 @@ export function accessibleListItem(h: H, node: ListItem, parent: List) {
       result.unshift(paragraph);
     }
 
-    if (paragraph.children.length > 0) {
-      paragraph.children.unshift(u("text", " "));
-    }
+    // custom  logic: don't add space between input and label
 
     paragraph.children.unshift(
       h(null, "input", {
         type: "checkbox",
         checked: node.checked,
         disabled: true,
+        // custom logic: add additional class for styling
+        class: "task-list-item-checkbox",
       })
     );
 
-    // custom logic to handle adding label
+    // custom logic: handle adding label
     // see: https://codesandbox.io/s/custom-mdast-hast-plugin-yco3dk?file=/src/listitem.js
     paragraph.children = [h(null, "label", {}, [...paragraph.children])];
 
     // According to github-markdown-css, this class hides bullet.
     // See: <https://github.com/sindresorhus/github-markdown-css>.
-    props.className = ["task-list-item"];
+    // custom logic: apply done class to for custom styling
+    props.className = clsx(
+      "task-list-item",
+      node.checked && "task-list-item-done"
+    );
   }
 
   let index = -1;

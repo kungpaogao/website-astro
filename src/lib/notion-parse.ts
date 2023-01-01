@@ -114,14 +114,9 @@ export function parseHeading(
 export function parseListItem(
   richTextBlock: RichTextBlock,
   symbol: string,
-  children: string[],
-  renderRichText: (parsed: string) => string = (parsed) => parsed
+  children: string[]
 ): string {
-  return symbol.concat(
-    renderRichText(parseRichTextBlock(richTextBlock)),
-    EOL,
-    ...children
-  );
+  return symbol.concat(parseRichTextBlock(richTextBlock), EOL, ...children);
 }
 
 /**
@@ -173,11 +168,7 @@ export function parse(
       return parseListItem(
         block.to_do,
         toDoIsChecked ? "- [x] " : "- [ ] ",
-        children,
-        (parsed) =>
-          toDoIsChecked
-            ? html`<span class="todo-done">${parsed}</span>`
-            : parsed
+        children
       );
     case "toggle":
       // TODO: fix this because this doesn't work for children :,(
