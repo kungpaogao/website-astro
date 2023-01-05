@@ -1,0 +1,2 @@
+# ignore mdx files in content folder
+src/content/**/*.mdx
