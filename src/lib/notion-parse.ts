@@ -144,6 +144,13 @@ export function parse(
       if (paragraphRichText === "") {
         paragraphRichText = html`<br />`.concat(EOL);
       }
+      // else if (
+      //   paragraphRichText !== richTextToPlainText(block.paragraph.rich_text)
+      // ) {
+      //   // extra case to handle when a whole paragraph is formatted
+      //   // e.g. <i>this whole paragraph</i>
+      //   paragraphRichText = html`<p>${paragraphRichText}</p>`;
+      // }
       return EOL.concat(paragraphRichText, EOL, ...children);
     case "heading_1":
       return EOL.concat(parseHeading(block.heading_1, 1, children));

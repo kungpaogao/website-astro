@@ -42,7 +42,16 @@ declare module 'astro:content' {
 	};
 
 	const entryMap: {
-		"projects": {
+		"blog": {
+"84b088e8-7039-4acb-aae4-0074933f3d74.mdx": {
+  id: "84b088e8-7039-4acb-aae4-0074933f3d74.mdx",
+  slug: string,
+  body: string,
+  collection: "blog",
+  data: InferEntrySchema<"blog">
+},
+},
+"projects": {
 "2a790f2c-d301-450b-bb4d-929153003de8.mdx": {
   id: "2a790f2c-d301-450b-bb4d-929153003de8.mdx",
   slug: string,

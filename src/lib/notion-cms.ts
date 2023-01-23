@@ -6,10 +6,9 @@ import type {
   PartialPageObjectResponse,
   QueryDatabaseParameters,
 } from "@notionhq/client/build/src/api-endpoints";
-import { getPageProperties } from "./notion-cms-page";
 import { getAssetUrl } from "./notion-cms-asset";
 
-const { NOTION_TOKEN, NOTION_PROJECTS_DATABASE } = import.meta.env;
+const { NOTION_TOKEN } = import.meta.env;
 
 export const notion = new Client({
   auth: NOTION_TOKEN,

@@ -1,0 +1,31 @@
+---
+import { format } from "date-fns";
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { getPageProperties, parsePageUrl } from "../../lib/notion-cms-page";
+
+const PAGE_ID = parsePageUrl(
+  "https://www.notion.so/kungpaogao/Blog-f3362e0d348e4bdeaea895b36c7801f0"
+);
+
+const properties = await getPageProperties(PAGE_ID);
+const posts = await getCollection("blog");
+---
+
+<Layout {...properties} className="prose mx-auto">
+  <h1>Blog</h1>
+  <div class="mt-3 flex flex-col items-start gap-3">
+    {
+      posts.map((post) => (
+        <div class="flex w-full justify-between">
+          <a class="text-lg underline" href={`/blog/${post.slug}`}>
+            {post.data.title}
+          </a>
+          <div class="text-lg text-gray-400">
+            {format(new Date(post.data.published), "yyyy.MM.dd")}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</Layout>

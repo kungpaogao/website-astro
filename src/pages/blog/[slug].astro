@@ -1,16 +1,17 @@
 ---
+import { format } from "date-fns";
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import { downloadPostsAsMdx } from "../../lib/notion-download";
 
 interface Props {
-  post: CollectionEntry<"projects">;
+  post: CollectionEntry<"blog">;
 }
 
 export async function getStaticPaths() {
-  await downloadPostsAsMdx("projects");
-  const posts = await getCollection("projects");
+  await downloadPostsAsMdx("blog");
+  const posts = await getCollection("blog");
 
   return posts.map((post) => ({
     params: {
@@ -27,5 +28,11 @@ const { Content } = await post.render();
 ---
 
 <Layout {...post.data as any} className="prose mx-auto break-words">
+  <h1>{post.data.title}</h1>
+  <span class="not-prose">
+    <h2 class="mb-8 text-lg font-semibold text-gray-400">
+      {format(new Date(post.data.published), "MMMM dd, yyyy")}
+    </h2>
+  </span>
   <Content />
 </Layout>

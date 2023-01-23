@@ -8,7 +8,7 @@ import { parseBlocks } from "./notion-parse";
 import { EOL } from "./constants";
 import { getPageProperties } from "./notion-cms-page";
 
-const { NOTION_PROJECTS_DATABASE } = import.meta.env;
+const { NOTION_PROJECTS_DB_ID, NOTION_BLOG_DB_ID } = import.meta.env;
 
 function pagePropertiesToFrontmatter(
   pageProperties: any,
@@ -28,14 +28,18 @@ function pagePropertiesToFrontmatter(
 /**
  * Fetches Notion posts, checks if the local file needs to be updated, and if
  * so, writes the file to disk as MDX file
- * @param {string} databaseId - The ID of the Notion database you want to query
- * @param {string} [srcContentPath=projects] - The path to the directory where the
- * MDX files will be written
  */
-export async function downloadPostsAsMdx(
-  databaseId: string = NOTION_PROJECTS_DATABASE,
-  srcContentPath: string = "projects"
-) {
+export async function downloadPostsAsMdx(collection: "projects" | "blog") {
+  let databaseId: string;
+
+  if (collection === "projects") {
+    databaseId = NOTION_PROJECTS_DB_ID;
+  } else if (collection === "blog") {
+    databaseId = NOTION_BLOG_DB_ID;
+  } else {
+    throw Error("invalid collection");
+  }
+
   const posts = await queryNotionDatabase({
     database_id: databaseId,
     filter: {
@@ -60,7 +64,7 @@ export async function downloadPostsAsMdx(
     posts.map(async (post) => {
       const shouldUpdate = await shouldUpdateLocalFile(
         post.last_edited_time,
-        srcContentPath,
+        collection,
         post.id
       );
 
@@ -79,7 +83,7 @@ export async function downloadPostsAsMdx(
         const postMdx = postImports.concat(parseBlocks(postBlocks));
 
         const dest = path
-          .join("src", "content", srcContentPath, post.id)
+          .join("src", "content", collection, post.id)
           .concat(".mdx");
 
         console.log("Writing to file:", dest);
