@@ -24,3 +24,6 @@ pnpm-debug.log*
 
 # notion
 .notion*
+
+# astro
+.astro

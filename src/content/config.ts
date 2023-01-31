@@ -1,6 +1,6 @@
 import { z, defineCollection } from "astro:content";
 
-const postSchema = {
+const postSchema = z.object({
   lastEditedTime: z.string().transform((str) => new Date(str)),
   published: z.string(),
   description: z.string(),
@@ -8,10 +8,9 @@ const postSchema = {
   dates: z.string(),
   tags: z.string(),
   public: z.string(),
-  slug: z.string(),
   image: z.string(),
   title: z.string(),
-};
+});
 
 const projects = defineCollection({
   slug: ({ data }) => data.slug,
