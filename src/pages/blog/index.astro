@@ -17,8 +17,11 @@ const posts = await getCollection("blog");
   <div class="mt-3 flex flex-col items-start gap-3">
     {
       posts.map((post) => (
-        <div class="flex w-full justify-between">
-          <a class="text-lg underline" href={`/blog/${post.slug}`}>
+        <div class="flex w-full flex-wrap justify-between">
+          <a
+            class="w-full text-lg underline md:w-auto"
+            href={`/blog/${post.slug}`}
+          >
             {post.data.title}
           </a>
           <div class="text-lg text-gray-400">
