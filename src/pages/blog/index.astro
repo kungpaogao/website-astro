@@ -1,5 +1,5 @@
 ---
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import { getPageProperties, parsePageUrl } from "../../lib/notion-cms-page";
@@ -25,7 +25,10 @@ const posts = await getCollection("blog");
             {post.data.title}
           </a>
           <div class="text-lg text-gray-400">
-            {format(new Date(post.data.published), "yyyy.MM.dd")}
+            {format(
+              parse(post.data.published, "yyyy-MM-dd", new Date()),
+              "yyyy.MM.dd"
+            )}
           </div>
         </div>
       ))
