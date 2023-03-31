@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "predev": "jiti scripts/index.ts",
     "dev": "astro dev",
+    "prebuild": "jiti scripts/index.ts",
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
@@ -25,6 +27,8 @@
     "@types/react-dom": "^18.0.11",
     "astro": "^2.1.8",
     "autoprefixer": "^10.4.14",
+    "dotenv": "^16.0.3",
+    "jiti": "^1.18.2",
     "marked": "^4.3.0",
     "mdast-util-to-hast": "^12.3.0",
     "mime-types": "^2.1.35",

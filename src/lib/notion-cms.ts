@@ -7,11 +7,13 @@ import type {
   QueryDatabaseParameters,
 } from "@notionhq/client/build/src/api-endpoints";
 import { getAssetUrl } from "./notion-cms-asset";
+import * as dotenv from "dotenv";
 
-const { NOTION_TOKEN } = import.meta.env;
+// workaround to provide access to NOTION_TOKEN when running via jiti
+dotenv.config();
 
 export const notion = new Client({
-  auth: NOTION_TOKEN,
+  auth: import.meta.env.NOTION_TOKEN,
 });
 
 /**

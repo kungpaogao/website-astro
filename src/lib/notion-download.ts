@@ -8,8 +8,6 @@ import { parseBlocks } from "./notion-parse";
 import { EOL } from "./constants";
 import { getPageProperties } from "./notion-cms-page";
 
-const { NOTION_PROJECTS_DB_ID, NOTION_BLOG_DB_ID } = import.meta.env;
-
 function pagePropertiesToFrontmatter(
   pageProperties: any,
   lastEditedTime?: string
@@ -33,9 +31,9 @@ export async function downloadPostsAsMdx(collection: "projects" | "blog") {
   let databaseId: string;
 
   if (collection === "projects") {
-    databaseId = NOTION_PROJECTS_DB_ID;
+    databaseId = import.meta.env.NOTION_PROJECTS_DB_ID;
   } else if (collection === "blog") {
-    databaseId = NOTION_BLOG_DB_ID;
+    databaseId = import.meta.env.NOTION_BLOG_DB_ID;
   } else {
     throw Error("invalid collection");
   }
