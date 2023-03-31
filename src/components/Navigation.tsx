@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Component, createMemo, JSXElement } from "solid-js";
-import { createSignal, onCleanup, onMount } from "solid-js";
+import { createSignal, onMount } from "solid-js";
 import { md } from "../styles/breakpoints";
 import { Icon } from "./Icon";
 
@@ -42,11 +42,6 @@ const Navigation: Component<NavigationProps> = ({
     );
     window.addEventListener(resizeEvent, onResize);
     window.addEventListener(scrollEvent, onScroll);
-  });
-
-  onCleanup(() => {
-    window.removeEventListener(resizeEvent, onResize);
-    window.removeEventListener(scrollEvent, onScroll);
   });
 
   return (
