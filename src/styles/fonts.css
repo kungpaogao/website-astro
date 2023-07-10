@@ -2,7 +2,7 @@
   @font-face {
     font-family: "Inter";
     font-weight: 100 900;
-    font-display: optional;
+    font-display: swap;
     font-style: normal;
     font-named-instance: "Regular";
     src: url("/fonts/Inter-Variable-Latin.woff2") format("woff2");
@@ -11,7 +11,7 @@
   @font-face {
     font-family: "Newsreader";
     font-weight: 100 900;
-    font-display: optional;
+    font-display: swap;
     font-style: normal;
     src: url("/fonts/Newsreader-Variable-Latin.woff2") format("woff2");
   }
