@@ -1,5 +1,5 @@
 ---
-lastEditedTime: '2023-01-31T06:11:00.000Z'
+lastEditedTime: '2024-02-26T05:58:00.000Z'
 published: '2022-11-27'
 description: 'Post about building this website'
 path: '/projects/here'
@@ -7,7 +7,6 @@ dates: ''
 tags: 'dev,test'
 public: 'true'
 slug: 'here'
-image: 'null'
 title: 'This website'
 ---
 import { Image } from 'astro:assets';
@@ -18,7 +17,7 @@ import { Image } from 'astro:assets';
 
 This website is an experiment using [Notion](https://www.notion.so/) as a [CMS](https://en.wikipedia.org/wiki/Content_management_system). This allows me to have a much better editing experience, which should encourage me to write more content and keep the content more up to date.
 
-The process for updating content is easy as editing in Notion and triggering a rebuild/redeploy.
+The process for updating content is easy as editing in Notion and triggering a rebuild/redeploy (at least in theory).
 
 The site is built using [Astro](https://astro.build/), which statically generates the site and helps me minimize the amount of JavaScript that’s sent to the client. Fun fact: everything on this website <i>should</i> work without JavaScript.
 
@@ -35,7 +34,7 @@ Below (the divider) is what I used to test the Notion parser that I “wrote” 
 Some tasks that I’m proud of completing while building this website:
 - Wrote a collection of scripts to parse Notion blocks to Markdown + made sure everything was accessible!
 - Attempted to make the website SEO friendly (it still ranks really low in searches rip)
-- Iterated a ton on the navigation bar to make it work without JavaScript (and spent a lot of time reverse engineering [apple.com](http://apple.com)’s nav bar)
+- Iterated a ton on the navigation bar to make it work without JavaScript (and spent a lot of time reverse engineering [apple.com](http://apple.com/)’s nav bar)
 - Migrated content architecture to local MDX files
 
 <br />
@@ -146,7 +145,9 @@ might mess with line breaks
 
 and also,
 
-<i>what if the entire </i><i>[paragraph is italicized](http://andrewgao.org)</i><i> but with a link inside</i>
+<i>what if the entire </i><i>[paragraph is italicized](http://andrewgao.org/)</i><i> but with a link inside</i>
+
+ok but what about if there’s a less than symbol: &lt;3? or greater than: >3?
 
 <br />
 
@@ -200,7 +201,7 @@ hello</span>
 ## links
 
 
-testing links in the paragraph. ([this stuff in the parentheses](https://robinhood.com/us/en/)) should link to [robinhood.com](http://robinhood.com) (as should this link).
+testing links in the paragraph. ([this stuff in the parentheses](https://robinhood.com/us/en/)) should link to [robinhood.com](http://robinhood.com/) (as should this link).
 
 ## todo list
 
