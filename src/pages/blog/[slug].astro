@@ -40,4 +40,7 @@ const { Content } = await post.render();
     </h2>
   </span>
   <Content />
+  <hr class="border border-gray-300 mt-8" />
+  <p class="text-gray-400 mt-4">Thanks for reading :)</p>
+  <p class="text-gray-400">Last updated {format(post.data.lastEditedTime, "MMMM dd, yyyy")}</p>
 </Layout>
