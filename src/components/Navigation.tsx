@@ -1,6 +1,6 @@
 import clsx from "clsx";
-import { Component, createMemo, JSXElement } from "solid-js";
-import { createSignal, onMount } from "solid-js";
+import type { Component, JSXElement } from "solid-js";
+import { createMemo, createSignal, onMount } from "solid-js";
 import { md } from "../styles/breakpoints";
 import { Icon } from "./Icon";
 
