@@ -75,7 +75,7 @@ export async function downloadPostsAsMdx(collection: "projects" | "blog") {
         );
 
         const postImports = postFrontmatter.concat(
-          "import { Image } from '@astrojs/image/components';\n\n"
+          "import { Image } from 'astro:assets';\n\n"
         );
 
         const postMdx = postImports.concat(parseBlocks(postBlocks));

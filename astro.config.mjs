@@ -1,7 +1,6 @@
 import { defineConfig } from "astro/config";
 import solid from "@astrojs/solid-js";
 import tailwind from "@astrojs/tailwind";
-import image from "@astrojs/image";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import mdx from "@astrojs/mdx";
@@ -16,9 +15,6 @@ export default defineConfig({
     solid(),
     tailwind(),
     react(),
-    image({
-      serviceEntryPoint: "@astrojs/image/sharp",
-    }),
     sitemap({
       filter: (page) => !page.includes(".json"),
     }),
@@ -28,8 +24,8 @@ export default defineConfig({
     rehypePlugins: [rehypeAccessibleEmojis],
     remarkRehype: {
       handlers: {
-        listItem(h, node, parent) {
-          return accessibleListItem(h, node, parent);
+        listItem(state, node, parent) {
+          return accessibleListItem(state, node, parent);
         },
       },
     },

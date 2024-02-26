@@ -2,62 +2,79 @@
  * Everything is the same as default list item handler except where noted.
  * See default: https://github.com/syntax-tree/mdast-util-to-hast/blob/main/lib/handlers/list-item.js
  */
-import { u } from "unist-builder";
-import { all } from "mdast-util-to-hast";
-import type { H } from "mdast-util-to-hast";
-import type { List, ListItem } from "mdast";
+import type { State } from "mdast-util-to-hast";
+import type { ListItem, Parents } from "mdast";
 import type { Element, ElementContent, Properties } from "hast";
 import clsx from "clsx";
 
-export function accessibleListItem(h: H, node: ListItem, parent: List) {
-  const result = all(h, node);
+export function accessibleListItem(
+  state: State,
+  node: ListItem,
+  parent: Parents | undefined
+): Element {
+  const results = state.all(node);
   const loose = parent ? listLoose(parent) : listItemLoose(node);
-  const props: Properties = {};
-  const wrapped: Array<ElementContent> = [];
+  const properties: Properties = {};
+  const children: Array<ElementContent> = [];
 
   if (typeof node.checked === "boolean") {
+    const head = results[0];
     let paragraph: Element;
 
-    if (
-      result[0] &&
-      result[0].type === "element" &&
-      result[0].tagName === "p"
-    ) {
-      paragraph = result[0];
+    if (head && head.type === "element" && head.tagName === "p") {
+      paragraph = head;
     } else {
-      paragraph = h(null, "p", []);
-      result.unshift(paragraph);
+      paragraph = {
+        type: "element",
+        tagName: "p",
+        properties: {},
+        children: [],
+      };
+      results.unshift(paragraph);
     }
 
-    // custom  logic: don't add space between input and label
+    // begin custom section
 
-    paragraph.children.unshift(
-      h(null, "input", {
+    // custom  logic: don't add space between input and label
+    const checkbox: Element = {
+      type: "element",
+      tagName: "input",
+      properties: {
         type: "checkbox",
         checked: node.checked,
         disabled: true,
         // custom logic: add additional class for styling
         class: "task-list-item-checkbox",
-      })
-    );
+      },
+      children: [],
+    };
+    paragraph.children.unshift(checkbox);
 
     // custom logic: handle adding label
     // see: https://codesandbox.io/s/custom-mdast-hast-plugin-yco3dk?file=/src/listitem.js
-    paragraph.children = [h(null, "label", {}, [...paragraph.children])];
+    const label: Element = {
+      type: "element",
+      tagName: "label",
+      properties: {},
+      children: [...paragraph.children],
+    };
+    paragraph.children = [label];
 
     // According to github-markdown-css, this class hides bullet.
     // See: <https://github.com/sindresorhus/github-markdown-css>.
     // custom logic: apply done class to for custom styling
-    props.className = clsx(
+    properties.className = clsx(
       "task-list-item",
       node.checked && "task-list-item-done"
     );
+
+    // end custom section
   }
 
   let index = -1;
 
-  while (++index < result.length) {
-    const child = result[index];
+  while (++index < results.length) {
+    const child = results[index];
 
     // Add eols before nodes, except if this is a loose, first paragraph.
     if (
@@ -66,42 +83,52 @@ export function accessibleListItem(h: H, node: ListItem, parent: List) {
       child.type !== "element" ||
       child.tagName !== "p"
     ) {
-      wrapped.push(u("text", "\n"));
+      children.push({ type: "text", value: "\n" });
     }
 
     if (child.type === "element" && child.tagName === "p" && !loose) {
-      wrapped.push(...child.children);
+      children.push(...child.children);
     } else {
-      wrapped.push(child);
+      children.push(child);
     }
   }
 
-  const tail = result[result.length - 1];
+  const tail = results[results.length - 1];
 
   // Add a final eol.
-  if (tail && (loose || !("tagName" in tail) || tail.tagName !== "p")) {
-    wrapped.push(u("text", "\n"));
+  if (tail && (loose || tail.type !== "element" || tail.tagName !== "p")) {
+    children.push({ type: "text", value: "\n" });
   }
 
-  return h(node, "li", props, wrapped);
+  const result: Element = {
+    type: "element",
+    tagName: "li",
+    properties,
+    children,
+  };
+  state.patch(node, result);
+  return state.applyData(node, result);
 }
 
-function listLoose(node: List): boolean {
-  let loose = node.spread;
-  const children = node.children;
-  let index = -1;
+function listLoose(node: Parents): boolean {
+  let loose = false;
+  if (node.type === "list") {
+    loose = node.spread || false;
+    const children = node.children;
+    let index = -1;
 
-  while (!loose && ++index < children.length) {
-    loose = listItemLoose(children[index]);
+    while (!loose && ++index < children.length) {
+      loose = listItemLoose(children[index]);
+    }
   }
 
-  return Boolean(loose);
+  return loose;
 }
 
 function listItemLoose(node: ListItem): boolean {
   const spread = node.spread;
 
-  return spread === undefined || spread === null
+  return spread === null || spread === undefined
     ? node.children.length > 1
     : spread;
 }
