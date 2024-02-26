@@ -81,6 +81,8 @@ export function parseRichTextBlock({
   return rich_text
     .map((token) => {
       let markdown = token.plain_text;
+      // encode all less than signs in markdown
+      markdown = markdown.replace(/</g, "&lt;");
 
       if (token.href) markdown = `[${markdown}](${token.href})`;
 
