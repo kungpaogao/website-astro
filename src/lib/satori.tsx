@@ -3,7 +3,7 @@ import satori from "satori";
 import fs from "fs/promises";
 import { join } from "path";
 
-async function loadFont(filename) {
+async function loadFont(filename: string) {
   const fontPath = join(process.cwd(), "public", "fonts", filename);
   return fs.readFile(fontPath);
 }
@@ -13,14 +13,21 @@ const maShanZhengRegular = await loadFont("MaShanZheng-Regular.woff");
 
 export async function generateImage(text: string, width = 200, height = 200) {
   const svg = await satori(
-    <div
-      style={{
-        display: "flex",
-        backgroundColor: "white",
-      }}
-    >
-      <span tw="text-black text-xl p-1">{text}</span>
-    </div>,
+    {
+      type: "div",
+      props: {
+        children: [
+          {
+            type: "span",
+            props: {
+              children: text,
+              tw: "text-black text-xl p-1",
+            },
+          },
+        ],
+        style: { display: "flex", backgroundColor: "white" },
+      },
+    },
     {
       // width: 1200,
       // height: 630,

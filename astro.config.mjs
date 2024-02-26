@@ -14,7 +14,9 @@ export default defineConfig({
   integrations: [
     solid(),
     tailwind(),
-    react(),
+    react({
+      include: ["**/satori.tsx"],
+    }),
     sitemap({
       filter: (page) => !page.includes(".json"),
     }),

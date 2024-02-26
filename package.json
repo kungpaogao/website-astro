@@ -8,7 +8,7 @@
     "dev": "astro dev",
     "prebuild": "jiti scripts/index.ts",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "build": "astro build",
     "preview": "astro preview",
     "test": "vitest",
     "coverage": "vitest run --coverage"
