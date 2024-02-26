@@ -8,7 +8,9 @@ const PAGE_ID = parsePageUrl(
 );
 
 const properties = await getPageProperties(PAGE_ID);
-const projects = await getCollection("projects");
+const projects = (await getCollection("projects")).sort((a, b) =>
+  a.data.published > b.data.published ? -1 : 1
+);
 ---
 
 <Layout {...properties} className="prose mx-auto">
