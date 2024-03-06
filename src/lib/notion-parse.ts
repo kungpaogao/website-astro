@@ -273,12 +273,34 @@ export function parse(
         EOL,
         EOL
       );
+    case "table":
+      const rows = children.map((child, index) => {
+        if (block.table.has_row_header && index === 0) {
+          return child.replace(/<td>/g, "<th>").replace(/<\/td>/g, "</th>");
+        } else {
+          return child;
+        }
+      });
+      let colgroup = "";
+      if (block.table.has_column_header) {
+        colgroup = html`<colgroup>
+          <col class="font-bold" />
+        </colgroup>`;
+      }
+      return EOL.concat("<table>", colgroup, ...rows, "</table>", EOL);
+    case "table_row":
+      const cellStrings = block.table_row.cells.map((cell) =>
+        // TODO: handle rich text
+        cell.map((cellBlock) => html`<td>${cellBlock.plain_text}</td>`).join("")
+      );
+      return html`<tr>
+        ${cellStrings.join("")}
+      </tr>`;
+
     case "breadcrumb":
     case "column_list":
     case "column":
     case "link_to_page":
-    case "table":
-    case "table_row":
     case "template":
     case "synced_block":
     case "child_page":

@@ -1,24 +1,142 @@
 ---
-lastEditedTime: '2023-01-23T06:24:00.000Z'
+lastEditedTime: '2024-03-06T06:33:00.000Z'
 published: '2022-07-03'
 description: 'Post about the project I made to apply for Capital One’s Software Engineering Summit'
 path: '/projects/capital-one-nps'
-dates: ''
+dates: 'May 2019 - Jun 2019'
 tags: 'dev'
 public: 'true'
 slug: 'capital-one-nps'
-image: 'null'
 title: 'Capital One NPS'
 ---
 import { Image } from 'astro:assets';
 
 
-hello
+Link to app: [https://capital-one-nps.firebaseapp.com/](https://capital-one-nps.firebaseapp.com/)
+
+Link to GitHub: [https://github.com/kungpaogao/capital-one-nps](https://github.com/kungpaogao/capital-one-nps)
 
 <br />
 
 
-there should be an empty paragraph above this
+I’m still pretty proud of this one even after all these years. I feel like it proved to me that I could learn things quickly on my own just by doing them. I also think the design is pretty nice, even though it’s super simple.
 
 <br />
 
+
+Original about page below!
+
+<br />
+
+___
+
+# National Parks - Capital One
+
+
+[Live Website](https://capital-one-nps.firebaseapp.com/)
+
+Andrew Gao
+
+May-Jun 2019
+
+## About
+
+
+This website was written to complete Capital One's National Park Service (NPS) challenge. It allows users to search for parks or states and shows a wide variety of information relating to a chosen park. Information is retrieved using the [NPS API](https://www.nps.gov/subjects/developer/get-started.htm).
+
+### Key Features
+
+- <b>Search Bar</b> - the main navigation feature of the website; allows user to search by keyword or state
+- <b>Search Filters</b> - allows user to refine search results by state or designation (i.e. the type of park)
+- <b>Search Page</b> - shows search results with park names and descriptions
+- <b>Park Page</b> - shows all the details about a given park
+
+### Development Features
+
+- <b>Components</b> - the structure of the code is split into views (the different pages/routes) and components (reusable snippets of code, e.g., the search bar, dividers, buttons)
+- <b>Data & Variables</b> - data, types, and variables were also separated into different directories that allows information such as states and their abbreviations to be imported from multiple different files
+- <b>Media Queries</b> - the last part of development was spent on optimizing the various views for all devices with CSS media queries
+- <b>Modern Web</b> - used Typescript (yay typing!), Sass (variables!! nesting!!), and Vue (woooooo!!!)
+
+### Process
+
+1. Sketching - on some scrap paper... somewhere
+1. Rapid prototyping - I had a basic idea where I knew I wanted there to be a search bar, filtering, and park detail page
+1. Refining framework - separating out components to reuse code (search bar, buttons, header) as well as variables/data/types
+1. Styling - editing the CSS code to make things look nice and fit correctly; this was a lot of work
+1. API panic! - somewhere along the line, I was getting lots of CORS errors (turned out to be a privacy blocker issue)
+1. Testing deployment - GitHub pages + single-page apps = bad time
+1. Media queries - after seeing the website on my phone, I realized I needed to do this
+1. Deployment - this time with Firebase hosting, which worked much better
+1. Writing this - what good is code if you can't explain it?
+
+### Challenges
+
+- <b>Learning</b> - this is only my second time working with Vue.js and first time working alone with it, so there was a lot of figuring things out; this was definitely the biggest challenge
+- <b>Time</b> - the original deadline was quite early, so initial code was a little rushed; even with extensions, I started other summer work, and I could add plenty of features
+- <b>API</b> - I was getting some CORS errors (due to some privacy blockers I have on Firefox) and tried to use a slightly different codebase before figuring things out
+
+### Potential Features
+
+
+There are a few things I would try to add if I had more time:
+- use Figma to better plan out the website (in the beginning)
+- NPS icons
+- map view to allow exploring by map
+- a more interesting home page (maybe with latest articles or changing images)
+- creating a backend to handle API calls (more secure)
+
+### Personal Commentary & Reflection
+
+
+Overall, I had a lot of fun working on this project. It was a really great learning opportunity as I got to get a lot more exposure to Typescript, NPM, Sass, and Vue.js. And, it gave me something to do for the first few weeks of my summer; coding, getting to watch it update live, and listening to music really is fun/relaxing.
+
+If I were to rewrite this in the future (or create another website), I think it would be better to do more detailed prototype designs (maybe using Figma), so I have a stronger sense of direction throughout the project. I would also try to use more structured frameworks such as [Nuxt.js](https://nuxtjs.org/) to learn more about server-side rendering (SSR). And, I would try to use a UI framework like [Vuetify](https://vuetifyjs.com/en/) so that I wouldn't have to spend as much time on CSS (although, I didn't use one on purpose so I would be forced to learn more CSS). That said, I think this was a good start for me, but I definitely hope to get better in the future.
+
+Thanks for the opportunity Capital One!
+___
+
+## Developing
+
+
+This project was built using [Vue.js](https://vuejs.org/) and was written with HTML, [Sass](https://sass-lang.com/), and [TypeScript](https://www.typescriptlang.org/).
+
+### Project setup
+
+```plain text
+npm install
+
+```
+
+### Compiles and hot-reloads for development
+
+```plain text
+npm run serve
+
+```
+
+### Compiles and minifies for production
+
+```plain text
+npm run build
+
+```
+
+### Run your tests
+
+```plain text
+npm run test
+
+```
+
+### Lints and fixes files
+
+```plain text
+npm run lint
+
+```
+
+### Customize configuration
+
+
+See [Configuration Reference](https://cli.vuejs.org/config/).
