@@ -153,7 +153,7 @@ const Navigation: Component<NavigationProps> = ({
           <Icon iconName="gao" className="h-7 w-7 hover:fill-gray-500" />
         </NavigationItem>
         <li class="hidden flex-1 md:block" aria-hidden="true" />
-        <NavigationItem href="/projects">Projects</NavigationItem>
+        {/* <NavigationItem href="/projects">Projects</NavigationItem> */}
         <NavigationItem href="/blog">Blog</NavigationItem>
         <NavigationItem href="/about">About</NavigationItem>
       </ul>
