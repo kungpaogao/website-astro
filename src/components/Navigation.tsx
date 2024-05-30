@@ -5,11 +5,13 @@ import { md } from "../styles/breakpoints";
 import { Icon } from "./Icon";
 
 interface NavigationProps {
+  routes: Array<{ name: string; path: string }>;
   className?: string;
   contentClassName?: string;
 }
 
 const Navigation: Component<NavigationProps> = ({
+  routes,
   className = "",
   contentClassName = "",
 }) => {
@@ -153,9 +155,9 @@ const Navigation: Component<NavigationProps> = ({
           <Icon iconName="gao" className="h-7 w-7 hover:fill-gray-500" />
         </NavigationItem>
         <li class="hidden flex-1 md:block" aria-hidden="true" />
-        {/* <NavigationItem href="/projects">Projects</NavigationItem> */}
-        <NavigationItem href="/blog">Blog</NavigationItem>
-        <NavigationItem href="/about">About</NavigationItem>
+        {routes.map(({ name, path }) => (
+          <NavigationItem href={path}>{name}</NavigationItem>
+        ))}
       </ul>
       {/* background shade */}
       <div
