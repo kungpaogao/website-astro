@@ -7,14 +7,7 @@ import type {
   QueryDatabaseParameters,
 } from "@notionhq/client/build/src/api-endpoints";
 import { getAssetUrl } from "./notion-cms-asset";
-import * as dotenv from "dotenv";
-
-// workaround to provide access to NOTION_TOKEN when running via jiti
-dotenv.config();
-
-export const notion = new Client({
-  auth: import.meta.env.NOTION_TOKEN,
-});
+import notion from "./notion-client";
 
 /**
  * If the result is a partial response, return the full response.
@@ -41,7 +34,6 @@ export async function queryNotionDatabase(
 ): Promise<PageObjectResponse[]> {
   const pages: PageObjectResponse[] = [];
   let cursor = undefined;
-
   while (true) {
     const { results, next_cursor } = await notion.databases.query({
       ...options,

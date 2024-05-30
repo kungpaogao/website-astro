@@ -2,8 +2,9 @@ import type {
   PageObjectResponse,
   PartialPageObjectResponse,
 } from "@notionhq/client/build/src/api-endpoints";
-import { notion, ensureFullResponse } from "./notion-cms";
+import { ensureFullResponse } from "./notion-cms";
 import { parseProperty } from "./notion-parse";
+import notion from "./notion-client";
 
 /**
  * It takes a Notion URL and returns the properly formatted page id. This is
@@ -22,8 +23,12 @@ import { parseProperty } from "./notion-parse";
  * @returns A string
  */
 export function parsePageUrl(url: string): string {
+  // https://www.notion.so/kungpaogao/about-bd0d4055c64d47f0bb0c01160ce7239e?v=something
   const cleanSlash = url.split("/");
-  const cleanDash = cleanSlash[cleanSlash.length - 1].split("-");
+  // about-bd0d4055c64d47f0bb0c01160ce7239e?v=something
+  const cleanParams = cleanSlash[cleanSlash.length - 1].split("?");
+  // about-bd0d4055c64d47f0bb0c01160ce7239e
+  const cleanDash = cleanParams[0].split("-");
   const sl = (start?: number, end?: number) =>
     cleanDash[cleanDash.length - 1].slice(start, end);
   return `${sl(0, 8)}-${sl(8, 12)}-${sl(12, 16)}-${sl(16, 20)}-${sl(20)}`;
@@ -42,6 +47,24 @@ export async function getPageProperties(pageId: string): Promise<any> {
   Object.keys(properties).forEach((key) => {
     const property = properties[key];
     result[key] = parseProperty(property);
+  });
+
+  return result;
+}
+
+export async function getDatabaseProperties(databaseId: string): Promise<any> {
+  const response = await notion.databases.retrieve({ database_id: databaseId });
+  const fullResponse = ensureFullResponse<
+    PageObjectResponse,
+    PartialPageObjectResponse
+  >(response);
+
+  const properties = fullResponse.properties;
+  const result = {};
+
+  Object.keys(properties).forEach((key) => {
+    const property = properties[key];
+    result[key] = property;
   });
 
   return result;
