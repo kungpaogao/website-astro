@@ -1,0 +1,148 @@
+---
+// https://css-tricks.com/grainy-gradients/
+// https://pluspng.com/img-png/png-file-name-tree-branch-2000.png
+// https://sleekinteractive.com/blog/post/simulating-lighting-with-css-perspective/
+// https://css-tricks.com/getting-deep-into-shadows/
+// https://www.joshwcomeau.com/css/designing-shadows/
+---
+
+<script>
+  const xDisplay = document.querySelector("#x-display");
+  const yDisplay = document.querySelector("#y-display");
+  const xInput = document.querySelector("#x-p");
+  const yInput = document.querySelector("#y-p");
+  const world = document.querySelector(".world");
+
+  let xValue = xInput.value;
+  let yValue = yInput.value;
+  // value.textContent = input.value;
+  xInput.addEventListener("input", (event) => {
+    xValue = event.target.value;
+    xDisplay.textContent = "x-perspective: " + xValue;
+    world.style.perspectiveOrigin = `${xValue}% ${yValue}%`;
+  });
+  yInput.addEventListener("input", (event) => {
+    yValue = event.target.value;
+    yDisplay.textContent = "y-perspective: " + yValue;
+    world.style.perspectiveOrigin = `${xValue}% ${yValue}%`;
+  });
+
+  const xSkewInput = document.querySelector("#xskew");
+  const ySkewInput = document.querySelector("#yskew");
+  const xskewd = document.querySelector("#xskewd");
+  const yskewd = document.querySelector("#yskewd");
+  const justshadow = document.querySelector(".justshadow");
+  let xSkewValue = xSkewInput.value;
+  let ySkewValue = ySkewInput.value;
+  xSkewInput.addEventListener("input", (event) => {
+    xSkewValue = event.target.value;
+    xskewd.textContent = "x skew: " + xSkewValue;
+    justshadow.style.transform = `rotate(270deg) skew(${xSkewValue}deg, ${ySkewValue}deg)`;
+  });
+  ySkewInput.addEventListener("input", (event) => {
+    ySkewValue = event.target.value;
+    yskewd.textContent = "y skew: " + ySkewValue;
+    justshadow.style.transform = `rotate(270deg) skew(${xSkewValue}deg, ${ySkewValue}deg)`;
+  });
+  // input.addEventListener("input", (event) => {
+  //   const newValue = event.target.value;
+  //   value.textContent = newValue;
+  //   justshadow.style.transform = `rotate(270deg) skew(0deg, ${newValue}deg)`;
+  // });
+</script>
+
+<style>
+  body,
+  html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+  }
+  .justshadow {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("/assets/branch.png");
+    background-repeat: no-repeat;
+    display: block;
+    background-size: contain;
+    translate: 150%;
+    /* shadow angle */
+    /* transform: rotateZ(270deg) rotateX(0deg) rotateY(0.5deg) skew(0deg, 50deg); */
+    /* transform: rotate(270deg) skew(0deg, 50deg); */
+    /* TODO: adjust opacity and blur based on "distance" from ground */
+    filter: brightness(1) blur(3px) opacity(0.5) grayscale(1) contrast(0);
+    transform-origin: bottom left;
+    backface-visibility: hidden;
+  }
+  .world {
+    background-color: #fff;
+    position: relative;
+    /* camera controls */
+    /* perspective: 100px; */
+    /* perspective-origin: 200% 500%; */
+    height: 1000px;
+    width: 1000px;
+    overflow: hidden;
+  }
+  .noise {
+    background: url("/assets/noise.svg");
+    filter: contrast(0) brightness(1.2) sepia(2);
+  }
+</style>
+
+<div>
+  <input
+    type="range"
+    id="x-p"
+    name="x-p"
+    min="-1000"
+    max="1000"
+    value="0"
+    step="5"
+  />
+  <label for="x-p" id="x-display">x perspective</label>
+</div>
+<div>
+  <input
+    type="range"
+    id="y-p"
+    name="y-p"
+    min="-1000"
+    max="1000"
+    value="0"
+    step="5"
+  />
+  <label for="y-p" id="y-display">y perspective</label>
+</div>
+<div>
+  <input
+    type="range"
+    id="xskew"
+    name="xskew"
+    min="-360"
+    max="360"
+    value="0"
+    step="5"
+  />
+  <label for="xskew" id="xskewd">x skew</label>
+</div>
+<div>
+  <input
+    type="range"
+    id="yskew"
+    name="yskew"
+    min="-360"
+    max="360"
+    value="0"
+    step="5"
+  />
+  <label for="yskew" id="yskewd">y skew</label>
+</div>
+<div class="world noise">
+  <div class="justshadow"></div>
+  <!-- <div class="justshadow" style="transform: rotateX(70deg) rotateY(30deg)">
+  </div> -->
+</div>
