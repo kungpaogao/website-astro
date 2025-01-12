@@ -31,23 +31,23 @@
   const ySkewInput = document.querySelector("#yskew");
   const xskewd = document.querySelector("#xskewd");
   const yskewd = document.querySelector("#yskewd");
-  const justshadow = document.querySelector(".justshadow");
+  const shadowShape = document.querySelector(".shape");
   let xSkewValue = xSkewInput.value;
   let ySkewValue = ySkewInput.value;
   xSkewInput.addEventListener("input", (event) => {
     xSkewValue = event.target.value;
     xskewd.textContent = "x skew: " + xSkewValue;
-    justshadow.style.transform = `rotate(270deg) skew(${xSkewValue}deg, ${ySkewValue}deg)`;
+    shadowShape.style.transform = `rotate(270deg) skew(${xSkewValue}deg, ${ySkewValue}deg)`;
   });
   ySkewInput.addEventListener("input", (event) => {
     ySkewValue = event.target.value;
     yskewd.textContent = "y skew: " + ySkewValue;
-    justshadow.style.transform = `rotate(270deg) skew(${xSkewValue}deg, ${ySkewValue}deg)`;
+    shadowShape.style.transform = `rotate(270deg) skew(${xSkewValue}deg, ${ySkewValue}deg)`;
   });
   // input.addEventListener("input", (event) => {
   //   const newValue = event.target.value;
   //   value.textContent = newValue;
-  //   justshadow.style.transform = `rotate(270deg) skew(0deg, ${newValue}deg)`;
+  //   shadowShape.style.transform = `rotate(270deg) skew(0deg, ${newValue}deg)`;
   // });
 </script>
 
@@ -59,7 +59,14 @@
     height: 100%;
     width: 100%;
   }
-  .justshadow {
+  .shadow {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* TODO: adjust opacity and blur based on "distance" from ground */
+    filter: brightness(1) blur(10px) opacity(0.5) grayscale(1) contrast(0);
+  }
+  .shape {
     content: "";
     position: absolute;
     width: 100%;
@@ -72,8 +79,6 @@
     /* shadow angle */
     /* transform: rotateZ(270deg) rotateX(0deg) rotateY(0.5deg) skew(0deg, 50deg); */
     /* transform: rotate(270deg) skew(0deg, 50deg); */
-    /* TODO: adjust opacity and blur based on "distance" from ground */
-    filter: brightness(1) blur(3px) opacity(0.5) grayscale(1) contrast(0);
     transform-origin: bottom left;
     backface-visibility: hidden;
   }
@@ -142,7 +147,10 @@
   <label for="yskew" id="yskewd">y skew</label>
 </div>
 <div class="world noise">
-  <div class="justshadow"></div>
+  <div class="shadow">
+    <div class="shape"></div>
+    <div class="shape" style="rotate: 250deg">hello</div>
+  </div>
   <!-- <div class="justshadow" style="transform: rotateX(70deg) rotateY(30deg)">
   </div> -->
 </div>
