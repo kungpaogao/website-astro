@@ -1,0 +1,3696 @@
+[
+  {
+    "name": "Café Chili - Thai Cuisine",
+    "address": "172 Court St, Brooklyn, NY 11201",
+    "latitude": 40.688021,
+    "longitude": -73.9934135,
+    "notes": "$38 tea set",
+    "timestampMs": 1739051089000,
+    "graphId": "/g/1tfff342"
+  },
+  {
+    "name": "Schnipper’s",
+    "address": "570 Lexington Ave, New York, NY 10022",
+    "latitude": 40.75692,
+    "longitude": -73.972321,
+    "notes": "hale and hearty soup",
+    "timestampMs": 1738451459000,
+    "graphId": "/g/1pt_8727j"
+  },
+  {
+    "name": "Minetta Tavern",
+    "address": "113 MacDougal St, New York, NY 10012",
+    "latitude": 40.730029599999995,
+    "longitude": -74.00066629999999,
+    "notes": "Start with their iconic dirty martini at the bar. Must-orders: onion soup, foie gras, medium-rare NY strip, Aligot, and chocolate soufflé. Splurge on ’98 Krug Blanc de Blancs for bubbly bliss. Not NYC’s “best” meal, but my favorite—a timeless, bustling spot radiating NYC charm.",
+    "timestampMs": 1738446049000,
+    "graphId": "/m/020f5k4"
+  },
+  {
+    "name": "Frankies 457 Spuntino",
+    "address": "457 Court St, Brooklyn, NY 11231",
+    "latitude": 40.6773866,
+    "longitude": -73.9981509,
+    "notes": "Frankie’s 457. Backyard. House wine. Escarole salad. Cavatelli. Stewed plums w marscapone.",
+    "timestampMs": 1738445883000,
+    "graphId": "/g/11bw51j_r2"
+  },
+  {
+    "name": "Fonda Garibaldi",
+    "address": "6732 13th Ave, Brooklyn, NY 11219",
+    "latitude": 40.6243148,
+    "longitude": -74.0034579,
+    "notes": "random found",
+    "timestampMs": 1738442632000,
+    "graphId": "/g/11lf_9hsgp"
+  },
+  {
+    "name": "Manhattan Vision Associates",
+    "address": "160 E 56th St floor 7, New York, NY 10022",
+    "latitude": 40.759655099999996,
+    "longitude": -73.9686761,
+    "notes": "eye doc jason",
+    "timestampMs": 1738440068000,
+    "graphId": "/g/1tdzmggq"
+  },
+  {
+    "name": "Ace's Pizza",
+    "address": "637 Driggs Ave, Brooklyn, NY 11211",
+    "latitude": 40.7150648,
+    "longitude": -73.9583744,
+    "notes": "detroit pizza",
+    "timestampMs": 1738299110000,
+    "graphId": "/g/11n73mbzh6"
+  },
+  {
+    "name": "Caridad China",
+    "address": "108 Graham Ave, Brooklyn, NY 11206",
+    "latitude": 40.7049447,
+    "longitude": -73.9426017,
+    "notes": "puerto rico chinese muber mofongo",
+    "timestampMs": 1738202993000,
+    "graphId": "/g/11b66k5qcs"
+  },
+  {
+    "name": "Cauldron Chicken",
+    "address": "190 Bleecker St, New York, NY 10012",
+    "latitude": 40.7292304,
+    "longitude": -74.0014406,
+    "notes": "reels",
+    "timestampMs": 1738178004000,
+    "graphId": "/g/11v3ghrglh"
+  },
+  {
+    "name": "Moe's Doughs",
+    "address": "126 Nassau Ave, Brooklyn, NY 11222",
+    "latitude": 40.7244464,
+    "longitude": -73.9484894,
+    "notes": "muber ",
+    "timestampMs": 1738175523000,
+    "graphId": "/g/11bbwppgth"
+  },
+  {
+    "name": "Te Min Quan 대명관",
+    "address": "270 Broad Ave, Palisades Park, NJ 07650",
+    "latitude": 40.8478193,
+    "longitude": -73.9976916,
+    "notes": "tobyko",
+    "timestampMs": 1738086063000,
+    "graphId": "/g/1tknlcnp"
+  },
+  {
+    "name": "Uzbekistan Halal Meat & Tandoori",
+    "address": "2269 86th St, Brooklyn, NY 11214",
+    "latitude": 40.6010351,
+    "longitude": -73.99196839999999,
+    "notes": "",
+    "timestampMs": 1737921065000,
+    "graphId": "/g/11y1zsphz5"
+  },
+  {
+    "name": "Marvel Frozen Dairy",
+    "address": "37-01 30th Ave., Astoria, NY 11103",
+    "latitude": 40.7648046,
+    "longitude": -73.916229,
+    "notes": "andrew thai custard",
+    "timestampMs": 1737856451000,
+    "graphId": "/g/11t068cv5k"
+  },
+  {
+    "name": "Briscola Trattoria",
+    "address": "798a Franklin Ave, Brooklyn, NY 11238",
+    "latitude": 40.671197299999996,
+    "longitude": -73.9579399,
+    "notes": "mubereats",
+    "timestampMs": 1737838260000,
+    "graphId": "/g/11wc1x9xy1"
+  },
+  {
+    "name": "Cocina Consuelo",
+    "address": "130 Hamilton Pl, New York, NY 10031",
+    "latitude": 40.824042,
+    "longitude": -73.9492303,
+    "notes": "mubereats bone marrow",
+    "timestampMs": 1731049746000,
+    "graphId": "/g/11kyvjdj1c"
+  },
+  {
+    "name": "Le Baobab Gouygui",
+    "address": "120 W 116th St, New York, NY 10026",
+    "latitude": 40.802343,
+    "longitude": -73.9510933,
+    "notes": "nicolas",
+    "timestampMs": 1737824356000,
+    "graphId": "/g/1v8x33kv"
+  },
+  {
+    "name": "Samuels Top Ranking Fish Shop",
+    "address": "3315 Church Ave, Brooklyn, NY 11203",
+    "latitude": 40.6511134,
+    "longitude": -73.9461121,
+    "notes": "nicolasnuvan",
+    "timestampMs": 1737491945000,
+    "graphId": "/g/11f63yh3r1"
+  },
+  {
+    "name": "Sylla",
+    "address": "1664 Park Ave, New York, NY 10035",
+    "latitude": 40.8004082,
+    "longitude": -73.942871,
+    "notes": "nicolas",
+    "timestampMs": 1737399259000,
+    "graphId": "/g/11s_wv9y5c"
+  },
+  {
+    "name": "Sushi Akira",
+    "address": "317 E 75th St, New York, NY 10021",
+    "latitude": 40.7705225,
+    "longitude": -73.9558389,
+    "notes": "sushi",
+    "timestampMs": 1736993153000,
+    "graphId": "/g/11wjh5gvq4"
+  },
+  {
+    "name": "I am Kimchi",
+    "address": "45-14 162nd St, Flushing, NY 11358",
+    "latitude": 40.755973999999995,
+    "longitude": -73.804788,
+    "notes": "mubereat ",
+    "timestampMs": 1736629270000,
+    "graphId": "/g/11fpfyhhqs"
+  },
+  {
+    "name": "East Buffet",
+    "address": "4207 Main St, Flushing, NY 11355",
+    "latitude": 40.755114999999996,
+    "longitude": -73.82797149999999,
+    "notes": "david dim sum",
+    "timestampMs": 1736280345000,
+    "graphId": "/g/1td5h0_n"
+  },
+  {
+    "name": "Hani’s bakery + café",
+    "address": "67 Cooper Sq, New York, NY 10003",
+    "latitude": 40.7290987,
+    "longitude": -73.9899368,
+    "notes": "jason cho",
+    "timestampMs": 1735498915000,
+    "graphId": "/g/11w8jy1k3b"
+  },
+  {
+    "name": "Pho Viet Nam",
+    "address": "1243 Avenue U, Brooklyn, NY 11229",
+    "latitude": 40.598753699999996,
+    "longitude": -73.9585756,
+    "notes": "foodnyc",
+    "timestampMs": 1735440547000,
+    "graphId": "/g/1tnqhx9b"
+  },
+  {
+    "name": "Kato Sake Works",
+    "address": "379 Troutman St, Brooklyn, NY 11237",
+    "latitude": 40.70597,
+    "longitude": -73.9237799,
+    "notes": "local brewery reels",
+    "timestampMs": 1735226754000,
+    "graphId": "/g/11fl44ffxb"
+  },
+  {
+    "name": "Zabb PuTawn",
+    "address": "1584 1st Ave., New York, NY 10028",
+    "latitude": 40.774476199999995,
+    "longitude": -73.950799,
+    "notes": "not sweet thai foodnyc",
+    "timestampMs": 1735109225000,
+    "graphId": "/g/11c0pz3qc4"
+  },
+  {
+    "name": "Best Bagel & Coffee",
+    "address": "225 W 35th St A, New York, NY 10001",
+    "latitude": 40.7522252,
+    "longitude": -73.9911099,
+    "notes": "",
+    "timestampMs": 1735103859000,
+    "graphId": "/g/1tq8kgfd"
+  },
+  {
+    "name": "Nom Nam",
+    "address": "210 E 34th St, New York, NY 10016",
+    "latitude": 40.7453559,
+    "longitude": -73.97762949999999,
+    "notes": "pho truthree ",
+    "timestampMs": 1734846020000,
+    "graphId": "/g/11jz8zlrx0"
+  },
+  {
+    "name": "Chef Huang",
+    "address": "635 2nd Ave, New York, NY 10016",
+    "latitude": 40.745278,
+    "longitude": -73.9757462,
+    "notes": "peking duck",
+    "timestampMs": 1734799271000,
+    "graphId": "/g/11thj9h9db"
+  },
+  {
+    "name": "Song' E Napule",
+    "address": "146 W Houston St, New York, NY 10012",
+    "latitude": 40.727921599999995,
+    "longitude": -74.0014088,
+    "notes": "authentic italian",
+    "timestampMs": 1734452034000,
+    "graphId": "/g/11b6_th79f"
+  },
+  {
+    "name": "Kassim's",
+    "address": "169-28 Jamaica Ave, Jamaica, NY 11432",
+    "latitude": 40.7070247,
+    "longitude": -73.7897375,
+    "notes": "roti",
+    "timestampMs": 1733958308000,
+    "graphId": "/g/1tk68lw3"
+  },
+  {
+    "name": "Sushi Sho",
+    "address": "3 E 41st St, New York, NY 10017",
+    "latitude": 40.7525548,
+    "longitude": -73.9807508,
+    "notes": "michelin",
+    "timestampMs": 1733844763000,
+    "graphId": "/g/11vqcw2p07"
+  },
+  {
+    "name": "Omar's Mediterranean Cuisine",
+    "address": "2 W 46th St, New York, NY 10036",
+    "latitude": 40.7561203,
+    "longitude": -73.9796648,
+    "notes": "good lunch spot",
+    "timestampMs": 1733780603000,
+    "graphId": "/g/11sszrm053"
+  },
+  {
+    "name": "Trolley Museum of New York",
+    "address": "89 E Strand St, Kingston, NY 12401",
+    "latitude": 41.9204906,
+    "longitude": -73.9800601,
+    "notes": "",
+    "timestampMs": 1733720353000,
+    "graphId": "/m/0c6sq3"
+  },
+  {
+    "name": "Fiaschetteria “Pistoia”",
+    "address": "114 Christopher St, New York, NY 10014",
+    "latitude": 40.7331565,
+    "longitude": -74.0053896,
+    "notes": "italian beli",
+    "timestampMs": 1733506050000,
+    "graphId": "/g/11gy3l00d6"
+  },
+  {
+    "name": "1915 Lanzhou Hand Pulled Noodles",
+    "address": "207 E 26th St, New York, NY 10016",
+    "latitude": 40.7406407,
+    "longitude": -73.98123029999999,
+    "notes": "mubereats",
+    "timestampMs": 1733453249000,
+    "graphId": "/g/11ld3r8q5y"
+  },
+  {
+    "name": "Milkflower",
+    "address": "34-12 31st Ave, Astoria, NY 11106",
+    "latitude": 40.762906099999995,
+    "longitude": -73.9207476,
+    "notes": "sausage and kale calzone ",
+    "timestampMs": 1733382732000,
+    "graphId": "/g/1pp2t__n9"
+  },
+  {
+    "name": "VPho and Pizzeria",
+    "address": "2004 Williamsbridge Rd, Bronx, NY 10461",
+    "latitude": 40.8544616,
+    "longitude": -73.8543979,
+    "notes": "banh mi",
+    "timestampMs": 1733290051000,
+    "graphId": "/g/11v5z9l9q8"
+  },
+  {
+    "name": "Quarters",
+    "address": "383 Broadway 2nd Floor, New York, NY 10013",
+    "latitude": 40.7182063,
+    "longitude": -74.0030768,
+    "notes": "nice space",
+    "timestampMs": 1733237787000,
+    "graphId": "/g/11vx1cz8mt"
+  },
+  {
+    "name": "61 Greenpoint Ave",
+    "address": "61 Greenpoint Ave, Brooklyn, NY 11222",
+    "latitude": 40.7300325,
+    "longitude": -73.9584385,
+    "notes": "copilot money office",
+    "timestampMs": 1733185291000,
+    "graphId": "/g/11b8v4kv4g"
+  },
+  {
+    "name": "Yingtao",
+    "address": "805 9th Ave, New York, NY 10019",
+    "latitude": 40.765721899999996,
+    "longitude": -73.987724,
+    "notes": "foodnyc jason?",
+    "timestampMs": 1733068705000,
+    "graphId": "/g/11vl4ddw3p"
+  },
+  {
+    "name": "Nudibranch",
+    "address": "125 1st Ave., New York, NY 10003",
+    "latitude": 40.727399299999995,
+    "longitude": -73.9856831,
+    "notes": "duck",
+    "timestampMs": 1732980485000,
+    "graphId": "/g/11rqsdnv3n"
+  },
+  {
+    "name": "DokoDemo",
+    "address": "89 E 4th St, New York, NY 10003",
+    "latitude": 40.7264093,
+    "longitude": -73.9896892,
+    "notes": "mubereats",
+    "timestampMs": 1732946892000,
+    "graphId": "/g/11fx7md2h9"
+  },
+  {
+    "name": "Daesung korean Noodle",
+    "address": "45-04 162nd St, Flushing, NY 11358",
+    "latitude": 40.7561475,
+    "longitude": -73.8047322,
+    "notes": "reels mubereats",
+    "timestampMs": 1732725106000,
+    "graphId": "/g/1tdc1km2"
+  },
+  {
+    "name": "Super Rice蓮旺家鄉味",
+    "address": "6515 18th Ave, Brooklyn, NY 11204",
+    "latitude": 40.618709599999995,
+    "longitude": -73.9904153,
+    "notes": "beef chow fun foodnyc\n",
+    "timestampMs": 1732433046000,
+    "graphId": "/g/1ptyl8d8s"
+  },
+  {
+    "name": "tán",
+    "address": "209 E 49th St, New York, NY 10017",
+    "latitude": 40.755027999999996,
+    "longitude": -73.9704728,
+    "notes": "mex olivia",
+    "timestampMs": 1732420729000,
+    "graphId": "/g/11tjgqs82n"
+  },
+  {
+    "name": "Luigi's Pizza",
+    "address": "686 5th Ave, Brooklyn, NY 11215",
+    "latitude": 40.6616328,
+    "longitude": -73.9933432,
+    "notes": "",
+    "timestampMs": 1732391773000,
+    "graphId": "/g/1tfwl8k7"
+  },
+  {
+    "name": "Sawa",
+    "address": "75 5th Ave, Brooklyn, NY 11217",
+    "latitude": 40.680463499999995,
+    "longitude": -73.97758019999999,
+    "notes": "infatuation, octopus",
+    "timestampMs": 1731983241000,
+    "graphId": "/g/11vsp7zvxd"
+  },
+  {
+    "name": "Sappe",
+    "address": "240 W 14th St, New York, NY 10011",
+    "latitude": 40.739140299999995,
+    "longitude": -74.0018035,
+    "notes": "skewers infatuation",
+    "timestampMs": 1731983190000,
+    "graphId": "/g/11vm7vxl12"
+  },
+  {
+    "name": "Lim’s Kitchen",
+    "address": "242 E 40th St, New York, NY 10016",
+    "latitude": 40.7486507,
+    "longitude": -73.9739254,
+    "notes": "simple korean",
+    "timestampMs": 1731885487000,
+    "graphId": "/g/11vbwqqhd2"
+  },
+  {
+    "name": "Taci's Beyti",
+    "address": "1953-1955 Coney Island Ave, Brooklyn, NY 11223",
+    "latitude": 40.609559399999995,
+    "longitude": -73.9620023,
+    "notes": "good turkish foodnyc",
+    "timestampMs": 1731558695000,
+    "graphId": "/g/1v27wdky"
+  },
+  {
+    "name": "Flamin wok Jamaican Chinese & seafood",
+    "address": "839 Burke Ave, Bronx, NY 10467",
+    "latitude": 40.8714914,
+    "longitude": -73.8619251,
+    "notes": "caribbean chinese foodnyc",
+    "timestampMs": 1731443157000,
+    "graphId": "/g/11r988b2_d"
+  },
+  {
+    "name": "Sri Ganesh Dosa House",
+    "address": "809 Newark Ave, Jersey City, NJ 07306",
+    "latitude": 40.7354802,
+    "longitude": -74.06532969999999,
+    "notes": "reels",
+    "timestampMs": 1731353072000,
+    "graphId": "/g/1tfyfgzw"
+  },
+  {
+    "name": "Innisfree Garden",
+    "address": "362 Tyrrel Rd, Millbrook, NY 12545",
+    "latitude": 41.761858,
+    "longitude": -73.7488506,
+    "notes": "",
+    "timestampMs": 1731298981000,
+    "graphId": "/m/09b50c"
+  },
+  {
+    "name": "",
+    "address": "",
+    "latitude": 41.422577,
+    "longitude": -74.0007399,
+    "notes": "viewpoint ",
+    "timestampMs": 1731187111000
+  },
+  {
+    "name": "Ivan Ramen",
+    "address": "25 Clinton St, New York, NY 10002",
+    "latitude": 40.7205819,
+    "longitude": -73.9845212,
+    "notes": "foodnyc",
+    "timestampMs": 1731043310000,
+    "graphId": "/g/11b66ff60y"
+  },
+  {
+    "name": "Dropped pin",
+    "address": "Near Philipstown, NY",
+    "latitude": 41.3485601,
+    "longitude": -73.956345,
+    "notes": "pretty house",
+    "timestampMs": 1730843187000
+  },
+  {
+    "name": "Brooklyn French Bakers",
+    "address": "273 Columbia St, Brooklyn, NY 11231",
+    "latitude": 40.682767299999995,
+    "longitude": -74.00365099999999,
+    "notes": "",
+    "timestampMs": 1730843152000,
+    "graphId": "/g/11sms10qb2"
+  },
+  {
+    "name": "McCook's Beach",
+    "address": "East Lyme, CT 06357",
+    "latitude": 41.317571799999996,
+    "longitude": -72.1987171,
+    "notes": "on the way between boston and nyc via amtrak",
+    "timestampMs": 1730748428000,
+    "graphId": "/g/1tfpw925"
+  },
+  {
+    "name": "FIAO | Il Centro Community & Fitness Center",
+    "address": "8711 18th Ave, Brooklyn, NY 11214",
+    "latitude": 40.605114,
+    "longitude": -74.004537,
+    "notes": "bball courts",
+    "timestampMs": 1730748403000,
+    "graphId": "/g/1th880m0"
+  },
+  {
+    "name": "Honey Badger",
+    "address": "67 Fenimore St, Brooklyn, NY 11225",
+    "latitude": 40.658268799999995,
+    "longitude": -73.9599751,
+    "notes": "",
+    "timestampMs": 1730748217000,
+    "graphId": "/g/11g69gggg0"
+  },
+  {
+    "name": "Coney Island Ave",
+    "address": "Brooklyn, NY",
+    "latitude": 40.6136043,
+    "longitude": -73.9631222,
+    "notes": "mango??",
+    "timestampMs": 1730748172000,
+    "graphId": "/m/0c9m9z"
+  },
+  {
+    "name": "The Dolar Shop Hot Pot Manhattan",
+    "address": "55 3rd Ave, New York, NY 10003",
+    "latitude": 40.7310965,
+    "longitude": -73.9885079,
+    "notes": "",
+    "timestampMs": 1730748015000,
+    "graphId": "/g/11lh6j1whh"
+  },
+  {
+    "name": "212 East",
+    "address": "212 E 9th St, New York, NY 10003",
+    "latitude": 40.729667,
+    "longitude": -73.9887628,
+    "notes": "",
+    "timestampMs": 1730747983000,
+    "graphId": "/g/11b6g99g3m"
+  },
+  {
+    "name": "Otaru Sushi Bar",
+    "address": "21 Temple St, New Haven, CT 06510",
+    "latitude": 41.3043772,
+    "longitude": -72.92839099999999,
+    "notes": "",
+    "timestampMs": 1730747983000,
+    "graphId": "/g/11gyxh3p93"
+  },
+  {
+    "name": "Fish Cheeks",
+    "address": "55 Bond St, New York, NY 10012",
+    "latitude": 40.725708999999995,
+    "longitude": -73.992682,
+    "notes": "",
+    "timestampMs": 1730747962000,
+    "graphId": "/g/11c1ptf2bs"
+  },
+  {
+    "name": "WINNER",
+    "address": "367 7th Ave, Brooklyn, NY 11215",
+    "latitude": 40.665714799999996,
+    "longitude": -73.982357,
+    "notes": "cookie",
+    "timestampMs": 1730747937000,
+    "graphId": "/g/11j8w92yht"
+  },
+  {
+    "name": "Blind Tiger",
+    "address": "281 Bleecker St, New York, NY 10014",
+    "latitude": 40.731878599999995,
+    "longitude": -74.0032355,
+    "notes": "",
+    "timestampMs": 1730747905000,
+    "graphId": "/g/1tgcst24"
+  },
+  {
+    "name": "Joomak Banjum",
+    "address": "601 W 26th St, New York, NY 10001",
+    "latitude": 40.751657099999996,
+    "longitude": -74.0071579,
+    "notes": "desserts bar",
+    "timestampMs": 1730747848000,
+    "graphId": "/g/11nnvy97h9"
+  },
+  {
+    "name": "Peppercorn Station",
+    "address": "66 W 39th St, New York, NY 10018",
+    "latitude": 40.7526724,
+    "longitude": -73.9851257,
+    "notes": "",
+    "timestampMs": 1730747767000,
+    "graphId": "/g/11rq183__v"
+  },
+  {
+    "name": "CHILI",
+    "address": "13 E 37th St, New York, NY 10016",
+    "latitude": 40.7501259,
+    "longitude": -73.9820676,
+    "notes": "",
+    "timestampMs": 1730747721000,
+    "graphId": "/g/11qgkh_j07"
+  },
+  {
+    "name": "La Compagnie des Vins Surnaturels",
+    "address": "249 Centre St, New York, NY 10013",
+    "latitude": 40.7205157,
+    "longitude": -73.9981652,
+    "notes": "jcho wines",
+    "timestampMs": 1730431204000,
+    "graphId": "/g/1z44b5g5r"
+  },
+  {
+    "name": "Lowerline",
+    "address": "794 Washington Ave, Brooklyn, NY 11238",
+    "latitude": 40.6742464,
+    "longitude": -73.96325929999999,
+    "notes": "foodnyc",
+    "timestampMs": 1730306798000,
+    "graphId": "/g/11hbnx5h75"
+  },
+  {
+    "name": "Roberta's",
+    "address": "6 Grand St, Brooklyn, NY 11249",
+    "latitude": 40.716196499999995,
+    "longitude": -73.96656759999999,
+    "notes": "",
+    "timestampMs": 1730042901000,
+    "graphId": "/g/11lg258g2_"
+  },
+  {
+    "name": "Lilia",
+    "address": "567 Union Ave, Brooklyn, NY 11211",
+    "latitude": 40.717591899999995,
+    "longitude": -73.95236729999999,
+    "notes": "",
+    "timestampMs": 1730042864000,
+    "graphId": "/g/11ckqqrhft"
+  },
+  {
+    "name": "TØRST",
+    "address": "615 Manhattan Ave, Brooklyn, NY 11222",
+    "latitude": 40.7234391,
+    "longitude": -73.9507379,
+    "notes": "",
+    "timestampMs": 1730042844000,
+    "graphId": "/g/11bbwm9f3z"
+  },
+  {
+    "name": "Taqueria Ramirez",
+    "address": "94 Franklin St, Brooklyn, NY 11222",
+    "latitude": 40.727900999999996,
+    "longitude": -73.9569357,
+    "notes": "",
+    "timestampMs": 1730042844000,
+    "graphId": "/g/11rt7mr1s4"
+  },
+  {
+    "name": "Sake Bar Satsko",
+    "address": "between Avenue B and C, 202 E 7th St, New York, NY 10009",
+    "latitude": 40.7244975,
+    "longitude": -73.9802117,
+    "notes": "sake bar",
+    "timestampMs": 1730042358000,
+    "graphId": "/g/1td0bvvx"
+  },
+  {
+    "name": "Shinpi Omakase",
+    "address": "121 Madison Ave #3, New York, NY 10016, United States",
+    "latitude": 40.7453849,
+    "longitude": -73.9845472,
+    "notes": "someone’s story",
+    "timestampMs": 1729492572000,
+    "graphId": "/g/11kk8r0_b3"
+  },
+  {
+    "name": "Yoon Haeundae Galbi",
+    "address": "8 W 36th St. Unit 245, New York, NY 10018, United States",
+    "latitude": 40.7499624,
+    "longitude": -73.98445509999999,
+    "notes": "",
+    "timestampMs": 1729468324000,
+    "graphId": "/g/11hbblt2tb"
+  },
+  {
+    "name": "John Doe Craft Bar & Kitchen",
+    "address": "253 5th Ave, New York, NY 10016, United States",
+    "latitude": 40.744724,
+    "longitude": -73.9869413,
+    "notes": "$1 oyster reela",
+    "timestampMs": 1729468216000,
+    "graphId": "/g/11byl4tvk4"
+  },
+  {
+    "name": "Noodle Village",
+    "address": "13 Mott St, New York, NY 10013",
+    "latitude": 40.7141401,
+    "longitude": -73.998918,
+    "notes": "xlb foodnyc",
+    "timestampMs": 1728436962000,
+    "graphId": "/g/1tmklx40"
+  },
+  {
+    "name": "Ho Foods",
+    "address": "110 E 7th St, New York, NY 10009",
+    "latitude": 40.726286099999996,
+    "longitude": -73.9848252,
+    "notes": "beef noodle soup",
+    "timestampMs": 1728348376000,
+    "graphId": "/g/11hb32mtd0"
+  },
+  {
+    "name": "DUMBO Archway",
+    "address": "155 Water St, Brooklyn, NY 11201",
+    "latitude": 40.7030105,
+    "longitude": -73.98854759999999,
+    "notes": "bk flea",
+    "timestampMs": 1727880960000,
+    "graphId": "/g/113jnwbx6"
+  },
+  {
+    "name": "Jubilee Marketplace (Supermarket)",
+    "address": "145 West St, Brooklyn, NY 11222",
+    "latitude": 40.7320658,
+    "longitude": -73.9597541,
+    "notes": "2.55 burger?",
+    "timestampMs": 1727811740000,
+    "graphId": "/g/11k4p1vbcp"
+  },
+  {
+    "name": "Mano's Pizzeria",
+    "address": "62-98 Forest Ave, Flushing, NY 11385",
+    "latitude": 40.7108531,
+    "longitude": -73.9052694,
+    "notes": "pizza foodnyc",
+    "timestampMs": 1727670097000,
+    "graphId": "/g/11p1684ryv"
+  },
+  {
+    "name": "Bed Stuy Aquarium",
+    "address": "408 Tompkins Ave, Brooklyn, NY 11216",
+    "latitude": 40.6833515,
+    "longitude": -73.9440659,
+    "notes": "",
+    "timestampMs": 1727557262000,
+    "graphId": "/g/11w8q9jjv6"
+  },
+  {
+    "name": "New York Transit Museum",
+    "address": "99 Schermerhorn St, Brooklyn, NY 11201",
+    "latitude": 40.6905698,
+    "longitude": -73.9900676,
+    "notes": "",
+    "timestampMs": 1727550365000,
+    "graphId": "/m/04xk1d"
+  },
+  {
+    "name": "Breakfast by Salt's Cure",
+    "address": "27 1/2 Morton St, New York, NY 10014",
+    "latitude": 40.7311224,
+    "longitude": -74.0044422,
+    "notes": "breakfast nate",
+    "timestampMs": 1727545379000,
+    "graphId": "/g/11p12s2fx2"
+  },
+  {
+    "name": "Shelsky's Of Brooklyn Appetizing and Delicatessen",
+    "address": "141 Court St, Brooklyn, NY 11201",
+    "latitude": 40.689386,
+    "longitude": -73.99230299999999,
+    "notes": "infatuation",
+    "timestampMs": 1727482836000,
+    "graphId": "/g/1tk70f4_"
+  },
+  {
+    "name": "BO's Bagels",
+    "address": "235 W 116th St, New York, NY 10026",
+    "latitude": 40.804196999999995,
+    "longitude": -73.95409099999999,
+    "notes": "harlem bagel infatuation",
+    "timestampMs": 1727482706000,
+    "graphId": "/g/11c6vpp9qm"
+  },
+  {
+    "name": "Stereo Exchange",
+    "address": "23 E 17th St 2nd Floor, New York, NY 10003",
+    "latitude": 40.7375006,
+    "longitude": -73.9907455,
+    "notes": "speakers",
+    "timestampMs": 1727238201000,
+    "graphId": "/g/1tl_mmsf"
+  },
+  {
+    "name": "Juicy Cube",
+    "address": "674 Lexington Ave, New York, NY 10022",
+    "latitude": 40.760182199999996,
+    "longitude": -73.96988739999999,
+    "notes": "boba?",
+    "timestampMs": 1727209687000,
+    "graphId": "/g/1261m53w0"
+  },
+  {
+    "name": "Xun Yu Si Kao",
+    "address": "5609 7th Ave, Brooklyn, NY 11220",
+    "latitude": 40.6388093,
+    "longitude": -74.0095005,
+    "notes": "fried fish",
+    "timestampMs": 1726617427000,
+    "graphId": "/g/11hb0fvnqd"
+  },
+  {
+    "name": "Positano",
+    "address": "10018 4th Ave, Brooklyn, NY 11209",
+    "latitude": 40.6125569,
+    "longitude": -74.0343092,
+    "notes": "great italian, connie’s mom bday",
+    "timestampMs": 1726585323000,
+    "graphId": "/g/11bw5zmw0_"
+  },
+  {
+    "name": "Colebrookdale Railroad",
+    "address": "64 S Washington St, Boyertown, PA 19512",
+    "latitude": 40.3313834,
+    "longitude": -75.6363441,
+    "notes": "train cute",
+    "timestampMs": 1726459496000,
+    "graphId": "/m/012m2f53"
+  },
+  {
+    "name": "Seed + Mill",
+    "address": "409 W 15th St, New York, NY 10011",
+    "latitude": 40.7421104,
+    "longitude": -74.0056232,
+    "notes": "tahini soft serve ",
+    "timestampMs": 1726450335000,
+    "graphId": "/g/11clzk85zb"
+  },
+  {
+    "name": "The York",
+    "address": "186 Avenue B, New York, NY 10009",
+    "latitude": 40.7278373,
+    "longitude": -73.9793452,
+    "notes": "$12 happy hour",
+    "timestampMs": 1726435888000,
+    "graphId": "/g/11s2qlz_xr"
+  },
+  {
+    "name": "Omonia Cafe",
+    "address": "7612-14 3rd Ave, Brooklyn, NY 11209",
+    "latitude": 40.6304204,
+    "longitude": -74.0283821,
+    "notes": "baklava cheesecake",
+    "timestampMs": 1726379672000,
+    "graphId": "/g/1tftr_gk"
+  },
+  {
+    "name": "Brooklyn Roots Italian",
+    "address": "8620 3rd Ave, Brooklyn, NY 11209",
+    "latitude": 40.6229337,
+    "longitude": -74.0315155,
+    "notes": "reddit",
+    "timestampMs": 1726379262000,
+    "graphId": "/g/1vg4kqqr"
+  },
+  {
+    "name": "Ji Bei Chuan Noodles 季北川 BK 86",
+    "address": "2238 86th St, Brooklyn, NY 11214",
+    "latitude": 40.6011834,
+    "longitude": -73.9929488,
+    "notes": "reddit",
+    "timestampMs": 1726379013000,
+    "graphId": "/g/11lcprdn6m"
+  },
+  {
+    "name": "Gino's",
+    "address": "7414 5th Ave, Brooklyn, NY 11209",
+    "latitude": 40.629944099999996,
+    "longitude": -74.0226686,
+    "notes": "reddit",
+    "timestampMs": 1726378913000,
+    "graphId": "/g/1tfwl868"
+  },
+  {
+    "name": "sendo",
+    "address": "876 6th Ave 2nd floor, New York, NY 10001",
+    "latitude": 40.7478948,
+    "longitude": -73.9889367,
+    "notes": "budget omakase",
+    "timestampMs": 1726206259000,
+    "graphId": "/g/11vwp1w14x"
+  },
+  {
+    "name": "ODRE",
+    "address": "199 2nd Ave, New York, NY 10003",
+    "latitude": 40.7313994,
+    "longitude": -73.9858687,
+    "notes": "budget korean tasting ",
+    "timestampMs": 1726206230000,
+    "graphId": "/g/11w3rf2j6v"
+  },
+  {
+    "name": "YGF Malatang 杨国福麻辣烫",
+    "address": "92 3rd Ave, New York, NY 10003",
+    "latitude": 40.7322865,
+    "longitude": -73.988252,
+    "notes": "alex chen",
+    "timestampMs": 1726198228000,
+    "graphId": "/g/11ldhf9sfj"
+  },
+  {
+    "name": "Delmonico's",
+    "address": "56 Beaver St, New York, NY 10004",
+    "latitude": 40.7050268,
+    "longitude": -74.0102557,
+    "notes": "steakhouse",
+    "timestampMs": 1726190659000,
+    "graphId": "/g/1q62fbp4q"
+  },
+  {
+    "name": "Dosa Hutt",
+    "address": "4563 Bowne St, Flushing, NY 11355",
+    "latitude": 40.7525055,
+    "longitude": -73.8167519,
+    "notes": "dosa emily noah",
+    "timestampMs": 1726190526000,
+    "graphId": "/g/1w666bb0"
+  },
+  {
+    "name": "Bánh",
+    "address": "942 Amsterdam Ave, New York, NY 10025",
+    "latitude": 40.8008758,
+    "longitude": -73.96567759999999,
+    "notes": "banh mi",
+    "timestampMs": 1726183758000,
+    "graphId": "/g/11lpv4yyr4"
+  },
+  {
+    "name": "Saiguette",
+    "address": "935 Columbus Ave, New York, NY 10025",
+    "latitude": 40.7990504,
+    "longitude": -73.9628139,
+    "notes": "banh mi",
+    "timestampMs": 1726183515000,
+    "graphId": "/g/1hd_z3yrz"
+  },
+  {
+    "name": "Hello Saigon",
+    "address": "180 Bleecker St, New York, NY 10012",
+    "latitude": 40.7289404,
+    "longitude": -74.0009412,
+    "notes": "pho",
+    "timestampMs": 1726183443000,
+    "graphId": "/g/11dzdjzt39"
+  },
+  {
+    "name": "Main Street Imperial Taiwanese",
+    "address": "59-10 Main St, Flushing, NY 11355",
+    "latitude": 40.7435148,
+    "longitude": -73.8258135,
+    "notes": "reels taiwan food",
+    "timestampMs": 1725944792000,
+    "graphId": "/g/1tc_g59h"
+  },
+  {
+    "name": "John P. Humes Japanese Stroll Garden",
+    "address": "Dogwood Ln, Mill Neck, NY 11765",
+    "latitude": 40.874424499999996,
+    "longitude": -73.5749817,
+    "notes": "reels",
+    "timestampMs": 1725772843000,
+    "graphId": "/m/09mv09"
+  },
+  {
+    "name": "Schaller & Weber",
+    "address": "1654 2nd Ave #1, New York, NY 10028",
+    "latitude": 40.777558,
+    "longitude": -73.9517681,
+    "notes": "foodnyc ",
+    "timestampMs": 1725754377000,
+    "graphId": "/g/1th299lq"
+  },
+  {
+    "name": "Brooklyn Bagel & Coffee Company",
+    "address": "286 8th Ave, New York, NY 10001",
+    "latitude": 40.7461674,
+    "longitude": -73.99764069999999,
+    "notes": "foodnyc",
+    "timestampMs": 1725687889000,
+    "graphId": "/g/1tmxggnl"
+  },
+  {
+    "name": "Between the Bagel NY",
+    "address": "31-13 30th Ave., Astoria, NY 11102",
+    "latitude": 40.7668301,
+    "longitude": -73.92072329999999,
+    "notes": "foodnyc",
+    "timestampMs": 1725687811000,
+    "graphId": "/g/1tx47zkg"
+  },
+  {
+    "name": "Bar Moga",
+    "address": "128 W Houston St, New York, NY 10012",
+    "latitude": 40.7277628,
+    "longitude": -74.00115579999999,
+    "notes": "omurice yichen",
+    "timestampMs": 1725685079000,
+    "graphId": "/g/11fx9dyff6"
+  },
+  {
+    "name": "TOKUYAMATCHA & ONIGIRAZU BAR",
+    "address": "627 E 6th St, New York, NY 10009",
+    "latitude": 40.7239875,
+    "longitude": -73.9801793,
+    "notes": "foodnyc",
+    "timestampMs": 1725591263000,
+    "graphId": "/g/11gr0vjwl9"
+  },
+  {
+    "name": "Pamina Dolci e Gelato",
+    "address": "461 6th Ave, New York, NY 10011",
+    "latitude": 40.7353194,
+    "longitude": -73.99855409999999,
+    "notes": "foodnyc",
+    "timestampMs": 1725591185000,
+    "graphId": "/g/11v6b69t19"
+  },
+  {
+    "name": "Frank & Sal Italian Market Brooklyn",
+    "address": "8008 18th Ave, Brooklyn, NY 11214",
+    "latitude": 40.610378999999995,
+    "longitude": -73.99924469999999,
+    "notes": "goat shit",
+    "timestampMs": 1725564558000,
+    "graphId": "/g/1tk8d0d6"
+  },
+  {
+    "name": "Lioni Italian Heroes",
+    "address": "7803 15th Ave, Brooklyn, NY 11228",
+    "latitude": 40.615724799999995,
+    "longitude": -74.0048401,
+    "notes": "",
+    "timestampMs": 1725564508000,
+    "graphId": "/g/1pp2tg_cx"
+  },
+  {
+    "name": "Golden Diner",
+    "address": "123 Madison St, New York, NY 10002",
+    "latitude": 40.7124331,
+    "longitude": -73.99410519999999,
+    "notes": "fried chicken and pancakes",
+    "timestampMs": 1725510128000,
+    "graphId": "/g/11f9xn4_1z"
+  },
+  {
+    "name": "Cello's Pizzeria",
+    "address": "36 St Marks Pl, New York, NY 10003",
+    "latitude": 40.7286439,
+    "longitude": -73.9881729,
+    "notes": "pizza beli reels",
+    "timestampMs": 1725503852000,
+    "graphId": "/g/11v_1cybj4"
+  },
+  {
+    "name": "Formosa",
+    "address": "144 Evergreen Ave, Brooklyn, NY 11206",
+    "latitude": 40.6992348,
+    "longitude": -73.9316236,
+    "notes": "reels",
+    "timestampMs": 1725501327000,
+    "graphId": "/g/11y1wm28bf"
+  },
+  {
+    "name": "Park Avenue Audio",
+    "address": "440 Park Ave S, New York, NY 10016",
+    "latitude": 40.7444121,
+    "longitude": -73.9835236,
+    "notes": "speakers",
+    "timestampMs": 1725285454000,
+    "graphId": "/g/1tjprdwq"
+  },
+  {
+    "name": "Audio46 Headphones - Headphone Superstore",
+    "address": "29 W 46th St, New York, NY 10036",
+    "latitude": 40.756777,
+    "longitude": -73.980176,
+    "notes": "audiophile stuff",
+    "timestampMs": 1725285404000,
+    "graphId": "/g/12jls4bwt"
+  },
+  {
+    "name": "Revolution Rail Co. North Creek",
+    "address": "3 Railroad Pl, North Creek, NY 12853",
+    "latitude": 43.7034217,
+    "longitude": -73.9899421,
+    "notes": "lol",
+    "timestampMs": 1725215711000,
+    "graphId": "/g/11f01q2sx9"
+  },
+  {
+    "name": "SALSWEE",
+    "address": "180 5th Ave, New York, NY 10010",
+    "latitude": 40.7412849,
+    "longitude": -73.9901094,
+    "notes": "reels",
+    "timestampMs": 1725214307000,
+    "graphId": "/g/11vwhtj0yl"
+  },
+  {
+    "name": "Enoteca Maria",
+    "address": "27 Hyatt St, Staten Island, NY 10301",
+    "latitude": 40.6420034,
+    "longitude": -74.0772848,
+    "notes": "grandma in training",
+    "timestampMs": 1725140972000,
+    "graphId": "/g/1tdzmgcg"
+  },
+  {
+    "name": "Uma's",
+    "address": "92-07 Rockaway Beach Blvd, Far Rockaway, NY 11693",
+    "latitude": 40.586169999999996,
+    "longitude": -73.815637,
+    "notes": "rob martinez",
+    "timestampMs": 1724942747000,
+    "graphId": "/g/1ptyck7md"
+  },
+  {
+    "name": "Xie Bao 蟹寶",
+    "address": "133-35 Roosevelt Ave, Flushing, NY 11354",
+    "latitude": 40.758836699999996,
+    "longitude": -73.8331334,
+    "notes": "crab noodle infatuation ",
+    "timestampMs": 1724905202000,
+    "graphId": "/g/11vpz5k6vj"
+  },
+  {
+    "name": "Ceremonia Bakeshop",
+    "address": "743 Driggs Ave, Brooklyn, NY 11211",
+    "latitude": 40.7124799,
+    "longitude": -73.9605827,
+    "notes": "burrito reels",
+    "timestampMs": 1724894642000,
+    "graphId": "/g/11fmg4qp5b"
+  },
+  {
+    "name": "Son del North",
+    "address": "177 Orchard St, New York, NY 10002",
+    "latitude": 40.7217923,
+    "longitude": -73.988477,
+    "notes": "burrito reels",
+    "timestampMs": 1724894597000,
+    "graphId": "/g/11y55qtyv3"
+  },
+  {
+    "name": "Mobil",
+    "address": "51-63 8th Ave, New York, NY 10014",
+    "latitude": 40.738985899999996,
+    "longitude": -74.00347169999999,
+    "notes": "burgers?? reels",
+    "timestampMs": 1724775804000,
+    "graphId": "/g/1jkymnksn"
+  },
+  {
+    "name": "NUBIANI",
+    "address": "315 5th Ave #3FL, New York, NY 10016",
+    "latitude": 40.746994099999995,
+    "longitude": -73.9854149,
+    "notes": "mari",
+    "timestampMs": 1724709426000,
+    "graphId": "/g/11t1l2zsq1"
+  },
+  {
+    "name": "SHAKALAKA BAKERY",
+    "address": "136-76 Roosevelt Ave, Queens, NY 11354",
+    "latitude": 40.760089,
+    "longitude": -73.8273423,
+    "notes": "reels, mango pastry?",
+    "timestampMs": 1724653832000,
+    "graphId": "/g/11rhzkjmxc"
+  },
+  {
+    "name": "Maxi's Noodle",
+    "address": "135-11 38th Ave, Queens, NY 11354",
+    "latitude": 40.7604397,
+    "longitude": -73.8322148,
+    "notes": "reels queens food crawl",
+    "timestampMs": 1724653782000,
+    "graphId": "/g/11h3w5m0ct"
+  },
+  {
+    "name": "Phayul",
+    "address": "37-65 74th Street, Flushing, NY 11372",
+    "latitude": 40.7471957,
+    "longitude": -73.89120249999999,
+    "notes": "reels, queens food crawl",
+    "timestampMs": 1724653756000,
+    "graphId": "/g/1tfc7jpw"
+  },
+  {
+    "name": "Elizabeth Street Garden",
+    "address": "Elizabeth St, New York, NY 10012",
+    "latitude": 40.7221885,
+    "longitude": -73.9946104,
+    "notes": "park?",
+    "timestampMs": 1724607689000,
+    "graphId": "/g/11c0xdc08s"
+  },
+  {
+    "name": "Somedays Bakery",
+    "address": "23-37 30th Ave., Long Island City, NY 11102",
+    "latitude": 40.7688406,
+    "longitude": -73.92516239999999,
+    "notes": "reels",
+    "timestampMs": 1724507864000,
+    "graphId": "/g/11y3tn_x6y"
+  },
+  {
+    "name": "Villa Charlotte Brontë",
+    "address": "2501 Palisade Ave, Bronx, NY 10463",
+    "latitude": 40.880986799999995,
+    "longitude": -73.9224282,
+    "notes": "cute reels",
+    "timestampMs": 1724427856000,
+    "graphId": "/g/11kp_9f4_m"
+  },
+  {
+    "name": "Solely Tea",
+    "address": "111 Eldridge St, New York, NY 10002",
+    "latitude": 40.7182878,
+    "longitude": -73.9922136,
+    "notes": "tyler boba",
+    "timestampMs": 1724118235000,
+    "graphId": "/g/11q1b2_x17"
+  },
+  {
+    "name": "T Shop",
+    "address": "247 Elizabeth St, New York, NY 10012",
+    "latitude": 40.723474499999995,
+    "longitude": -73.9940988,
+    "notes": "uro, 0247 bathroom code",
+    "timestampMs": 1705181303000,
+    "graphId": "/g/11btlw6pr7"
+  },
+  {
+    "name": "San Sabino",
+    "address": "113 Greenwich Ave, New York, NY 10014",
+    "latitude": 40.7380199,
+    "longitude": -74.0021622,
+    "notes": "langostine",
+    "timestampMs": 1723941737000,
+    "graphId": "/g/11y2r1xt4c"
+  },
+  {
+    "name": "Alison",
+    "address": "1651 Lexington Ave, New York, NY 10029",
+    "latitude": 40.790956099999995,
+    "longitude": -73.9469905,
+    "notes": "nyt readers fav also right next to sugar hill",
+    "timestampMs": 1723922075000,
+    "graphId": "/g/11gy8gcnql"
+  },
+  {
+    "name": "Jungsik",
+    "address": "2 Harrison St, New York, NY 10013",
+    "latitude": 40.7188267,
+    "longitude": -74.00907509999999,
+    "notes": "uro, go to BAR",
+    "timestampMs": 1723870865000,
+    "graphId": "/g/1tf_p6n1"
+  },
+  {
+    "name": "Kin Gin",
+    "address": "107 Rivington St, New York, NY 10002",
+    "latitude": 40.7198632,
+    "longitude": -73.9880421,
+    "notes": "someone’s story",
+    "timestampMs": 1723866499000,
+    "graphId": "/g/11vwxfvfc5"
+  },
+  {
+    "name": "Le Monde",
+    "address": "2885 Broadway, New York, NY 10025",
+    "latitude": 40.8058863,
+    "longitude": -73.9658847,
+    "notes": "french restaurant passed by after getting halal ",
+    "timestampMs": 1723680886000,
+    "graphId": "/g/1xgrnwgq"
+  },
+  {
+    "name": "Hooda halal food",
+    "address": "601 W 115th St, New York, NY 10025",
+    "latitude": 40.807555,
+    "longitude": -73.9647361,
+    "notes": "good halal, overrice.nyc",
+    "timestampMs": 1723660490000,
+    "graphId": "/g/11q4cg49qz"
+  },
+  {
+    "name": "Shah's Halal Food Inwood",
+    "address": "4927 Broadway, New York, NY 10034",
+    "latitude": 40.8677162,
+    "longitude": -73.9217967,
+    "notes": "halal cart foodnyc ",
+    "timestampMs": 1723660262000,
+    "graphId": "/g/11vywzqbrz"
+  },
+  {
+    "name": "Tlayuda Oaxaqueña SR San Pablo",
+    "address": "102- 25 Roosevelt Ave, Queens, NY 11368",
+    "latitude": 40.7498979,
+    "longitude": -73.86282369999999,
+    "notes": "reels",
+    "timestampMs": 1723513717000,
+    "graphId": "/g/11tx6fl6wj"
+  },
+  {
+    "name": "Sekai Omakase",
+    "address": "96 W Houston St, New York, NY 10012",
+    "latitude": 40.7272843,
+    "longitude": -74.00015069999999,
+    "notes": "omakase reels $108 for 16",
+    "timestampMs": 1723513518000,
+    "graphId": "/g/11rv18rv0k"
+  },
+  {
+    "name": "ROKC",
+    "address": "3452 Broadway, New York, NY 10031",
+    "latitude": 40.823579599999995,
+    "longitude": -73.9522113,
+    "notes": "foodnyc",
+    "timestampMs": 1723328322000,
+    "graphId": "/g/11cnxzn0q2"
+  },
+  {
+    "name": "Saranrom Thai",
+    "address": "81-10 Broadway, Queens, NY 11373",
+    "latitude": 40.743141099999995,
+    "longitude": -73.8836334,
+    "notes": "thai reels beli ",
+    "timestampMs": 1723127186000,
+    "graphId": "/g/11kxbb54dp"
+  },
+  {
+    "name": "Golden City 煌嘉囍宴",
+    "address": "6418 20th Ave, Brooklyn, NY 11204",
+    "latitude": 40.6168361,
+    "longitude": -73.9857346,
+    "notes": "dim sum",
+    "timestampMs": 1722743126000,
+    "graphId": "/g/11f402_y1y"
+  },
+  {
+    "name": "Black Forest Brooklyn - Smith Street",
+    "address": "181 Smith St, Brooklyn, NY 11201",
+    "latitude": 40.6856684,
+    "longitude": -73.9910529,
+    "notes": "german",
+    "timestampMs": 1722558410000,
+    "graphId": "/g/11gc19f1_2"
+  },
+  {
+    "name": "Zhengzhou Noodles Inc",
+    "address": "136-17 41st Ave, Queens, NY 11355",
+    "latitude": 40.758796,
+    "longitude": -73.8289527,
+    "notes": "henan, nehemiah",
+    "timestampMs": 1722455450000,
+    "graphId": "/g/11cncmdfq3"
+  },
+  {
+    "name": "Dropped pin",
+    "address": "Near A.M. Pharmacy, 5702 8th Ave, Brooklyn, NY 11220",
+    "latitude": 40.6371805,
+    "longitude": -74.00793159999999,
+    "notes": "tofu pudding street stand",
+    "timestampMs": 1722394646000
+  },
+  {
+    "name": "Jua",
+    "address": "36 E 22nd St, New York, NY 10010",
+    "latitude": 40.7396779,
+    "longitude": -73.9878514,
+    "notes": "jason mari",
+    "timestampMs": 1722135048000,
+    "graphId": "/g/11j0q41n1t"
+  },
+  {
+    "name": "Charles Pan-Fried Chicken",
+    "address": "439 W 125th St, New York, NY 10027",
+    "latitude": 40.8125281,
+    "longitude": -73.9553023,
+    "notes": "fried chicken reels",
+    "timestampMs": 1721495087000,
+    "graphId": "/g/11stb30blj"
+  },
+  {
+    "name": "Mitsuwa Marketplace - New Jersey",
+    "address": "595 River Rd, Edgewater, NJ 07020",
+    "latitude": 40.816191499999995,
+    "longitude": -73.98022399999999,
+    "notes": "food court foodnyc",
+    "timestampMs": 1721400038000,
+    "graphId": "/g/1tnssvyx"
+  },
+  {
+    "name": "Kappo Sono",
+    "address": "39 E 13th St 6th Floor, New York, NY 10003",
+    "latitude": 40.734536299999995,
+    "longitude": -73.9918552,
+    "notes": "uro",
+    "timestampMs": 1721178543000,
+    "graphId": "/g/11w3zs_nj9"
+  },
+  {
+    "name": "Secchu Yokota 折衷よこ田",
+    "address": "199 E 3rd St, New York, NY 10009",
+    "latitude": 40.7228565,
+    "longitude": -73.9831197,
+    "notes": "tempura uro",
+    "timestampMs": 1721178316000,
+    "graphId": "/g/11c486dq3w"
+  },
+  {
+    "name": "Pino's Prime Meat Market",
+    "address": "149 Sullivan St, New York, NY 10012",
+    "latitude": 40.7272345,
+    "longitude": -74.0016304,
+    "notes": "uro’s butcher",
+    "timestampMs": 1720983954000,
+    "graphId": "/g/1tgwbtth"
+  },
+  {
+    "name": "Benjamin Steakhouse",
+    "address": "Inside The Dylan Hotel, 52 E 41st St, New York, NY 10017",
+    "latitude": 40.7517399,
+    "longitude": -73.9790543,
+    "notes": "steak",
+    "timestampMs": 1720983486000,
+    "graphId": "/g/1tjh08qs"
+  },
+  {
+    "name": "Pastis",
+    "address": "52 Gansevoort St, New York, NY 10014",
+    "latitude": 40.739289299999996,
+    "longitude": -74.0069717,
+    "notes": "french onion soup, reels",
+    "timestampMs": 1720973399000,
+    "graphId": "/m/020ff7n"
+  },
+  {
+    "name": "Rossy's Bakery & Coffee Shop",
+    "address": "242 E 3rd St, New York, NY 10009",
+    "latitude": 40.7219571,
+    "longitude": -73.9815163,
+    "notes": "dr food foodnyc",
+    "timestampMs": 1720712834000,
+    "graphId": "/g/1tczwvyj"
+  },
+  {
+    "name": "Northport Sweet Shop",
+    "address": "55 Main St, Northport, NY 11768",
+    "latitude": 40.900312899999996,
+    "longitude": -73.3512404,
+    "notes": "old fashioned dessert shop",
+    "timestampMs": 1720621740000,
+    "graphId": "/g/1hhj61b_r"
+  },
+  {
+    "name": "The Hoptimist",
+    "address": "422 Amsterdam Ave, New York, NY 10024",
+    "latitude": 40.7840774,
+    "longitude": -73.97787629999999,
+    "notes": "$15 burger and beer happy hour foodnyc",
+    "timestampMs": 1720531823000,
+    "graphId": "/g/11r76m9k8c"
+  },
+  {
+    "name": "Henan Feng Wei",
+    "address": "136-31 41st Ave, Flushing, NY 11355",
+    "latitude": 40.759021,
+    "longitude": -73.8284962,
+    "notes": "foodnyc cumin lamb",
+    "timestampMs": 1720373057000,
+    "graphId": "/g/12cpj4sjl"
+  },
+  {
+    "name": "Pecking House",
+    "address": "244 Flatbush Ave, Brooklyn, NY 11217",
+    "latitude": 40.6796443,
+    "longitude": -73.97457729999999,
+    "notes": "fried chicken reels recipe ",
+    "timestampMs": 1720239692000,
+    "graphId": "/g/11pz18k3j8"
+  },
+  {
+    "name": "Phalia",
+    "address": "126 Lexington Ave, New York, NY 10016",
+    "latitude": 40.7429515,
+    "longitude": -73.9824178,
+    "notes": "chai foodnyc",
+    "timestampMs": 1719974159000,
+    "graphId": "/g/11p5t9vtyf"
+  },
+  {
+    "name": "The Hideout Chai Bar",
+    "address": "42 Rivington St, New York, NY 10002",
+    "latitude": 40.7210707,
+    "longitude": -73.99097909999999,
+    "notes": "chai foodnyc",
+    "timestampMs": 1719974079000,
+    "graphId": "/g/11dx8f234x"
+  },
+  {
+    "name": "Bahari Estiatorio",
+    "address": "31-14 Broadway, Astoria, NY 11106",
+    "latitude": 40.7616388,
+    "longitude": -73.92493879999999,
+    "notes": "greek, georgios ",
+    "timestampMs": 1719588647000,
+    "graphId": "/g/1tf1prq9"
+  },
+  {
+    "name": "SriPraPhai",
+    "address": "",
+    "latitude": 40.7464187,
+    "longitude": -73.89923089999999,
+    "notes": "thai, organic + foodnyc",
+    "timestampMs": 1712814380000
+  },
+  {
+    "name": "Nourish Thai",
+    "address": "637A Vanderbilt Ave, Brooklyn, NY 11238",
+    "latitude": 40.6779661,
+    "longitude": -73.9684844,
+    "notes": "foodnyc thai",
+    "timestampMs": 1719556873000,
+    "graphId": "/g/11dynym1bg"
+  },
+  {
+    "name": "Playground",
+    "address": "71-30 Roosevelt Ave, Queens, NY 11372",
+    "latitude": 40.746440899999996,
+    "longitude": -73.8937947,
+    "notes": "foodnyc thai",
+    "timestampMs": 1719556830000,
+    "graphId": "/g/1th5dh46"
+  },
+  {
+    "name": "Tanoreen",
+    "address": "7523 3rd Ave, Brooklyn, NY 11209",
+    "latitude": 40.630791599999995,
+    "longitude": -74.02778649999999,
+    "notes": "foodnyc, mid eastern",
+    "timestampMs": 1719556391000,
+    "graphId": "/g/1td2_c8m"
+  },
+  {
+    "name": "Lori Jayne",
+    "address": "INSIDE ALPHAVILE, 140 Wilson Ave, Brooklyn, NY 11237",
+    "latitude": 40.7005968,
+    "longitude": -73.92575839999999,
+    "notes": "robmartinez reels",
+    "timestampMs": 1719365037000,
+    "graphId": "/g/11kh9fn6wk"
+  },
+  {
+    "name": "Rose Hill Farm",
+    "address": "19 Rose Hill, Red Hook, NY 12571",
+    "latitude": 42.0093311,
+    "longitude": -73.84949139999999,
+    "notes": "Cherry picking Helen",
+    "timestampMs": 1719195744000,
+    "graphId": "/g/1td2hxfh"
+  },
+  {
+    "name": "Brooklyn Curry Project",
+    "address": "179 Washington Park, Brooklyn, NY 11205",
+    "latitude": 40.6916571,
+    "longitude": -73.9851055,
+    "notes": "reels",
+    "timestampMs": 1719027961000,
+    "graphId": "/g/11ss4l187z"
+  },
+  {
+    "name": "Max & Mina's Ice Cream",
+    "address": "7126 Main St, Queens, NY 11367",
+    "latitude": 40.7271493,
+    "longitude": -73.8223118,
+    "notes": "cereal ice cream, reels",
+    "timestampMs": 1719027894000,
+    "graphId": "/m/09g66f9"
+  },
+  {
+    "name": "89 W 119th St",
+    "address": "89 W 119th St, New York, NY 10026",
+    "latitude": 40.8039536,
+    "longitude": -73.9475234,
+    "notes": "off market brownstone, $4.75mil, reels: https://www.facebook.com/share/r/eAVFkyXadKFNp28Y/",
+    "timestampMs": 1719005281000,
+    "graphId": "/g/11cp8v50kh"
+  },
+  {
+    "name": "Mauka Indian Cuisine",
+    "address": "78 NJ-35, Eatontown, NJ 07724",
+    "latitude": 40.299363799999995,
+    "longitude": -74.05686299999999,
+    "notes": "reels",
+    "timestampMs": 1718945504000,
+    "graphId": "/g/11tfxnnfkj"
+  },
+  {
+    "name": "Nieves Cortés",
+    "address": "282 Knickerbocker Ave, Brooklyn, NY 11237",
+    "latitude": 40.7019482,
+    "longitude": -73.9240823,
+    "notes": "robmartinez reels italian ice thing",
+    "timestampMs": 1718855827000,
+    "graphId": "/g/11t5xtkl_8"
+  },
+  {
+    "name": "Sobre Masa",
+    "address": "52 Harrison Pl, Brooklyn, NY 11237",
+    "latitude": 40.7062811,
+    "longitude": -73.9313702,
+    "notes": "reels",
+    "timestampMs": 1718855514000,
+    "graphId": "/g/11rcrt16vl"
+  },
+  {
+    "name": "The Handpulled Noodle | West Harlem",
+    "address": "3600 Broadway, New York, NY 10031",
+    "latitude": 40.8283963,
+    "longitude": -73.948701,
+    "notes": "",
+    "timestampMs": 1718690691000,
+    "graphId": "/g/11fnwf2y9m"
+  },
+  {
+    "name": "Sugar Hill Creamery",
+    "address": "3629 Broadway, New York, NY 10031",
+    "latitude": 40.8293536,
+    "longitude": -73.9486524,
+    "notes": "",
+    "timestampMs": 1718690056000,
+    "graphId": "/g/11lgjxg54k"
+  },
+  {
+    "name": "Untermyer Gardens Conservancy",
+    "address": "945 N Broadway, Yonkers, NY 10701",
+    "latitude": 40.9659926,
+    "longitude": -73.8859748,
+    "notes": "date reels",
+    "timestampMs": 1718515677000,
+    "graphId": "/m/0g54zj1"
+  },
+  {
+    "name": "Mapo | Korean BBQ Flushing, Korean Restaurant in Flushing | 플러싱 맛집",
+    "address": "149-24 41st Ave, Queens, NY 11355",
+    "latitude": 40.762186799999995,
+    "longitude": -73.8148641,
+    "notes": "kbbq",
+    "timestampMs": 1718511275000,
+    "graphId": "/g/1tgff8v7"
+  },
+  {
+    "name": "Mtskheta Cafe",
+    "address": "2568 86th St, Brooklyn, NY 11214",
+    "latitude": 40.5967791,
+    "longitude": -73.98559449999999,
+    "notes": "georgian, jasper",
+    "timestampMs": 1718237448000,
+    "graphId": "/g/1tvw5vb5"
+  },
+  {
+    "name": "Caffè Panna",
+    "address": "77 Irving Pl, New York, NY 10003",
+    "latitude": 40.7370091,
+    "longitude": -73.9867455,
+    "notes": "ice cream",
+    "timestampMs": 1718212567000,
+    "graphId": "/g/11h1fz3sxl"
+  },
+  {
+    "name": "Rice Thief",
+    "address": "39-37 30th St, Long Island City, NY 11101",
+    "latitude": 40.7521036,
+    "longitude": -73.93439769999999,
+    "notes": "ig ",
+    "timestampMs": 1717987362000,
+    "graphId": "/g/11vz6pg2bt"
+  },
+  {
+    "name": "Cha-An BONBON",
+    "address": "238A E 9th St, New York, NY 10003",
+    "latitude": 40.729366299999995,
+    "longitude": -73.9878925,
+    "notes": "mochi hojicha dessert ",
+    "timestampMs": 1717972066000,
+    "graphId": "/g/11h71fbc_x"
+  },
+  {
+    "name": "Malai",
+    "address": "268 Smith St, Brooklyn, NY 11231",
+    "latitude": 40.682722999999996,
+    "longitude": -73.99332799999999,
+    "notes": "ice cream, infatuation",
+    "timestampMs": 1717897965000,
+    "graphId": "/g/11f9hcfx6m"
+  },
+  {
+    "name": "Irie Jerk Chicken",
+    "address": "1142 Nostrand Ave, Brooklyn, NY 11225",
+    "latitude": 40.659713499999995,
+    "longitude": -73.9508266,
+    "notes": "reels nicolas nuven",
+    "timestampMs": 1717372511000,
+    "graphId": "/g/11rsrshrqx"
+  },
+  {
+    "name": "Radio Bakery",
+    "address": "",
+    "latitude": 40.7323915,
+    "longitude": -73.9550678,
+    "notes": "jcho",
+    "timestampMs": 1717367050000
+  },
+  {
+    "name": "The Hungry Hero",
+    "address": "1142 1st Ave., New York, NY 10065",
+    "latitude": 40.7618556,
+    "longitude": -73.96002639999999,
+    "notes": "random sandwich shop",
+    "timestampMs": 1717347162000,
+    "graphId": "/g/11rsd70b5y"
+  },
+  {
+    "name": "Sorate",
+    "address": "103 Sullivan St, New York, NY 10012",
+    "latitude": 40.7256228,
+    "longitude": -74.0028193,
+    "notes": "matcha",
+    "timestampMs": 1717272494000,
+    "graphId": "/g/11l386_0jz"
+  },
+  {
+    "name": "HYDERABADI ZAIQA",
+    "address": "366 W 52nd St, New York, NY 10019",
+    "latitude": 40.764383599999995,
+    "longitude": -73.9876243,
+    "notes": "mubereats reels",
+    "timestampMs": 1717098397000,
+    "graphId": "/g/11kqkyjmzh"
+  },
+  {
+    "name": "Sushi W",
+    "address": "2673 Broadway, New York, NY 10025",
+    "latitude": 40.7983962,
+    "longitude": -73.9693842,
+    "notes": "sushi thomas\n",
+    "timestampMs": 1716953416000,
+    "graphId": "/g/11pdwdjv0p"
+  },
+  {
+    "name": "Pata Market",
+    "address": "81-16 Broadway, Elmhurst, NY 11373",
+    "latitude": 40.743076599999995,
+    "longitude": -73.8834985,
+    "notes": "mango sticky rice",
+    "timestampMs": 1716651645000,
+    "graphId": "/g/11gjz49sqy"
+  },
+  {
+    "name": "Philomena's Pizza",
+    "address": "4116 Queens Blvd, Queens, NY 11104",
+    "latitude": 40.74335,
+    "longitude": -73.92292139999999,
+    "notes": "foodnyc pizza",
+    "timestampMs": 1716404895000,
+    "graphId": "/g/11gy29g2x9"
+  },
+  {
+    "name": "Sotto Le Stelle",
+    "address": "4407 Queens Blvd, Queens, NY 11104",
+    "latitude": 40.7436279,
+    "longitude": -73.9201471,
+    "notes": "foodnyc pizza",
+    "timestampMs": 1716404862000,
+    "graphId": "/g/11gbfb2rv4"
+  },
+  {
+    "name": "Chicha San Chen",
+    "address": "72-74 Bayard St, New York, NY 10013",
+    "latitude": 40.7157282,
+    "longitude": -73.9982357,
+    "notes": "maris fav boba shop ",
+    "timestampMs": 1716167095000,
+    "graphId": "/g/11vxh11j83"
+  },
+  {
+    "name": "A&A Bake Doubles and Roti",
+    "address": "1337 Fulton St, Brooklyn, NY 11216",
+    "latitude": 40.680490999999996,
+    "longitude": -73.9479489,
+    "notes": "foodnyc",
+    "timestampMs": 1715923003000,
+    "graphId": "/g/11b6pstc1y"
+  },
+  {
+    "name": "Santa Fe BK",
+    "address": "178 N 8th St, Brooklyn, NY 11211",
+    "latitude": 40.7179849,
+    "longitude": -73.9566789,
+    "notes": "foodnyc texmex ",
+    "timestampMs": 1715922965000,
+    "graphId": "/g/11rcvj0b8r"
+  },
+  {
+    "name": "Burmese Bites",
+    "address": "Queens Center Mall Food Court, 90-15 Queens Blvd, Queens, NY 11373",
+    "latitude": 40.7344054,
+    "longitude": -73.8689474,
+    "notes": "reels",
+    "timestampMs": 1715842324000,
+    "graphId": "/g/11rjkqj5lc"
+  },
+  {
+    "name": "WESTWOOD GALLERY NYC",
+    "address": "262 Bowery, New York, NY 10012",
+    "latitude": 40.7233574,
+    "longitude": -73.9932855,
+    "notes": "loft law exhibit",
+    "timestampMs": 1715821543000,
+    "graphId": "/g/1tgp1qlf"
+  },
+  {
+    "name": "Pig and Khao",
+    "address": "68 Clinton St, New York, NY 10002",
+    "latitude": 40.719288899999995,
+    "longitude": -73.9848028,
+    "notes": "reels righteouseats",
+    "timestampMs": 1715710892000,
+    "graphId": "/g/11rvv5y8n"
+  },
+  {
+    "name": "Càphê Roasters",
+    "address": "3400 J St G1, Philadelphia, PA 19134",
+    "latitude": 39.999162299999995,
+    "longitude": -75.1089107,
+    "notes": "philly reels robmartinez ",
+    "timestampMs": 1715632393000,
+    "graphId": "/g/11h6tml2p9"
+  },
+  {
+    "name": "Angel",
+    "address": "7414 37th Rd, Queens, NY 11372",
+    "latitude": 40.7472139,
+    "longitude": -73.8909126,
+    "notes": "reels",
+    "timestampMs": 1715618768000,
+    "graphId": "/g/11fnpwr958"
+  },
+  {
+    "name": "The Canary",
+    "address": "789 Franklin Ave, Brooklyn, NY 11238",
+    "latitude": 40.6718815,
+    "longitude": -73.9574015,
+    "notes": "irish breakfast foodnyc",
+    "timestampMs": 1715561406000,
+    "graphId": "/g/11krrq98xp"
+  },
+  {
+    "name": "Alley 41",
+    "address": "136-45 41st Ave, Queens, NY 11355",
+    "latitude": 40.759010499999995,
+    "longitude": -73.82798149999999,
+    "notes": "甜水面 reddit ",
+    "timestampMs": 1714917543000,
+    "graphId": "/g/11c6806982"
+  },
+  {
+    "name": "La Morada",
+    "address": "308 Willis Ave, Bronx, NY 10454",
+    "latitude": 40.810555099999995,
+    "longitude": -73.9214101,
+    "notes": "righteous eats",
+    "timestampMs": 1714917144000,
+    "graphId": "/g/1hm3bvnsf"
+  },
+  {
+    "name": "Chinatown Supermarket of Manhattan",
+    "address": "109 E Broadway, New York, NY 10002",
+    "latitude": 40.713698699999995,
+    "longitude": -73.9928845,
+    "notes": "jmart alt",
+    "timestampMs": 1714872516000,
+    "graphId": "/g/11bxd7k4lr"
+  },
+  {
+    "name": "Adda Indian Canteen",
+    "address": "31-31 Thomson Ave, Queens, NY 11101",
+    "latitude": 40.745012599999995,
+    "longitude": -73.9342389,
+    "notes": "foodnyc",
+    "timestampMs": 1714837338000,
+    "graphId": "/g/11g3_blr5_"
+  },
+  {
+    "name": "Bengal Tiger",
+    "address": "58 W 56th St, New York, NY 10019",
+    "latitude": 40.7656482,
+    "longitude": -73.9826562,
+    "notes": "foodnyc",
+    "timestampMs": 1714837312000,
+    "graphId": "/g/1yh5tr54m"
+  },
+  {
+    "name": "Purple Yam",
+    "address": "1314 Cortelyou Rd, Brooklyn, NY 11226",
+    "latitude": 40.6404906,
+    "longitude": -73.96568599999999,
+    "notes": "foodnyc ",
+    "timestampMs": 1714837129000,
+    "graphId": "/g/1wzt38vz"
+  },
+  {
+    "name": "Shandar Sweets & Restaurant",
+    "address": "679 Coney Island Ave, Brooklyn, NY 11218",
+    "latitude": 40.640913399999995,
+    "longitude": -73.9690729,
+    "notes": "connie",
+    "timestampMs": 1714836740000,
+    "graphId": "/g/1tgc0ptc"
+  },
+  {
+    "name": "Daido Market",
+    "address": "522 Mamaroneck Ave, White Plains, NY 10605",
+    "latitude": 41.0219507,
+    "longitude": -73.7584547,
+    "notes": "cream puff reels",
+    "timestampMs": 1714683676000
+  },
+  {
+    "name": "La Esquina Criolla",
+    "address": "94-67 Corona Ave., Elmhurst, NY 11373, United States",
+    "latitude": 40.742247899999995,
+    "longitude": -73.8676134,
+    "notes": "chris arnade twitter",
+    "timestampMs": 1714441918000,
+    "graphId": "/g/1tzvxh31"
+  },
+  {
+    "name": "Je T’aime Patisserie",
+    "address": "471 Marcus Garvey Blvd, Brooklyn, NY 11216",
+    "latitude": 40.6806438,
+    "longitude": -73.9374514,
+    "notes": "righteous eats",
+    "timestampMs": 1713455585000,
+    "graphId": "/g/11v3lr_mm9"
+  },
+  {
+    "name": "Frankel's Delicatessen & Appetizing",
+    "address": "631 Manhattan Ave, Brooklyn, NY 11222",
+    "latitude": 40.7239161,
+    "longitude": -73.950996,
+    "notes": "uro",
+    "timestampMs": 1713028386000,
+    "graphId": "/g/11cmn9gb7s"
+  },
+  {
+    "name": "Laghman Express",
+    "address": "6201 20th Ave, Brooklyn, NY 11204",
+    "latitude": 40.618110099999996,
+    "longitude": -73.9840389,
+    "notes": "pete wells",
+    "timestampMs": 1712982813000,
+    "graphId": "/g/11v9_gpcyt"
+  },
+  {
+    "name": "Cafe Luxembourg",
+    "address": "200 W 70th St, New York, NY 10023",
+    "latitude": 40.7774232,
+    "longitude": -73.9831418,
+    "notes": "nyt readers favs",
+    "timestampMs": 1712894050000,
+    "graphId": "/g/1td0nygn"
+  },
+  {
+    "name": "Paul's Da Burger Joint",
+    "address": "131 2nd Ave, New York, NY 10003",
+    "latitude": 40.7285185,
+    "longitude": -73.9879741,
+    "notes": "nyt readers favs",
+    "timestampMs": 1712894005000,
+    "graphId": "/g/1vkxn5gp"
+  },
+  {
+    "name": "Tía Pol",
+    "address": "205 10th Ave, New York, NY 10011",
+    "latitude": 40.747299999999996,
+    "longitude": -74.0047278,
+    "notes": "nyt readers favs",
+    "timestampMs": 1712893966000,
+    "graphId": "/g/1thss975"
+  },
+  {
+    "name": "Fuskahouse_NYC (Bengali Street Food)",
+    "address": "7301 37th Ave, Queens, NY 11373",
+    "latitude": 40.749109399999995,
+    "longitude": -73.8923982,
+    "notes": "nyt readers fav",
+    "timestampMs": 1712893866000,
+    "graphId": "/g/11fl5rkq2y"
+  },
+  {
+    "name": "Ingas Bar",
+    "address": "66 Hicks St, Brooklyn, NY 11201",
+    "latitude": 40.7000203,
+    "longitude": -73.993702,
+    "notes": "nyt readers favs",
+    "timestampMs": 1712893797000,
+    "graphId": "/g/11tcyrdc6q"
+  },
+  {
+    "name": "Archer & Goat",
+    "address": "187 Malcolm X Blvd, New York, NY 10026",
+    "latitude": 40.8043153,
+    "longitude": -73.948354,
+    "notes": "nyt readers fav",
+    "timestampMs": 1712893752000,
+    "graphId": "/g/11c705gh7g"
+  },
+  {
+    "name": "Kashkar Cafe",
+    "address": "1141 Brighton Beach Ave, Brooklyn, NY 11235",
+    "latitude": 40.5777645,
+    "longitude": -73.9554964,
+    "notes": "nyt readers favs",
+    "timestampMs": 1712893631000,
+    "graphId": "/g/1tctsl37"
+  },
+  {
+    "name": "The Freakin Rican",
+    "address": "4306 34th Ave, Queens, NY 11101",
+    "latitude": 40.7552526,
+    "longitude": -73.9183883,
+    "notes": "foodnyc",
+    "timestampMs": 1712893568000,
+    "graphId": "/g/11d_bh266j"
+  },
+  {
+    "name": "Sushi Yasuda",
+    "address": "204 E 43rd St, New York, NY 10017",
+    "latitude": 40.7511139,
+    "longitude": -73.97350829999999,
+    "notes": "sushi",
+    "timestampMs": 1712379009000,
+    "graphId": "/m/0qfnnv7"
+  },
+  {
+    "name": "Something Sweet Homemade",
+    "address": "314 New Dorp Ln, Staten Island, NY 10306",
+    "latitude": 40.571623599999995,
+    "longitude": -74.1121477,
+    "notes": "red bean ice cream ",
+    "timestampMs": 1712377878000,
+    "graphId": "/g/1td9fnwd"
+  },
+  {
+    "name": "Hindu Temple Canteen",
+    "address": "143-09 Holly Ave, Queens, NY 11355",
+    "latitude": 40.75262,
+    "longitude": -73.81651099999999,
+    "notes": "pete wells",
+    "timestampMs": 1712111314000,
+    "graphId": "/g/119t9cfwk"
+  },
+  {
+    "name": "Shaw-nae’s House",
+    "address": "379 Van Duzer St, Staten Island, NY 10304",
+    "latitude": 40.6287204,
+    "longitude": -74.0796945,
+    "notes": "pete wells and reels",
+    "timestampMs": 1712111201000,
+    "graphId": "/g/11rstshy3l"
+  },
+  {
+    "name": "Malaparte",
+    "address": "753 Washington St, New York, NY 10014",
+    "latitude": 40.7368806,
+    "longitude": -74.00809459999999,
+    "notes": "pasta ",
+    "timestampMs": 1712102668000,
+    "graphId": "/g/1v1kqsgd"
+  },
+  {
+    "name": "Chiangmai Diner & Bar",
+    "address": "942 Flushing Ave, Brooklyn, NY 11206",
+    "latitude": 40.7026008,
+    "longitude": -73.933617,
+    "notes": "thai food, bola from rh",
+    "timestampMs": 1712097762000,
+    "graphId": "/g/11txz5tn6b"
+  },
+  {
+    "name": "Los Primos Chimichurris",
+    "address": "Corona, NY 11368",
+    "latitude": 40.746756399999995,
+    "longitude": -73.8568932,
+    "notes": "food truck reels",
+    "timestampMs": 1712037162000,
+    "graphId": "/g/11gh0hgy46"
+  },
+  {
+    "name": "Northern King Dumpling 노던 왕만두 北方包子王 - Handmade dumplings",
+    "address": "14944 Northern Blvd, Flushing, NY 11354",
+    "latitude": 40.765125999999995,
+    "longitude": -73.815544,
+    "notes": "dumpling reels",
+    "timestampMs": 1712030385000,
+    "graphId": "/g/11g3h9wny0"
+  },
+  {
+    "name": "Philip Williams Posters",
+    "address": "122 Chambers St, New York, NY 10007",
+    "latitude": 40.7151712,
+    "longitude": -74.00870189999999,
+    "notes": "vintage posters, twitter ",
+    "timestampMs": 1711916690000,
+    "graphId": "/g/1tlbkh8r"
+  },
+  {
+    "name": "Fini Pizza",
+    "address": "305 Bedford Ave, Brooklyn, NY 11211",
+    "latitude": 40.7134916,
+    "longitude": -73.96181299999999,
+    "notes": "pizza foodnyc",
+    "timestampMs": 1711908905000,
+    "graphId": "/g/11t6s1x3mx"
+  },
+  {
+    "name": "Farina nyc",
+    "address": "338 Hamilton Ave, Brooklyn, NY 11231",
+    "latitude": 40.674636799999995,
+    "longitude": -74.0007476,
+    "notes": "pizza foodnyc",
+    "timestampMs": 1711908830000,
+    "graphId": "/g/11v6sv0dg1"
+  },
+  {
+    "name": "LaRina Pastificio & Vino",
+    "address": "387 Myrtle Ave, Brooklyn, NY 11205",
+    "latitude": 40.6932861,
+    "longitude": -73.9704167,
+    "notes": "pasta, reels and food nyc",
+    "timestampMs": 1711849424000,
+    "graphId": "/g/11cp02wl54"
+  },
+  {
+    "name": "Labay Market",
+    "address": "1127 Nostrand Ave, Brooklyn, NY 11225",
+    "latitude": 40.660277799999996,
+    "longitude": -73.9502778,
+    "notes": "fruits, rigteous eats reels",
+    "timestampMs": 1711843943000,
+    "graphId": "/g/1tjcqc69"
+  },
+  {
+    "name": "Salon 94",
+    "address": "3 E 89th St, New York, NY 10128",
+    "latitude": 40.783428,
+    "longitude": -73.958326,
+    "notes": "art gallery reels",
+    "timestampMs": 1711831405000,
+    "graphId": "/g/11f03wfw08"
+  },
+  {
+    "name": "Thick",
+    "address": "208 Graham Ave, Brooklyn, NY 11206",
+    "latitude": 40.709143,
+    "longitude": -73.94332349999999,
+    "notes": "ice cream",
+    "timestampMs": 1711772161000,
+    "graphId": "/g/11shs3cc_t"
+  },
+  {
+    "name": "Lucia Pizza Of SoHo",
+    "address": "375 Canal St, New York, NY 10013",
+    "latitude": 40.721418299999996,
+    "longitude": -74.0044028,
+    "notes": "pizza reels",
+    "timestampMs": 1711743114000,
+    "graphId": "/g/11vhdb66_t"
+  },
+  {
+    "name": "Dun-Well Doughnuts",
+    "address": "222 Montrose Ave, Brooklyn, NY 11206",
+    "latitude": 40.707501799999996,
+    "longitude": -73.94026819999999,
+    "notes": "donut ",
+    "timestampMs": 1711728267000,
+    "graphId": "/g/1thl_c5l"
+  },
+  {
+    "name": "Wenwen",
+    "address": "1025 Manhattan Ave, Brooklyn, NY 11222",
+    "latitude": 40.7340042,
+    "longitude": -73.9550531,
+    "notes": "",
+    "timestampMs": 1711644917000,
+    "graphId": "/g/11rbflxgqx"
+  },
+  {
+    "name": "Eat it",
+    "address": "33-01 30th Ave., Queens, NY 11103",
+    "latitude": 40.766090999999996,
+    "longitude": -73.9195222,
+    "notes": "halal cart, reels",
+    "timestampMs": 1711321035000,
+    "graphId": "/g/11mtjz73c_"
+  },
+  {
+    "name": "Europa Pizzeria",
+    "address": "6423 20th Ave, Brooklyn, NY 11204",
+    "latitude": 40.6165711,
+    "longitude": -73.9855453,
+    "notes": "top pizza",
+    "timestampMs": 1711166710000,
+    "graphId": "/g/1tdng4wd"
+  },
+  {
+    "name": "Kaki",
+    "address": "129 Rivington St, New York, NY 10002",
+    "latitude": 40.719580199999996,
+    "longitude": -73.9869526,
+    "notes": "omakase, ian",
+    "timestampMs": 1711133710000,
+    "graphId": "/g/11v43qs3wj"
+  },
+  {
+    "name": "Orsay",
+    "address": "1057 Lexington Ave, New York, NY 10021",
+    "latitude": 40.772436299999995,
+    "longitude": -73.9605435,
+    "notes": "french connie via coworker ",
+    "timestampMs": 1711065555000,
+    "graphId": "/g/1tgq7kp9"
+  },
+  {
+    "name": "Astoria Taco Factory",
+    "address": "28-02 21st St, Queens, NY 11102",
+    "latitude": 40.771153999999996,
+    "longitude": -73.92718529999999,
+    "notes": "good tacos, ray, fried fish",
+    "timestampMs": 1710697094000,
+    "graphId": "/g/11hfjt86tf"
+  },
+  {
+    "name": "Little Banchan Shop",
+    "address": "5-28 49th Ave, Queens, NY 11101",
+    "latitude": 40.7434606,
+    "longitude": -73.9552547,
+    "notes": "uro",
+    "timestampMs": 1710696869000,
+    "graphId": "/g/11t7rbttg_"
+  },
+  {
+    "name": "Wheated",
+    "address": "905 Church Ave, Brooklyn, NY 11218",
+    "latitude": 40.6466281,
+    "longitude": -73.9705534,
+    "notes": "pro park, bagels",
+    "timestampMs": 1710630033000,
+    "graphId": "/g/12m9fhq4r"
+  },
+  {
+    "name": "Werkstatt",
+    "address": "509 Coney Island Ave, Brooklyn, NY 11218",
+    "latitude": 40.6452666,
+    "longitude": -73.97023879999999,
+    "notes": "prospect park",
+    "timestampMs": 1710629762000,
+    "graphId": "/g/11ckqqrk52"
+  },
+  {
+    "name": "Khao Kang",
+    "address": "76-20 Woodside Ave, Queens, NY 11373",
+    "latitude": 40.7433455,
+    "longitude": -73.8880977,
+    "notes": "thai reels action brunson",
+    "timestampMs": 1710105967000,
+    "graphId": "/g/1pxqccm0r"
+  },
+  {
+    "name": "Kuku Korean Cuisine LIC",
+    "address": "12-09 Jackson Ave, Queens, NY 11101",
+    "latitude": 40.743776499999996,
+    "longitude": -73.95063019999999,
+    "notes": "kfc foodnyc",
+    "timestampMs": 1709860395000,
+    "graphId": "/g/11n8fvfvb_"
+  },
+  {
+    "name": "Giuseppina's",
+    "address": "691 6th Ave, Brooklyn, NY 11215",
+    "latitude": 40.660387799999995,
+    "longitude": -73.9905395,
+    "notes": "pizza foodnyc",
+    "timestampMs": 1709785927000,
+    "graphId": "/g/1tdym3p9"
+  },
+  {
+    "name": "KIJITORA East",
+    "address": "309 Graham Ave, Brooklyn, NY 11211",
+    "latitude": 40.7133593,
+    "longitude": -73.9444125,
+    "notes": "yuzu ginger fizz",
+    "timestampMs": 1709408178000,
+    "graphId": "/g/11l76gpdgc"
+  },
+  {
+    "name": "Old Rhinebeck Aerodrome",
+    "address": "9 Norton Rd, Red Hook, NY 12571",
+    "latitude": 41.969885999999995,
+    "longitude": -73.8647395,
+    "notes": "rhinebeck",
+    "timestampMs": 1709407750000,
+    "graphId": "/m/0dv38x"
+  },
+  {
+    "name": "Tsumo Omakase",
+    "address": "132 E 28th St, New York, NY 10016",
+    "latitude": 40.742348899999996,
+    "longitude": -73.9822342,
+    "notes": "budget, reels",
+    "timestampMs": 1709333830000,
+    "graphId": "/g/11y2sqhl8t"
+  },
+  {
+    "name": "Circo's Pastry Shop",
+    "address": "312 Knickerbocker Ave, Brooklyn, NY 11237",
+    "latitude": 40.7015068,
+    "longitude": -73.9233323,
+    "notes": "italian bakery, cannoli, reels",
+    "timestampMs": 1709137744000,
+    "graphId": "/g/1td59jp2"
+  },
+  {
+    "name": "Tacobees",
+    "address": "711 Nostrand Ave, Brooklyn, NY 11216",
+    "latitude": 40.6729341,
+    "longitude": -73.9498278,
+    "notes": "chipotle at home, reels",
+    "timestampMs": 1709091296000,
+    "graphId": "/g/11k4l37nlm"
+  },
+  {
+    "name": "Sofreh",
+    "address": "75 St Marks Ave, Brooklyn, NY 11217",
+    "latitude": 40.679835399999995,
+    "longitude": -73.973997,
+    "notes": "foodnyc should be michelin",
+    "timestampMs": 1708979087000,
+    "graphId": "/g/11ghshmk54"
+  },
+  {
+    "name": "Eyval",
+    "address": "25 Bogart St, Brooklyn, NY 11206",
+    "latitude": 40.7041676,
+    "longitude": -73.93316999999999,
+    "notes": "foodnyc should be michelin",
+    "timestampMs": 1708979046000,
+    "graphId": "/g/11rqgg95zl"
+  },
+  {
+    "name": "Culture Espresso",
+    "address": "72 W 38th St, New York, NY 10018",
+    "latitude": 40.7520746,
+    "longitude": -73.9857387,
+    "notes": "cookie uro",
+    "timestampMs": 1708822786000,
+    "graphId": "/g/1z449xl4g"
+  },
+  {
+    "name": "abcV",
+    "address": "38 E 19th St, New York, NY 10003",
+    "latitude": 40.7379803,
+    "longitude": -73.98928409999999,
+    "notes": "veg righteous eats",
+    "timestampMs": 1708803082000,
+    "graphId": "/g/11c6sd7bmr"
+  },
+  {
+    "name": "Chef Katsu Brooklyn",
+    "address": "143 Greene Ave, Brooklyn, NY 11238",
+    "latitude": 40.6867781,
+    "longitude": -73.9663219,
+    "notes": "cute japanese cafe, reels",
+    "timestampMs": 1708801612000,
+    "graphId": "/g/11r34fwbgb"
+  },
+  {
+    "name": "Yuk Jun Gui",
+    "address": "4105 150th St, Flushing, NY 11355",
+    "latitude": 40.76262,
+    "longitude": -73.8137888,
+    "notes": "kbbq ",
+    "timestampMs": 1708581405000,
+    "graphId": "/g/1tdmft9_"
+  },
+  {
+    "name": "Antique Bar & Bakery",
+    "address": "122 Willow Ave, Hoboken, NJ 07030",
+    "latitude": 40.738966,
+    "longitude": -74.0344215,
+    "notes": "reels",
+    "timestampMs": 1708407081000,
+    "graphId": "/g/1tfxyyt7"
+  },
+  {
+    "name": "Xin Fa Bakery",
+    "address": "5617 8th Ave, Brooklyn, NY 11220",
+    "latitude": 40.637302299999995,
+    "longitude": -74.007486,
+    "notes": "portuguese egg tart reels",
+    "timestampMs": 1708374526000,
+    "graphId": "/g/1whdk811"
+  },
+  {
+    "name": "SYKO",
+    "address": "126 Windsor Pl, Brooklyn, NY 11215",
+    "latitude": 40.6598833,
+    "longitude": -73.9812548,
+    "notes": "reels righteous eats",
+    "timestampMs": 1708372319000,
+    "graphId": "/g/11t5b1tlmb"
+  },
+  {
+    "name": "Mắm",
+    "address": "70 Forsyth St, New York, NY 10002",
+    "latitude": 40.7170722,
+    "longitude": -73.9933884,
+    "notes": "pho",
+    "timestampMs": 1708360092000,
+    "graphId": "/g/11t0lfhjyn"
+  },
+  {
+    "name": "Hatsuhana",
+    "address": "17 E 48th St, New York, NY 10017",
+    "latitude": 40.757016,
+    "longitude": -73.9769152,
+    "notes": "foodnyc",
+    "timestampMs": 1707863932000,
+    "graphId": "/g/1tqcm3wm"
+  },
+  {
+    "name": "Mercer Labs",
+    "address": "21 Dey St, New York, NY 10007",
+    "latitude": 40.7104778,
+    "longitude": -74.01059479999999,
+    "notes": "museum ad lol",
+    "timestampMs": 1707612204000,
+    "graphId": "/g/11lcgwfygc"
+  },
+  {
+    "name": "Llama San",
+    "address": "359 6th Ave, New York, NY 10014",
+    "latitude": 40.7322744,
+    "longitude": -74.00082789999999,
+    "notes": "reels",
+    "timestampMs": 1707594358000,
+    "graphId": "/g/11f8hqr3f3"
+  },
+  {
+    "name": "Fortunato Brothers",
+    "address": "",
+    "latitude": 40.713721299999996,
+    "longitude": -73.9461759,
+    "notes": "",
+    "timestampMs": 1707203401000
+  },
+  {
+    "name": "L&B Spumoni Gardens",
+    "address": "2725 86th St, Brooklyn, NY 11223",
+    "latitude": 40.5947252,
+    "longitude": -73.9814712,
+    "notes": "pizza infatuation",
+    "timestampMs": 1707198036000,
+    "graphId": "/m/0gjdwm1"
+  },
+  {
+    "name": "Mad For Chicken",
+    "address": "617 Grand St, Brooklyn, NY 11211",
+    "latitude": 40.7114682,
+    "longitude": -73.9475277,
+    "notes": "korean fried chicken foodnyc",
+    "timestampMs": 1707090063000,
+    "graphId": "/g/11h022z1_w"
+  },
+  {
+    "name": "DDOBAR by Joomak NYC",
+    "address": "601 W 26th St, New York, NY 10001",
+    "latitude": 40.751323899999996,
+    "longitude": -74.00590799999999,
+    "notes": "uro",
+    "timestampMs": 1707089245000,
+    "graphId": "/g/11sbht9g63"
+  },
+  {
+    "name": "Fette Sau",
+    "address": "354 Metropolitan Ave, Brooklyn, NY 11211",
+    "latitude": 40.7140434,
+    "longitude": -73.95641739999999,
+    "notes": "bbq foodnyc",
+    "timestampMs": 1707071325000,
+    "graphId": "/g/1tfzn7pj"
+  },
+  {
+    "name": "Alita Cafe",
+    "address": "797 Grand St, Brooklyn, NY 11211",
+    "latitude": 40.712096599999995,
+    "longitude": -73.94135969999999,
+    "notes": "",
+    "timestampMs": 1707066839000,
+    "graphId": "/g/11mvvbbz03"
+  },
+  {
+    "name": "Joloff",
+    "address": "1168 Bedford Ave, Brooklyn, NY 11216",
+    "latitude": 40.6841334,
+    "longitude": -73.9543635,
+    "notes": "african ",
+    "timestampMs": 1706935668000,
+    "graphId": "/g/1vxdz5g_"
+  },
+  {
+    "name": "Rib No. 7",
+    "address": "32 W 33rd St, New York, NY 10001",
+    "latitude": 40.7484068,
+    "longitude": -73.986746,
+    "notes": "kbbq qwahn's",
+    "timestampMs": 1706486990000,
+    "graphId": "/g/11ppsn1y3c"
+  },
+  {
+    "name": "Birds of a Feather",
+    "address": "191 Grand St, Brooklyn, NY 11211",
+    "latitude": 40.7143118,
+    "longitude": -73.9605387,
+    "notes": "r foodnyc",
+    "timestampMs": 1706584799000,
+    "graphId": "/g/11g6pgx1z6"
+  },
+  {
+    "name": "Harlem Shake",
+    "address": "119 5th Ave, Sterling Pl At, Brooklyn, NY 11217",
+    "latitude": 40.6788664,
+    "longitude": -73.9785263,
+    "notes": "r foodnyc",
+    "timestampMs": 1706584662000,
+    "graphId": "/g/11p606ch5q"
+  },
+  {
+    "name": "Sanuki Udon",
+    "address": "31 Washington Square S, New York, NY 10012",
+    "latitude": 40.729297599999995,
+    "longitude": -73.9955598,
+    "notes": "self serve udon??",
+    "timestampMs": 1706584026000,
+    "graphId": "/g/11vlnh_d_p"
+  },
+  {
+    "name": "Win Son Bakery",
+    "address": "164 Graham Ave, Brooklyn, NY 11206",
+    "latitude": 40.7072479,
+    "longitude": -73.9429755,
+    "notes": "mari",
+    "timestampMs": 1706486310000,
+    "graphId": "/g/11h1g1y5d9"
+  },
+  {
+    "name": "Restaurant Yuu",
+    "address": "55 Nassau Ave, Brooklyn, NY 11222",
+    "latitude": 40.723456,
+    "longitude": -73.9524875,
+    "notes": "eater youtube ",
+    "timestampMs": 1706301974000,
+    "graphId": "/g/11kk7yp44g"
+  },
+  {
+    "name": "Nuts Factory",
+    "address": "100 Smith St, Brooklyn, NY 11201",
+    "latitude": 40.688356,
+    "longitude": -73.9894952,
+    "notes": "candy",
+    "timestampMs": 1706162506000,
+    "graphId": "/g/11sj9qx7c2"
+  },
+  {
+    "name": "Suki",
+    "address": "208 E 50th St, New York, NY 10022",
+    "latitude": 40.755503499999996,
+    "longitude": -73.9702592,
+    "notes": "katsu foodnyc",
+    "timestampMs": 1706122430000,
+    "graphId": "/g/11gj73r3g3"
+  },
+  {
+    "name": "J's Kitchen New York",
+    "address": "261 1st Ave., New York, NY 10003",
+    "latitude": 40.732299,
+    "longitude": -73.982246,
+    "notes": "charles",
+    "timestampMs": 1705799410000,
+    "graphId": "/g/11rw7j7_qg"
+  },
+  {
+    "name": "Cafe Mogador",
+    "address": "101 St Marks Pl, New York, NY 10009",
+    "latitude": 40.7274314,
+    "longitude": -73.98431149999999,
+    "notes": "liv \n",
+    "timestampMs": 1705778619000,
+    "graphId": "/g/1tk_kmsg"
+  },
+  {
+    "name": "Keens Steakhouse",
+    "address": "72 W 36th St., New York, NY 10018",
+    "latitude": 40.7507916,
+    "longitude": -73.98645719999999,
+    "notes": "steak, foodnyc",
+    "timestampMs": 1705631510000,
+    "graphId": "/m/0ngt6z2"
+  },
+  {
+    "name": "St. Anselm",
+    "address": "355 Metropolitan Ave, Brooklyn, NY 11211",
+    "latitude": 40.7142876,
+    "longitude": -73.9560535,
+    "notes": "steak, foodnyc",
+    "timestampMs": 1705631474000,
+    "graphId": "/g/11b6gbwckh"
+  },
+  {
+    "name": "Boka",
+    "address": "9 St Marks Pl, New York, NY 10003",
+    "latitude": 40.7294444,
+    "longitude": -73.9891667,
+    "notes": "ayce wings and beer, reels",
+    "timestampMs": 1704689686000,
+    "graphId": "/g/1hc0vln_x"
+  },
+  {
+    "name": "El Pingüino",
+    "address": "25 Greenpoint Ave, Brooklyn, NY 11222",
+    "latitude": 40.729801599999995,
+    "longitude": -73.95977959999999,
+    "notes": "",
+    "timestampMs": 1704262168000,
+    "graphId": "/g/11p5qbp7wh"
+  },
+  {
+    "name": "COQODAQ",
+    "address": "12 E 22nd St, New York, NY 10010",
+    "latitude": 40.7400559,
+    "longitude": -73.9887467,
+    "notes": "jason cho",
+    "timestampMs": 1704261159000,
+    "graphId": "/g/11y2flnppb"
+  },
+  {
+    "name": "John Brown BBQ",
+    "address": "27-20 40th Ave, Queens, NY 11101",
+    "latitude": 40.752690099999995,
+    "longitude": -73.93664439999999,
+    "notes": "",
+    "timestampMs": 1693841700000,
+    "graphId": "/g/1tdfv1jx"
+  },
+  {
+    "name": "Sushi 35 West",
+    "address": "",
+    "latitude": 40.751858,
+    "longitude": -73.9912983,
+    "notes": "hole in the wall, andy/ua eats",
+    "timestampMs": 1679200470000
+  },
+  {
+    "name": "Sugar Hill Creamery",
+    "address": "1642 Lexington Ave, New York, NY 10029",
+    "latitude": 40.7909393,
+    "longitude": -73.9474725,
+    "notes": "",
+    "timestampMs": 1690258629000,
+    "graphId": "/g/11tszl9l0d"
+  },
+  {
+    "name": "The Doughnut Project",
+    "address": "10 Morton St, New York, NY 10014",
+    "latitude": 40.7312095,
+    "longitude": -74.0035577,
+    "notes": "reddit",
+    "timestampMs": 1704089788000,
+    "graphId": "/g/11bwgvp0lb"
+  },
+  {
+    "name": "ANDO patisserie",
+    "address": "214 E 10th St, New York, NY 10003",
+    "latitude": 40.7293258,
+    "longitude": -73.98596309999999,
+    "notes": "reels",
+    "timestampMs": 1703951036000,
+    "graphId": "/g/11t4g5336p"
+  },
+  {
+    "name": "Chick It Out ' Khao Man Gai'",
+    "address": "",
+    "latitude": 40.760278899999996,
+    "longitude": -73.9225143,
+    "notes": "reels",
+    "timestampMs": 1701923882000
+  },
+  {
+    "name": "Forsyth Fire Escape (6-Month Residency)",
+    "address": "601 W 26th St, New York, NY 10001",
+    "latitude": 40.7517363,
+    "longitude": -74.00724509999999,
+    "notes": "reels",
+    "timestampMs": 1701571762000,
+    "graphId": "/g/11tj6prkjv"
+  },
+  {
+    "name": "West Rice Roll King 西关肠粉王",
+    "address": "124 Hester St, New York, NY 10002",
+    "latitude": 40.717031999999996,
+    "longitude": -73.9947703,
+    "notes": "connie",
+    "timestampMs": 1701532811000,
+    "graphId": "/g/11tr_9bp6j"
+  },
+  {
+    "name": "TabeTomo",
+    "address": "131 Avenue A, New York, NY 10009",
+    "latitude": 40.7269404,
+    "longitude": -73.9831557,
+    "notes": "helen story",
+    "timestampMs": 1701410360000,
+    "graphId": "/g/11f9jf446l"
+  },
+  {
+    "name": "Uzuki",
+    "address": "95 Guernsey St, Brooklyn, NY 11222",
+    "latitude": 40.7245515,
+    "longitude": -73.9533881,
+    "notes": "bon appetit",
+    "timestampMs": 1701227749000,
+    "graphId": "/g/11v9kvnhkb"
+  },
+  {
+    "name": "La Vara",
+    "address": "268 Clinton St, Brooklyn, NY 11201",
+    "latitude": 40.687794499999995,
+    "longitude": -73.9956863,
+    "notes": "jason cho",
+    "timestampMs": 1699859306000,
+    "graphId": "/g/11b6dw85ym"
+  },
+  {
+    "name": "Cosme",
+    "address": "35 E 21st St, New York, NY 10010",
+    "latitude": 40.7395952,
+    "longitude": -73.9883564,
+    "notes": "jason cho",
+    "timestampMs": 1699858895000,
+    "graphId": "/g/11b7gp091z"
+  },
+  {
+    "name": "Somtum Der",
+    "address": "380 Van Brunt St, Brooklyn, NY 11231",
+    "latitude": 40.677094,
+    "longitude": -74.0135224,
+    "notes": "red hook",
+    "timestampMs": 1699133528000,
+    "graphId": "/g/11fmyrcf44"
+  },
+  {
+    "name": "Sakagura",
+    "address": "211 E 43rd St B1, New York, NY 10017",
+    "latitude": 40.751245999999995,
+    "longitude": -73.97315499999999,
+    "notes": "reddit",
+    "timestampMs": 1698606030000,
+    "graphId": "/g/1tdpskzz"
+  },
+  {
+    "name": "Golden BBQ",
+    "address": "61st St, Brooklyn, NY 11220",
+    "latitude": 40.6349393,
+    "longitude": -74.0103273,
+    "notes": "skewers, reddit",
+    "timestampMs": 1698275014000,
+    "graphId": "/g/11s92x29qx"
+  },
+  {
+    "name": "Rocco's Of Roc Beach Coal Brick Oven Pizza Restaurant Bar Italiano",
+    "address": "115-10 Rockaway Beach Blvd, Queens, NY 11694",
+    "latitude": 40.5801181,
+    "longitude": -73.8367373,
+    "notes": "reela",
+    "timestampMs": 1697217636000,
+    "graphId": "/g/11p4zy2v69"
+  },
+  {
+    "name": "灶门签 Zao Men Qian Hot Pot",
+    "address": "46-09 Kissena Blvd, Queens, NY 11355",
+    "latitude": 40.750503099999996,
+    "longitude": -73.81869569999999,
+    "notes": "reels",
+    "timestampMs": 1697179365000,
+    "graphId": "/g/11fr1nn6fg"
+  },
+  {
+    "name": "Setsugekka East Village",
+    "address": "74 E 7th St, New York, NY 10003",
+    "latitude": 40.7272615,
+    "longitude": -73.9866468,
+    "notes": "reels",
+    "timestampMs": 1697037607000,
+    "graphId": "/g/11dybjdhr5"
+  },
+  {
+    "name": "Hi-Collar",
+    "address": "231 E 9th St, New York, NY 10003",
+    "latitude": 40.7295623,
+    "longitude": -73.9878497,
+    "notes": "reels jap cafe",
+    "timestampMs": 1697037103000,
+    "graphId": "/g/12lk79rmt"
+  },
+  {
+    "name": "A-Pou's Taste",
+    "address": "963 Grand St, Brooklyn, NY 11211",
+    "latitude": 40.7131867,
+    "longitude": -73.9361393,
+    "notes": "righteous eats",
+    "timestampMs": 1696905655000,
+    "graphId": "/g/11gdkp4g6m"
+  },
+  {
+    "name": "Haenyeo",
+    "address": "239 5th Ave, Brooklyn, NY 11215",
+    "latitude": 40.6752082,
+    "longitude": -73.9810949,
+    "notes": "uro ",
+    "timestampMs": 1696810026000,
+    "graphId": "/g/11hd9fz8l2"
+  },
+  {
+    "name": "High Lúa",
+    "address": "182 S 2nd St, Brooklyn, NY 11211",
+    "latitude": 40.712584799999995,
+    "longitude": -73.96047829999999,
+    "notes": "foodnyc",
+    "timestampMs": 1695693485000,
+    "graphId": "/g/11fjtysnzx"
+  },
+  {
+    "name": "Boutique Wines, Spirits and Ciders",
+    "address": "",
+    "latitude": 41.5287016,
+    "longitude": -73.8945343,
+    "notes": "",
+    "timestampMs": 1695606866000
+  },
+  {
+    "name": "Flip Sigi",
+    "address": "131 7th Ave S, New York, NY 10014",
+    "latitude": 40.7343641,
+    "longitude": -74.0007935,
+    "notes": "reels",
+    "timestampMs": 1694447804000,
+    "graphId": "/g/11cn2m6s4v"
+  },
+  {
+    "name": "Tamarind island",
+    "address": "114-48 Sutphin Blvd, Queens, NY 11434",
+    "latitude": 40.6850319,
+    "longitude": -73.7931121,
+    "notes": "reels",
+    "timestampMs": 1692655111000,
+    "graphId": "/g/11sj2lnzx5"
+  },
+  {
+    "name": "Moti Mahal Delux",
+    "address": "1149 1st Ave., New York, NY 10065",
+    "latitude": 40.7620965,
+    "longitude": -73.9603673,
+    "notes": "r foodnyc ",
+    "timestampMs": 1692647728000,
+    "graphId": "/g/119wgl0nx"
+  },
+  {
+    "name": "Claro",
+    "address": "284 3rd Ave, Brooklyn, NY 11215",
+    "latitude": 40.6774158,
+    "longitude": -73.9862271,
+    "notes": "foodnyc ",
+    "timestampMs": 1692596709000,
+    "graphId": "/g/11f070hh23"
+  },
+  {
+    "name": "Chambers",
+    "address": "94 Chambers St #1, New York, NY 10007",
+    "latitude": 40.7145939,
+    "longitude": -74.007544,
+    "notes": "",
+    "timestampMs": 1692234364000,
+    "graphId": "/g/11s38mxssn"
+  },
+  {
+    "name": "6BC Botanical Garden",
+    "address": "630 E 6th St, New York, NY 10009",
+    "latitude": 40.7238154,
+    "longitude": -73.98070779999999,
+    "notes": "treehouse, tt ",
+    "timestampMs": 1691953110000,
+    "graphId": "/g/1tmklx0p"
+  },
+  {
+    "name": "Atera",
+    "address": "77 Worth St, New York, NY 10013",
+    "latitude": 40.7168689,
+    "longitude": -74.0055916,
+    "notes": "foodnyc vs aska",
+    "timestampMs": 1691906427000,
+    "graphId": "/g/1hc2mv0j3"
+  },
+  {
+    "name": "Colombia in Park Slope",
+    "address": "376 5th Ave, Brooklyn, NY 11215",
+    "latitude": 40.671313999999995,
+    "longitude": -73.9848945,
+    "notes": "righteous eats",
+    "timestampMs": 1691728229000,
+    "graphId": "/g/1tl0y7zh"
+  },
+  {
+    "name": "Aska",
+    "address": "47 S 5th St, Brooklyn, NY 11249",
+    "latitude": 40.7122508,
+    "longitude": -73.9664292,
+    "notes": "uro",
+    "timestampMs": 1690767959000,
+    "graphId": "/g/11by_gb2k6"
+  },
+  {
+    "name": "Shion 69 Leonard Street",
+    "address": "69 Leonard St, New York, NY 10013",
+    "latitude": 40.7175965,
+    "longitude": -74.00540269999999,
+    "notes": "",
+    "timestampMs": 1690767318000,
+    "graphId": "/g/1hf392hkh"
+  },
+  {
+    "name": "Great NY Noodletown",
+    "address": "28 Bowery, New York, NY 10013",
+    "latitude": 40.7150202,
+    "longitude": -73.9970549,
+    "notes": "",
+    "timestampMs": 1690309874000,
+    "graphId": "/g/1thq661s"
+  },
+  {
+    "name": "Bark Barbecue",
+    "address": "55 Water St, Brooklyn, NY 11201",
+    "latitude": 40.7034118,
+    "longitude": -73.9918412,
+    "notes": "dominican bbq",
+    "timestampMs": 1690046651000,
+    "graphId": "/g/11sc0nvpv9"
+  },
+  {
+    "name": "Neta Shari",
+    "address": "1718 86th St, Brooklyn, NY 11214",
+    "latitude": 40.6081845,
+    "longitude": -74.0044618,
+    "notes": "omakase, connie",
+    "timestampMs": 1689721094000,
+    "graphId": "/g/11q8kkhbzs"
+  },
+  {
+    "name": "Vatan",
+    "address": "409 3rd Ave, New York, NY 10016",
+    "latitude": 40.742382,
+    "longitude": -73.9803508,
+    "notes": "western indian food, sanjana",
+    "timestampMs": 1689095751000,
+    "graphId": "/g/1tj53j13"
+  },
+  {
+    "name": "Han Dynasty Upper West Side",
+    "address": "215 W 85th St, New York, NY 10024",
+    "latitude": 40.7874969,
+    "longitude": -73.97640369999999,
+    "notes": "sanjana",
+    "timestampMs": 1689095741000,
+    "graphId": "/g/11bycly9q5"
+  },
+  {
+    "name": "Traif",
+    "address": "229 S 4th St, Brooklyn, NY 11211",
+    "latitude": 40.7105762,
+    "longitude": -73.9589973,
+    "notes": "10 for $56, reels",
+    "timestampMs": 1688764547000,
+    "graphId": "/g/1thx0c24"
+  },
+  {
+    "name": "Milu",
+    "address": "235 Kent Ave, Brooklyn, NY 11249",
+    "latitude": 40.7165587,
+    "longitude": -73.9653944,
+    "notes": "non hidden gem, reels",
+    "timestampMs": 1688651855000,
+    "graphId": "/g/11t_ky8y5s"
+  },
+  {
+    "name": "Ba Xuyên",
+    "address": "4222 8th Ave, Brooklyn, NY 11232",
+    "latitude": 40.6452895,
+    "longitude": -73.99967529999999,
+    "notes": "banh mi, reels",
+    "timestampMs": 1688651579000,
+    "graphId": "/g/1td6675z"
+  },
+  {
+    "name": "Grimm Artisanal Ales",
+    "address": "990 Metropolitan Ave, Brooklyn, NY 11211",
+    "latitude": 40.7144048,
+    "longitude": -73.9365071,
+    "notes": "",
+    "timestampMs": 1688395976000,
+    "graphId": "/g/11g9qkqmtw"
+  },
+  {
+    "name": "Lysée",
+    "address": "44 E 21st St, New York, NY 10010",
+    "latitude": 40.7391283,
+    "longitude": -73.9881953,
+    "notes": "mari",
+    "timestampMs": 1688348841000,
+    "graphId": "/g/11swd7drhg"
+  },
+  {
+    "name": "Hamido Seafood",
+    "address": "3308 Ditmars Blvd, Queens, NY 11105",
+    "latitude": 40.7755443,
+    "longitude": -73.9096256,
+    "notes": "reels",
+    "timestampMs": 1688151023000
+  },
+  {
+    "name": "Gai Kitchen",
+    "address": "98 Mott St 11 b, New York, NY 10013",
+    "latitude": 40.7154597,
+    "longitude": -73.9987204,
+    "notes": "5.99 chicken and rice ",
+    "timestampMs": 1688102869000,
+    "graphId": "/g/11tcl2tkz_"
+  },
+  {
+    "name": "Daori BBQ",
+    "address": "40-03 149th Pl, Queens, NY 11354",
+    "latitude": 40.7633505,
+    "longitude": -73.8150206,
+    "notes": "duck kbbq",
+    "timestampMs": 1687901648000,
+    "graphId": "/g/11rsfzc5m3"
+  },
+  {
+    "name": "Mama Lee",
+    "address": "66 Grand St, Brooklyn, NY 11249",
+    "latitude": 40.715610999999996,
+    "longitude": -73.9649431,
+    "notes": "taiwanese food, reels",
+    "timestampMs": 1687894536000,
+    "graphId": "/g/11v0hnz74b"
+  },
+  {
+    "name": "Mariscos El Submarino",
+    "address": "8805 Roosevelt Ave, Queens, NY 11372",
+    "latitude": 40.7484748,
+    "longitude": -73.87813179999999,
+    "notes": "seafood tacos, reels/pwells ",
+    "timestampMs": 1687839604000,
+    "graphId": "/g/11jc9w8z8w"
+  },
+  {
+    "name": "THE IZAKAYA NYC on 4th",
+    "address": "215 E 4th St, New York, NY 10009",
+    "latitude": 40.7237979,
+    "longitude": -73.9834784,
+    "notes": "katsu sando, reels",
+    "timestampMs": 1687828189000,
+    "graphId": "/g/11fryrcmv4"
+  },
+  {
+    "name": "Abuqir",
+    "address": "24-19 Steinway St, Queens, NY 11103",
+    "latitude": 40.7684828,
+    "longitude": -73.91109569999999,
+    "notes": "seafood, top 100, reels",
+    "timestampMs": 1687795514000,
+    "graphId": "/g/11cn3wnlyw"
+  },
+  {
+    "name": "Kolkata Chai Co - East Village",
+    "address": "199 E 3rd St, New York, NY 10009",
+    "latitude": 40.7228565,
+    "longitude": -73.9831197,
+    "notes": "chai",
+    "timestampMs": 1687667088000,
+    "graphId": "/g/11h_6_c553"
+  },
+  {
+    "name": "Brine",
+    "address": "106 8th Ave, New York, NY 10011",
+    "latitude": 40.7405622,
+    "longitude": -74.001616,
+    "notes": "fried chicken",
+    "timestampMs": 1687551481000,
+    "graphId": "/g/11f733w2s1"
+  },
+  {
+    "name": "Mah-Ze-Dahr",
+    "address": "28 Greenwich Ave, New York, NY 10011",
+    "latitude": 40.735039,
+    "longitude": -74.0000184,
+    "notes": "cookies ",
+    "timestampMs": 1687477607000,
+    "graphId": "/g/11ckvfdw_v"
+  },
+  {
+    "name": "Coszcal De Allende",
+    "address": "",
+    "latitude": 40.631307199999995,
+    "longitude": -74.02815319999999,
+    "notes": "reddit\n\nhttps://www.reddit.com/r/FoodNYC/comments/ues2vu/best_mexican_food/",
+    "timestampMs": 1687327701000
+  },
+  {
+    "name": "Hometown Bar-B-Que",
+    "address": "454 Van Brunt St, Brooklyn, NY 11231",
+    "latitude": 40.6749167,
+    "longitude": -74.0161583,
+    "notes": "bbq",
+    "timestampMs": 1687323756000,
+    "graphId": "/g/1pp2vb2mr"
+  },
+  {
+    "name": "All'Antico Vinaio",
+    "address": "729 8th Ave, New York, NY 10036",
+    "latitude": 40.7597008,
+    "longitude": -73.98822729999999,
+    "notes": "italian sandwich",
+    "timestampMs": 1687322958000,
+    "graphId": "/g/11p67k39pg"
+  },
+  {
+    "name": "The Jin",
+    "address": "856 10th Ave, New York, NY 10019",
+    "latitude": 40.7685636,
+    "longitude": -73.988753,
+    "notes": "korean fried chicken, uro",
+    "timestampMs": 1687217628000,
+    "graphId": "/g/11h2hjnt_g"
+  },
+  {
+    "name": "The Noodle",
+    "address": "370 Malcolm X Blvd, New York, NY 10027",
+    "latitude": 40.8099917,
+    "longitude": -73.9434895,
+    "notes": "ig ads",
+    "timestampMs": 1686771527000,
+    "graphId": "/g/11k_5hy5vv"
+  },
+  {
+    "name": "Sugar Hill Creamery",
+    "address": "184 Malcolm X Blvd, New York, NY 10026",
+    "latitude": 40.804075,
+    "longitude": -73.9478693,
+    "notes": "handmade small batch??",
+    "timestampMs": 1686771509000,
+    "graphId": "/g/11d_wvxf79"
+  },
+  {
+    "name": "New York Chinese Scholar's Garden, Snug Harbor Cultural Center",
+    "address": "1000 Richmond Terrace, Staten Island, NY 10301",
+    "latitude": 40.6428687,
+    "longitude": -74.104249,
+    "notes": "cute date spot",
+    "timestampMs": 1686719967000,
+    "graphId": "/m/03c7lpj"
+  },
+  {
+    "name": "Chong Qing Wharf Hot Pot山城码头火锅",
+    "address": "6324 Fort Hamilton Pkwy, Brooklyn, NY 11219",
+    "latitude": 40.6313591,
+    "longitude": -74.0085156,
+    "notes": "idk ads",
+    "timestampMs": 1686414520000,
+    "graphId": "/g/11pz36j1_r"
+  },
+  {
+    "name": "Yakiniku Futago",
+    "address": "37 W 17th St, New York, NY 10011",
+    "latitude": 40.7389084,
+    "longitude": -73.9940515,
+    "notes": "japanese bbq",
+    "timestampMs": 1686170056000,
+    "graphId": "/g/11byl3xlj9"
+  },
+  {
+    "name": "Yaad man thing",
+    "address": "3901 Church Ave, Brooklyn, NY 11203",
+    "latitude": 40.651416,
+    "longitude": -73.9408156,
+    "notes": "jamaican food",
+    "timestampMs": 1686104064000,
+    "graphId": "/g/11t_h49x10"
+  },
+  {
+    "name": "Taqueria Tlaxcalli",
+    "address": "2103 Starling Ave, Bronx, NY 10462",
+    "latitude": 40.836220999999995,
+    "longitude": -73.8549245,
+    "notes": "burrito best beli app",
+    "timestampMs": 1686020194000,
+    "graphId": "/g/1tmqs94x"
+  },
+  {
+    "name": "Kettl Tea",
+    "address": "70 Greenpoint Ave, Brooklyn, NY 11222",
+    "latitude": 40.729706799999995,
+    "longitude": -73.9581555,
+    "notes": "",
+    "timestampMs": 1685900768000,
+    "graphId": "/g/11hj5zf4j2"
+  },
+  {
+    "name": "Little Flower Cafe",
+    "address": "25-35 36th Ave, Queens, NY 11106",
+    "latitude": 40.757989099999996,
+    "longitude": -73.9321015,
+    "notes": "pastries",
+    "timestampMs": 1685751527000,
+    "graphId": "/g/11rtsfngtz"
+  },
+  {
+    "name": "Nurlan Uyghur Restaurant",
+    "address": "43-39 Main St, Queens, NY 11355",
+    "latitude": 40.751587799999996,
+    "longitude": -73.8259018,
+    "notes": "righteous eats",
+    "timestampMs": 1685600525000,
+    "graphId": "/g/11h1ks_h8m"
+  },
+  {
+    "name": "Notable",
+    "address": "25-11 30th Ave., Queens, NY 11102",
+    "latitude": 40.7685404,
+    "longitude": -73.92455749999999,
+    "notes": "jamaican fusion",
+    "timestampMs": 1683262960000,
+    "graphId": "/g/11s9b_0d1t"
+  },
+  {
+    "name": "THEP Thai Restaurant",
+    "address": "1439 2nd Ave, New York, NY 10021",
+    "latitude": 40.7707714,
+    "longitude": -73.9572357,
+    "notes": "thai",
+    "timestampMs": 1682660898000,
+    "graphId": "/g/11g9nfjd87"
+  },
+  {
+    "name": "Jeju Noodle Bar",
+    "address": "679 Greenwich St, New York, NY 10014",
+    "latitude": 40.732988899999995,
+    "longitude": -74.0073417,
+    "notes": "",
+    "timestampMs": 1682633727000,
+    "graphId": "/g/11g81r6mq7"
+  },
+  {
+    "name": "Chongqing Lao Zao 重慶老灶",
+    "address": "37-04 Prince St, Flushing, NY 11354",
+    "latitude": 40.7606738,
+    "longitude": -73.8330235,
+    "notes": "chongqing hotpot",
+    "timestampMs": 1682632632000,
+    "graphId": "/g/11h3l5c67n"
+  },
+  {
+    "name": "HARBS Chelsea",
+    "address": "198 9th Ave, New York, NY 10011",
+    "latitude": 40.745871099999995,
+    "longitude": -74.00151989999999,
+    "notes": "better than lady m",
+    "timestampMs": 1682632229000,
+    "graphId": "/g/11b6t1lcfh"
+  },
+  {
+    "name": "Villabate Alba",
+    "address": "7001 18th Ave, Brooklyn, NY 11204",
+    "latitude": 40.6161033,
+    "longitude": -73.9930581,
+    "notes": "carrot cake and tiramisu ",
+    "timestampMs": 1682605082000,
+    "graphId": "/g/1vr1xjy8"
+  },
+  {
+    "name": "Librae Bakery",
+    "address": "35 Cooper Sq, New York, NY 10003",
+    "latitude": 40.728118599999995,
+    "longitude": -73.99075239999999,
+    "notes": "",
+    "timestampMs": 1682569555000,
+    "graphId": "/g/11sx541m93"
+  },
+  {
+    "name": "Ayat",
+    "address": "8504 3rd Ave, Brooklyn, NY 11209",
+    "latitude": 40.624218899999995,
+    "longitude": -74.0309273,
+    "notes": "palestinian ",
+    "timestampMs": 1682569028000,
+    "graphId": "/g/11l86sp7zv"
+  },
+  {
+    "name": "Dashi Okume",
+    "address": "50 Norman Ave, Brooklyn, NY 11222",
+    "latitude": 40.724696,
+    "longitude": -73.953656,
+    "notes": "grilled fish, dashi, bowls",
+    "timestampMs": 1682568957000,
+    "graphId": "/g/11tcv3wl_z"
+  },
+  {
+    "name": "Davelle",
+    "address": "102 Suffolk St, New York, NY 10002",
+    "latitude": 40.7185385,
+    "longitude": -73.9860676,
+    "notes": "uni and toast",
+    "timestampMs": 1682568900000,
+    "graphId": "/g/11gf9gx8n3"
+  },
+  {
+    "name": "Casa Adela",
+    "address": "66 Loisaida Ave, New York, NY 10009",
+    "latitude": 40.722648199999995,
+    "longitude": -73.9797184,
+    "notes": "righteous eats",
+    "timestampMs": 1682489203000,
+    "graphId": "/g/1w0sdspx"
+  },
+  {
+    "name": "Datz Deli",
+    "address": "190-01 Hollis Ave, Queens, NY 11423",
+    "latitude": 40.709599499999996,
+    "longitude": -73.7675691,
+    "notes": "ig ad",
+    "timestampMs": 1682344984000,
+    "graphId": "/g/11scvcgmyz"
+  },
+  {
+    "name": "Razza",
+    "address": "275/277 Grove St, Jersey City, NJ 07302",
+    "latitude": 40.7177776,
+    "longitude": -74.0442612,
+    "notes": "jason cho pizza",
+    "timestampMs": 1681975992000,
+    "graphId": "/g/11y6k3y78"
+  },
+  {
+    "name": "La Cabra",
+    "address": "152 2nd Ave, New York, NY 10003",
+    "latitude": 40.729445899999995,
+    "longitude": -73.9868353,
+    "notes": "bakery, xiao",
+    "timestampMs": 1681337033000,
+    "graphId": "/g/11p0g5znn6"
+  },
+  {
+    "name": "Brooklyn Cider House",
+    "address": "155 N Ohioville Rd #3402, New Paltz, NY 12561",
+    "latitude": 41.7579841,
+    "longitude": -74.0499229,
+    "notes": "kinda dry is good",
+    "timestampMs": 1681001708000,
+    "graphId": "/g/11cn9g1t90"
+  },
+  {
+    "name": "L'Industrie Pizzeria",
+    "address": "",
+    "latitude": 40.711611999999995,
+    "longitude": -73.9578646,
+    "notes": "jasoncho pizza",
+    "timestampMs": 1680563855000
+  },
+  {
+    "name": "Mitr Thai Restaurant",
+    "address": "37 W 46th St, New York, NY 10036",
+    "latitude": 40.756876899999995,
+    "longitude": -73.9804147,
+    "notes": "thai food",
+    "timestampMs": 1680553363000,
+    "graphId": "/g/11tbbv9zl7"
+  },
+  {
+    "name": "Moko",
+    "address": "138 2nd Ave, New York, NY 10003",
+    "latitude": 40.7287621,
+    "longitude": -73.987158,
+    "notes": "budget omakase, multi tiers",
+    "timestampMs": 1680398872000,
+    "graphId": "/g/11rg7bvqmk"
+  },
+  {
+    "name": "Sushi Kai",
+    "address": "332 E 9th St, New York, NY 10003",
+    "latitude": 40.7285086,
+    "longitude": -73.9861516,
+    "notes": "budget omakase 85/15",
+    "timestampMs": 1680398424000,
+    "graphId": "/g/11k18xlggn"
+  },
+  {
+    "name": "Claud",
+    "address": "90 E 10th St, New York, NY 10003",
+    "latitude": 40.730877,
+    "longitude": -73.9896693,
+    "notes": "jason cho post",
+    "timestampMs": 1680037165000,
+    "graphId": "/g/11t9y2m29l"
+  },
+  {
+    "name": "Prince Street Pizza",
+    "address": "27 Prince St A, New York, NY 10012",
+    "latitude": 40.7230777,
+    "longitude": -73.9945444,
+    "notes": "pizza, dheerja",
+    "timestampMs": 1679612307000,
+    "graphId": "/g/113f6l3sc"
+  },
+  {
+    "name": "Di Fara Pizza",
+    "address": "1424 Avenue J, Brooklyn, NY 11230",
+    "latitude": 40.625052499999995,
+    "longitude": -73.9615124,
+    "notes": "pizza, dheerja ",
+    "timestampMs": 1679612271000,
+    "graphId": "/m/02q2yf7"
+  },
+  {
+    "name": "Sushi On Me",
+    "address": "71-26 Roosevelt Ave, Queens, NY 11372",
+    "latitude": 40.746446,
+    "longitude": -73.8939518,
+    "notes": "unlimited sake, ray",
+    "timestampMs": 1679179680000,
+    "graphId": "/g/11mk5qlb_3"
+  },
+  {
+    "name": "Utopia Bagels",
+    "address": "1909 Utopia Pkwy, Queens, NY 11357",
+    "latitude": 40.780218399999995,
+    "longitude": -73.7937456,
+    "notes": "saw on fb video",
+    "timestampMs": 1678741661000,
+    "graphId": "/g/1260wcdtl"
+  },
+  {
+    "name": "Moody Tongue Sushi",
+    "address": "150 W 10th St, New York, NY 10014",
+    "latitude": 40.734438,
+    "longitude": -74.001151,
+    "notes": "uro fermented stuff",
+    "timestampMs": 1678219494000,
+    "graphId": "/g/11k9p71y9s"
+  },
+  {
+    "name": "City Beer",
+    "address": "200 E 39th St, New York, NY 10016",
+    "latitude": 40.7486809,
+    "longitude": -73.97564009999999,
+    "notes": "craft beers, uro",
+    "timestampMs": 1678068959000,
+    "graphId": "/g/11g0vy12dh"
+  },
+  {
+    "name": "Wolfnights - The Gourmet Wrap",
+    "address": "489 3rd Ave, New York, NY 10016",
+    "latitude": 40.7451222,
+    "longitude": -73.9783443,
+    "notes": "saw on fb reels lol",
+    "timestampMs": 1678145132000,
+    "graphId": "/g/11rz7z0xr5"
+  },
+  {
+    "name": "Rule of Thirds",
+    "address": "171 Banker St, Brooklyn, NY 11222",
+    "latitude": 40.7247503,
+    "longitude": -73.95503,
+    "notes": "ploys story ",
+    "timestampMs": 1678062424000,
+    "graphId": "/g/11h4f6rw18"
+  },
+  {
+    "name": "Patisserie Tomoko",
+    "address": "568 Union Ave, Brooklyn, NY 11211",
+    "latitude": 40.7177778,
+    "longitude": -73.9519444,
+    "notes": "ploys story",
+    "timestampMs": 1678062375000,
+    "graphId": "/g/1pp2x8yrc"
+  },
+  {
+    "name": "Ci Siamo",
+    "address": "440 W 33rd St Suite #100, New York, NY 10001",
+    "latitude": 40.7526152,
+    "longitude": -73.9989141,
+    "notes": "ploys story",
+    "timestampMs": 1678062352000,
+    "graphId": "/g/11rfffqtxt"
+  },
+  {
+    "name": "Katsu-Hama",
+    "address": "11 E 47th St, New York, NY 10017",
+    "latitude": 40.7564028,
+    "longitude": -73.9776361,
+    "notes": "",
+    "timestampMs": 1677640971000,
+    "graphId": "/g/1vbl8hk6"
+  },
+  {
+    "name": "Spice Symphony",
+    "address": "150 E 50th St, New York, NY 10022",
+    "latitude": 40.755905299999995,
+    "longitude": -73.9715702,
+    "notes": "",
+    "timestampMs": 1677640971000,
+    "graphId": "/g/1hhj4nt01"
+  },
+  {
+    "name": "Dhaba",
+    "address": "108 Lexington Ave, New York, NY 10016",
+    "latitude": 40.742405999999995,
+    "longitude": -73.982895,
+    "notes": "",
+    "timestampMs": 1677640934000,
+    "graphId": "/g/1tr18h0k"
+  },
+  {
+    "name": "Hirohisa",
+    "address": "73 Thompson St, New York, NY 10012",
+    "latitude": 40.7245821,
+    "longitude": -74.0030281,
+    "notes": "",
+    "timestampMs": 1677468464000,
+    "graphId": "/g/12q4x38rr"
+  },
+  {
+    "name": "Pranakhon",
+    "address": "88 University Pl, New York, NY 10003",
+    "latitude": 40.733751,
+    "longitude": -73.9932623,
+    "notes": "thai food on ploys story",
+    "timestampMs": 1677395337000,
+    "graphId": "/g/11tdv3_mlj"
+  },
+  {
+    "name": "Rolo’s",
+    "address": "853 Onderdonk Ave, Queens, NY 11385",
+    "latitude": 40.701934099999995,
+    "longitude": -73.9035428,
+    "notes": "on jason chos story",
+    "timestampMs": 1677468057000,
+    "graphId": "/g/11fm49p8kv"
+  },
+  {
+    "name": "Mingle Soho",
+    "address": "141 E 55th St, New York, NY 10022",
+    "latitude": 40.7573258,
+    "longitude": -73.9765141,
+    "notes": "hans haircut place",
+    "timestampMs": 1677466798000,
+    "graphId": "/g/1tks76s5"
+  },
+  {
+    "name": "Anjappar Indian Cuisine",
+    "address": "116 Lexington Ave, New York, NY 10016",
+    "latitude": 40.7425815,
+    "longitude": -73.98269669999999,
+    "notes": "south indian food",
+    "timestampMs": 1676699360000,
+    "graphId": "/g/1hc64r9md"
+  },
+  {
+    "name": "The Food Emporium & Amish Kitchen",
+    "address": "810 8th Ave, New York, NY 10019",
+    "latitude": 40.7617385,
+    "longitude": -73.9861904,
+    "notes": "saison dupont",
+    "timestampMs": 1675630629000,
+    "graphId": "/g/1tfbjmyv"
+  },
+  {
+    "name": "Di An Di",
+    "address": "68 Greenpoint Ave, Brooklyn, NY 11222",
+    "latitude": 40.7296511,
+    "longitude": -73.9582848,
+    "notes": "uro vietnamese/korean",
+    "timestampMs": 1675554877000,
+    "graphId": "/g/11gfjskfdx"
+  },
+  {
+    "name": "The Met Cloisters",
+    "address": "99 Margaret Corbin Dr, New York, NY 10040",
+    "latitude": 40.8648628,
+    "longitude": -73.9317274,
+    "notes": "date spot",
+    "timestampMs": 1674924408000,
+    "graphId": "/m/01rs7b"
+  },
+  {
+    "name": "Tanoshi Sushi Sake Bar",
+    "address": "1372 York Ave, New York, NY 10021",
+    "latitude": 40.7676315,
+    "longitude": -73.95296379999999,
+    "notes": "",
+    "timestampMs": 1672627820000,
+    "graphId": "/g/11cfd4njf"
+  },
+  {
+    "name": "Shalom Japan",
+    "address": "310 S 4th St, Brooklyn, NY 11211",
+    "latitude": 40.709173299999996,
+    "longitude": -73.9557774,
+    "notes": "",
+    "timestampMs": 1672627734000,
+    "graphId": "/g/12mkw8_n3"
+  },
+  {
+    "name": "KJUN",
+    "address": "154 E 39th St, New York, NY 10016",
+    "latitude": 40.7489391,
+    "longitude": -73.9763062,
+    "notes": "",
+    "timestampMs": 1672622813000,
+    "graphId": "/g/11mxb3k08v"
+  },
+  {
+    "name": "SakaMai",
+    "address": "",
+    "latitude": 40.7210028,
+    "longitude": -73.9881194,
+    "notes": "",
+    "timestampMs": 1672617985000
+  }
+]
