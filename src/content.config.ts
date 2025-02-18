@@ -1,3 +1,4 @@
+import { glob } from "astro/loaders";
 import { z, defineCollection } from "astro:content";
 
 const projectSchema = z.object({
@@ -22,12 +23,18 @@ const blogSchema = z.object({
 });
 
 const projects = defineCollection({
-  slug: ({ data }) => data.slug,
+  loader: glob({
+    pattern: "**/*.mdx",
+    base: "./src/content/projects",
+  }),
   schema: projectSchema,
 });
 
 const blog = defineCollection({
-  slug: ({ data }) => data.slug,
+  loader: glob({
+    pattern: "**/*.mdx",
+    base: "./src/content/blog",
+  }),
   schema: blogSchema,
 });
 

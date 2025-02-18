@@ -19,7 +19,7 @@ const projects = (await getCollection("projects")).sort((a, b) =>
     {
       projects.map((project) => (
         <div>
-          <a class="text-lg underline" href={`/projects/${project.slug}`}>
+          <a class="text-lg underline" href={`/projects/${project.id}`}>
             {project.data.title}
           </a>
         </div>

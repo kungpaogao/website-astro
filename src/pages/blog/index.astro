@@ -22,7 +22,7 @@ const posts = (await getCollection("blog")).sort((a, b) =>
         <div class="flex w-full flex-wrap justify-between">
           <a
             class="w-full text-lg underline md:w-auto"
-            href={`/blog/${post.slug}`}
+            href={`/blog/${post.id}`}
           >
             {post.data.title}
           </a>

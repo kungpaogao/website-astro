@@ -1,7 +1,7 @@
 ---
 import { format, parse } from "date-fns";
 import type { CollectionEntry } from "astro:content";
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import { downloadPostsAsMdx } from "../../lib/notion-download";
 
@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 
   return posts.map((post) => ({
     params: {
-      slug: post.slug,
+      slug: post.id,
     },
     props: {
       post: post,
@@ -24,7 +24,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 ---
 
 <Layout {...post.data as any} className="prose mx-auto break-words">
@@ -42,5 +42,7 @@ const { Content } = await post.render();
   <Content />
   <hr class="border border-gray-300 mt-8" />
   <p class="text-gray-400 mt-4">Thanks for reading :)</p>
-  <p class="text-gray-400">Last updated {format(post.data.lastEditedTime, "MMMM dd, yyyy")}</p>
+  <p class="text-gray-400">
+    Last updated {format(post.data.lastEditedTime, "MMMM dd, yyyy")}
+  </p>
 </Layout>
