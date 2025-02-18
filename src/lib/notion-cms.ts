@@ -1,4 +1,3 @@
-import { Client } from "@notionhq/client";
 import type {
   BlockObjectResponse,
   PageObjectResponse,
@@ -32,11 +31,10 @@ export function ensureFullResponse<T, PT>(result: T | PT): T {
 export async function queryNotionDatabase(
   options: QueryDatabaseParameters,
 ): Promise<PageObjectResponse[]> {
-  console.log("Fetching pages from Notion database...", options);
+  console.log("Fetching pages from Notion database:", options);
   const pages: PageObjectResponse[] = [];
   let cursor = undefined;
   while (true) {
-    console.log("Cursor:", cursor);
     const { results, next_cursor } = await notion.databases.query({
       ...options,
       start_cursor: cursor,
@@ -53,7 +51,7 @@ export async function queryNotionDatabase(
     }
 
     if (!next_cursor) {
-      console.log("No more pages to fetch.");
+      console.log("Finished fetching pages from Notion database:", options);
       break;
     }
 
