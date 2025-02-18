@@ -49,12 +49,12 @@ const Navigation: Component<NavigationProps> = ({
   return (
     <nav
       class={clsx(
-        "border-b border-gray-300 border-opacity-50",
+        "border-b border-gray-300/50",
         "transition-[border] duration-300",
         { "border-b": isBorderVisible() && !checked() },
         { "border-b-0": !isBorderVisible() || checked() },
-        "bg-stone-100 bg-opacity-70 backdrop-blur backdrop-saturate-150",
-        checked() && "bg-opacity-100",
+        "bg-stone-100/70 backdrop-blur backdrop-saturate-150",
+        checked() && "bg-stone-100/100",
         className
       )}
     >
@@ -62,7 +62,7 @@ const Navigation: Component<NavigationProps> = ({
         class={clsx(
           "absolute top-0 left-0",
           "h-full w-full",
-          "border-b border-gray-300 border-opacity-50",
+          "border-b border-gray-300/50",
           "peer-target:border-b-0 peer-checked:border-b-0"
         )}
         aria-hidden="true"
@@ -147,7 +147,7 @@ const Navigation: Component<NavigationProps> = ({
           "peer-checked:flex peer-checked:border-b",
           "absolute right-0 left-0 md:static",
           "bg-white md:bg-transparent",
-          "border-gray-300 border-opacity-50",
+          "border-gray-300/50",
           contentClassName
         )}
       >
@@ -163,11 +163,11 @@ const Navigation: Component<NavigationProps> = ({
       <div
         class={clsx(
           "absolute top-0 left-0 right-0 bottom-0 h-[100vh]",
-          "bg-black bg-opacity-0 backdrop-blur-sm",
+          "bg-black/0 backdrop-blur-sm",
           "transition-opacity",
           "hidden md:hidden",
           "peer-target:block peer-checked:block",
-          "peer-target:bg-opacity-50 peer-checked:bg-opacity-50"
+          "peer-target:bg-black/50 peer-checked:bg-black/50"
         )}
         onClick={() => {
           setChecked(!checked());
