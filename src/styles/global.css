@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
-@config "../../tailwind.config.cjs";
+@import "./animations.css";
+@import "./prose.css";
+@import "./fonts.css";
 
 html {
   background-color: theme("colors.stone.100");

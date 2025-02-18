@@ -16,3 +16,10 @@
     src: url("/fonts/Newsreader-Variable-Latin.woff2") format("woff2");
   }
 }
+
+@theme {
+  --font-inter: "Inter", sans-serif;
+  --font-newsreader: "Newsreader", serif;
+  --font-serif: var(--font-newsreader);
+  --font-sans: var(--font-inter);
+}

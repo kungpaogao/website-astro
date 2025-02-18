@@ -1,0 +1,71 @@
+:root {
+  --prose-text-padding: 3px 0px;
+  --prose-heading-line-height: 1.3;
+  --prose-paragraph-line-height: 1.5;
+}
+
+.prose {
+  p {
+    line-height: var(--prose-paragraph-line-height);
+    margin: 0;
+    padding: var(--prose-text-padding);
+  }
+  ul {
+    margin: 0 !important;
+  }
+  ol {
+    margin: 0 !important;
+  }
+  li {
+    margin: 0 !important;
+    padding-top: var(--prose-text-padding);
+    padding-bottom: var(--prose-text-padding);
+  }
+  hr {
+    margin: 6.5px 0px;
+  }
+  h1 {
+    font-family: var(--font-serif);
+    font-size: 1.875em;
+    font-weight: var(--font-weight-medium);
+    line-height: var(--prose-heading-line-height);
+    margin-top: 2rem !important;
+    margin-bottom: 4px;
+    padding: var(--prose-text-padding);
+  }
+  h2 {
+    font-family: var(--font-serif);
+    font-size: 1.5em;
+    font-weight: var(--font-weight-medium);
+    line-height: var(--prose-heading-line-height);
+    margin-top: 1.4rem !important;
+    margin-bottom: 1px;
+    padding: var(--prose-text-padding);
+  }
+  h3 {
+    font-family: var(--font-serif);
+    font-size: 1.25em;
+    font-weight: var(--font-weight-medium);
+    line-height: var(--prose-heading-line-height);
+    margin-top: 1rem !important;
+    margin-bottom: 1px;
+    padding: var(--prose-text-padding);
+  }
+  blockquote p:first-of-type::before {
+    content: normal;
+  }
+  blockquote p:last-of-type::after {
+    content: normal;
+  }
+  code {
+    background-color: var(--colors-slate-100);
+    padding: 1px 3px;
+    border-radius: var(--border-radius-sm);
+  }
+  code::before {
+    content: normal;
+  }
+  code::after {
+    content: normal;
+  }
+}
