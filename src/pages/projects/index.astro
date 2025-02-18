@@ -2,18 +2,23 @@
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import { getPageProperties, parsePageUrl } from "../../lib/notion-cms-page";
+import { marked } from "marked";
+import { getBlock } from "src/lib/notion-cms";
+import { parseBlocks } from "src/lib/notion-parse";
 
-const PAGE_ID = parsePageUrl(
+const pageId = parsePageUrl(
   "https://www.notion.so/kungpaogao/Projects-043bbef2e61041a583d68ce2551cee0f"
 );
 
-const properties = await getPageProperties(PAGE_ID);
+const properties = await getPageProperties(pageId);
 const projects = (await getCollection("projects")).sort((a, b) =>
   a.data.published > b.data.published ? -1 : 1
 );
+const pageContent = marked.parse(parseBlocks(await getBlock(pageId)));
 ---
 
 <Layout {...properties} className="prose mx-auto">
+  <Fragment set:html={pageContent} />
   <h1>Projects</h1>
   <div class="mt-3 flex flex-col items-start gap-3">
     {
