@@ -163,7 +163,7 @@ const Navigation: Component<NavigationProps> = ({
       <div
         class={clsx(
           "absolute top-0 left-0 right-0 bottom-0 h-[100vh]",
-          "bg-black/0 backdrop-blur-sm",
+          "bg-black/0 backdrop-blur-xs",
           "transition-opacity",
           "hidden md:hidden",
           "peer-target:block peer-checked:block",

@@ -16,7 +16,7 @@ module.exports = {
       },
       // https://github.com/tailwindlabs/tailwindcss-typography/blob/master/src/styles.js
       // https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js
-      typography: (theme) => ({
+      typography: ({theme}) => ({
         DEFAULT: {
           css: {
             p: {
@@ -42,7 +42,7 @@ module.exports = {
               margin: "6.5px 0px",
             },
             h1: {
-              fontFamily: theme("fontFamily.serif").join(","),
+              fontFamily: theme("fontFamily.serif"), //.join(","),
               fontSize: "1.875em",
               fontWeight: theme("fontWeight.medium"),
               lineHeight: headingLineHeight,
@@ -51,7 +51,7 @@ module.exports = {
               padding: textPadding,
             },
             h2: {
-              fontFamily: theme("fontFamily.serif").join(","),
+              fontFamily: theme("fontFamily.serif"), //.join(","),
               fontSize: "1.5em",
               fontWeight: theme("fontWeight.medium"),
               lineHeight: headingLineHeight,
@@ -60,7 +60,7 @@ module.exports = {
               padding: textPadding,
             },
             h3: {
-              fontFamily: theme("fontFamily.serif").join(","),
+              fontFamily: theme("fontFamily.serif"), //.join(","),
               fontSize: "1.25em",
               fontWeight: theme("fontWeight.medium"),
               lineHeight: headingLineHeight,
