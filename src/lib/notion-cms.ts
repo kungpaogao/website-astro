@@ -30,11 +30,13 @@ export function ensureFullResponse<T, PT>(result: T | PT): T {
  * @returns An array of pages
  */
 export async function queryNotionDatabase(
-  options: QueryDatabaseParameters
+  options: QueryDatabaseParameters,
 ): Promise<PageObjectResponse[]> {
+  console.log("Fetching pages from Notion database...", options);
   const pages: PageObjectResponse[] = [];
   let cursor = undefined;
   while (true) {
+    console.log("Cursor:", cursor);
     const { results, next_cursor } = await notion.databases.query({
       ...options,
       start_cursor: cursor,
@@ -51,8 +53,11 @@ export async function queryNotionDatabase(
     }
 
     if (!next_cursor) {
+      console.log("No more pages to fetch.");
       break;
     }
+
+    cursor = next_cursor;
   }
 
   return pages;
@@ -113,7 +118,7 @@ export async function getBlock(blockId: string) {
           block[blockType].file.url = await getAssetUrl(
             block.id,
             block[blockType].file.url,
-            blockType === "image"
+            blockType === "image",
           );
         }
       }
@@ -124,6 +129,6 @@ export async function getBlock(blockId: string) {
       }
 
       return block;
-    })
+    }),
   );
 }
