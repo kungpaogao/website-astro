@@ -1,0 +1,26 @@
+---
+import { getBlock, queryNotionDatabase } from "src/lib/notion-cms";
+import Layout from "../layouts/Layout.astro";
+import { parsePageUrl } from "../lib/notion-cms-page";
+import { getPageProperties } from "../lib/notion-cms-page";
+import { marked } from "marked";
+import { parseBlocks, parseProperty } from "src/lib/notion-parse";
+import { format, parseISO } from "date-fns";
+
+const pageId = parsePageUrl(
+  "https://www.notion.so/kungpaogao/Places-18b188a22f88472288cc3e4a553c8b2f"
+);
+// fetch google maps list
+// create map using leaflet
+// mark places on maps
+// fetch db on notion
+// match based on id
+// display notes and stuff
+
+const pageProperties = await getPageProperties(pageId);
+const pageContent = marked.parse(parseBlocks(await getBlock(pageId)));
+---
+
+<Layout {...pageProperties} className="prose mx-auto">
+  <Fragment set:html={pageContent} />
+</Layout>
