@@ -29,16 +29,14 @@ const { Content } = await render(post);
 
 <Layout {...post.data as any} className="prose mx-auto break-words">
   <h1>{post.data.title}</h1>
-  <span class="not-prose">
-    <h2 class="mb-8 text-lg font-semibold text-gray-400">
-      {
-        format(
-          parse(post.data.published, "yyyy-MM-dd", new Date()),
-          "MMMM dd, yyyy"
-        )
-      }
-    </h2>
-  </span>
+  <h2 class="mb-8! mt-0! text-lg! font-semibold! text-gray-400 leading-none">
+    {
+      format(
+        parse(post.data.published, "yyyy-MM-dd", new Date()),
+        "MMMM dd, yyyy"
+      )
+    }
+  </h2>
   <Content />
   <hr class="border border-gray-300 mt-8" />
   <p class="text-gray-400 mt-4">Thanks for reading :)</p>
