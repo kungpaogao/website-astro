@@ -9,7 +9,6 @@ async function loadFont(filename: string) {
 }
 
 const interMedium = await loadFont("Inter-Medium.woff");
-const maShanZhengRegular = await loadFont("MaShanZheng-Regular.woff");
 
 export async function generateImage(text: string, width = 200, height = 200) {
   const svg = await satori(
@@ -40,14 +39,8 @@ export async function generateImage(text: string, width = 200, height = 200) {
           style: "normal",
           weight: 500,
         },
-        {
-          name: "MaShanZheng",
-          data: maShanZhengRegular,
-          style: "normal",
-          weight: 400,
-        },
       ],
-    }
+    },
   );
 
   return svg;
