@@ -1,0 +1,27 @@
+---
+import { parseProperty } from "src/lib/notion-parse";
+import { format, parseISO } from "date-fns";
+import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+
+export interface Props {
+  page: PageObjectResponse;
+}
+const { page } = Astro.props as Props;
+---
+
+<div>
+  {
+    page.properties["Tags"]["multi_select"].find(
+      (tag) => tag.name === "wow"
+    ) && <span class="text-red-500">wow</span>
+  }
+  <a class="underline" href={parseProperty(page.properties["Link"])}
+    >{parseProperty(page.properties["Comments and Quotes"])}</a
+  >
+  on {format(parseISO(parseProperty(page.properties["Date"])), "MMM d")}
+  {
+    page.properties["Tags"]["multi_select"]
+      .filter((tag) => tag.name !== "wow")
+      .map((tag) => <span class="text-gray-400">#{tag.name} </span>)
+  }
+</div>
