@@ -5,14 +5,76 @@ import { parsePageUrl, getPageProperties } from "../lib/notion-cms-page";
 import { parseBlocks } from "../lib/notion-parse";
 import { marked } from "../lib/marked";
 
-const PAGE_ID = parsePageUrl(
+const homePageId = parsePageUrl(
   "https://www.notion.so/kungpaogao/Home-b509f95388e84863a95d103eceab812e"
 );
 
-const properties = await getPageProperties(PAGE_ID);
-const content = marked.parse(parseBlocks(await getBlock(PAGE_ID)));
+const properties = await getPageProperties(homePageId);
+const lastEditDate = new Date(properties.last_edited_time).toLocaleDateString(
+  "en-US",
+  { year: "numeric", month: "2-digit", day: "2-digit" }
+);
+
+const headlineContent = marked.parse(parseBlocks(await getBlock(homePageId)));
+const ingredients = marked.parse(
+  parseBlocks(
+    await getBlock(
+      parsePageUrl(
+        "https://www.notion.so/kungpaogao/Ingredients-bd0d4055c64d47f0bb0c01160ce7239e?pvs=4"
+      )
+    )
+  )
+);
+const allergies = marked.parse(
+  parseBlocks(
+    await getBlock(
+      parsePageUrl(
+        "https://www.notion.so/kungpaogao/Allergy-info-1b63c61bf68d805287c3c547885a8a42?pvs=4"
+      )
+    )
+  )
+);
 ---
 
-<Layout {...properties} className="prose mx-auto prose-blockquote:text-base">
-  <Fragment set:html={content} />
+<Layout {...properties} className="mx-auto max-w-prose prose-a:underline">
+  <div class="text-center flex flex-col items-center font-arial gap-2">
+    <div class="bg-black w-full text-white px-2">菜单 MENU</div>
+    <h1 class="text-5xl font-extrabold">高崧柏</h1>
+    <h2 class="uppercase font-arial text-xl font-bold">Andrew Gao</h2>
+    <div class="bg-black w-full text-white px-2">
+      <Fragment set:html={headlineContent} />
+    </div>
+    <div class="uppercase">
+      <Fragment set:html={ingredients} />
+    </div>
+    <div>
+      <p class="uppercase"><b>Net wt.:</b> Like 160 lbs</p>
+      <p class="uppercase font-bold">KEEP REFRIGERATED</p>
+    </div>
+    <div class="flex place-content-between w-full px-3">
+      <p class="text-start">美国生产<br />MADE IN USA</p><p class="text-end">
+        无防腐剂<br />NO PRESERVATIVE
+      </p>
+    </div>
+    <!-- TODO: logo or brand or something-->
+    <!-- <div></div> -->
+    <div>
+      <img src="barcode.svg" alt="barcode" />
+    </div>
+    <div class="uppercase text-sm">
+      <Fragment set:html={allergies} />
+    </div>
+    <p class="text-sm font-semibold">SHAKE WELL<br />BEFORE CONSUME</p>
+    <div class="bg-black w-full px-2 uppercase flex place-content-center gap-5">
+      <a href="#" class="text-white">Twitter</a>
+      <a href="#" class="text-white">LinkedIn</a>
+      <a href="#" class="text-white">GitHub</a>
+    </div>
+    <!-- TODO: different font -->
+    <p
+      class="font-['Comic_Sans_MS'] rotate-2 text-2xl text-gray-600/90 -translate-y-4"
+    >
+      PROD. ON {lastEditDate}
+    </p>
+  </div>
 </Layout>

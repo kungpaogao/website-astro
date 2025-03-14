@@ -1,0 +1,275 @@
+---
+lastEditedTime: '2025-03-14T05:31:00.000Z'
+published: '2022-11-27'
+Last edited time: '2025-03-14T05:31:00.000Z'
+description: 'Post about building this website'
+path: '/blog/here'
+tags: 'dev'
+public: 'true'
+slug: 'here'
+title: 'This website'
+---
+import { Image } from 'astro:assets';
+
+
+This website is an experiment using [Notion](https://www.notion.so/) as a [CMS](https://en.wikipedia.org/wiki/Content_management_system). This allows me to have a much better editing experience, which should encourage me to write more content and keep the content more up to date.
+
+The process for updating content is easy as editing in Notion and triggering a rebuild/redeploy (at least in theory).
+
+The site is built using [Astro](https://astro.build/), which statically generates the site and helps me minimize the amount of JavaScript that’s sent to the client. Fun fact: everything on this website <i>should</i> work without JavaScript.
+
+You can find the [source code to this site on GitHub](https://github.com/kungpaogao/website-astro). Feel free to file issues if you find a bug.
+
+<br />
+
+
+Below (the divider) is what I used to test the Notion parser that I “wrote” (copied a lot of code from existing solutions) to convert Notion blocks to Markdown, which is then rendered using Astro’s built-in support for Markdown (underneath the hood, it uses <code>remark-rehype</code>).
+
+## Milestones
+
+
+Some tasks that I’m proud of completing while building this website:
+- Wrote a collection of scripts to parse Notion blocks to Markdown + made sure everything was accessible!
+- Attempted to make the website SEO friendly (it still ranks really low in searches rip)
+- Iterated a ton on the navigation bar to make it work without JavaScript (and spent a lot of time reverse engineering [apple.com](http://apple.com/)’s nav bar)
+- Migrated content architecture to local MDX files
+
+<br />
+
+___
+
+## Tasks
+
+- [ ] [dev] make parsing more robust
+    - [x] accessibility
+    - [x] support empty lines
+    - [ ] more predictable formatting - tests should be easy to write
+    - [ ] support callouts
+- [x] [dev] fix image optimization - use <code>getPicture</code>
+- [ ] [dev] use [satori](https://github.com/vercel/satori) for social media cards
+- [ ] [design] use more semantic tokens for spacing (sm, md, lg, etc.)
+
+### ✅ done
+
+- [x] [design] do something fun with gradients or colors and transparency?? on the homepage/elsewhere
+- [x] [design] fix font and line height to be more readable
+- [x] [dev] improve SEO - still not showing up in top results on google
+    - [x] [https://developers.google.com/search/docs/crawling-indexing/robots/create-robots-txt](https://developers.google.com/search/docs/crawling-indexing/robots/create-robots-txt)
+- [x] [dev] optimize updating content - check page update date (part of mdx migration)
+- [x] [design] add syntax highlighting (part of mdx migration)
+- [x] [design] finalize font selection - maybe use a serif
+- [x] [design] gutters (on mobile) for readability + better polish
+- [x] [content] add more content to website
+    - [x] add blog :)
+- [x] [dev] download and use local mdx
+
+<br />
+
+
+## Ideas
+
+- Maps of favorite places to go in NYC
+- Funner buttons and UI
+- Reviews
+
+<br />
+
+___
+
+# heading 1
+
+
+## heading 2
+
+
+### heading 3
+
+
+<br />
+
+
+rich text testing <b>bold text</b> <i>italic text</i> <u>underline text</u> <s>strikethrough text</s> <u><s><i><b>all four styles</b></i></s></u>
+
+<br />
+
+
+rainbow text
+
+<span class="!text-red-500">red</span>
+
+<span class="!text-pink-500">pink</span>
+
+<span class="!text-purple-500">purple</span>
+
+<span class="!text-blue-500">blue</span>
+
+<span class="!text-green-500">green but </span><span class="!text-green-500"><span class="!text-red-500">override to be red</span></span>
+
+<span class="!text-yellow-500">yellow</span>
+
+<span class="!text-orange-500">orange</span>
+
+<span class="!text-stone-500">brown</span>
+
+<span class="!text-gray-500">gray</span>
+
+default
+
+<br />
+
+
+colored <span class="!text-yellow-500">[link text](/33c13e28fa684f59ab90c8a0b179c398)</span><span class="!text-yellow-500"> but this is also colored text</span>
+
+<br />
+
+
+colorful list text:
+- <span class="!text-red-500">red</span>
+- <span class="!text-pink-500">pink</span>
+- <span class="!text-purple-500">purple</span>
+- <span class="!text-blue-500">blue</span>
+- <span class="!text-green-500">green but </span><span class="!text-green-500"><span class="!text-red-500">override to be red</span></span>
+- <span class="!text-yellow-500">yellow</span>
+- <span class="!text-orange-500">orange</span>
+- <span class="!text-stone-500">brown</span>
+- <span class="!text-gray-500">gray</span>
+- default
+
+<br />
+
+
+interesting edge case:
+
+<i>what if the entire paragraph is italicized</i>
+
+<b>what if the entire paragraph is bolded</b>
+
+<br />
+
+
+might mess with line breaks
+
+and also,
+
+<i>what if the entire </i><i>[paragraph is italicized](http://andrewgao.org/)</i><i> but with a link inside</i>
+
+ok but what about if there’s a less than symbol: &lt;3? or greater than: >3?
+
+<br />
+
+
+paragraph text
+- unorganized list
+- another item
+- another item
+    - nested item
+1. organized list
+1. another item
+    1. nested item
+
+> quote
+>    - nested item in quote
+>    1. hello world
+>    1. hello world 2
+
+
+inline <code>code block</code> this is like <code>code thingy</code>
+```typescript
+function parse() {
+	return "hello world";
+}
+```
+<details>
+          <summary>some summary</summary>
+          some details about something
+    
+who knows
+    
+<br />
+        </details>
+
+<br />
+
+
+E = mc^2
+
+<br />
+
+```
+<span class="!bg-gray-200">hello
+hello
+hello</span>
+```
+
+<br />
+
+
+## tables
+
+
+without column or row headers
+
+<table>    <tr>
+        <td>column a</td><td>column b</td><td>empty stuff</td>
+      </tr>    <tr>
+        <td>hi</td><td>hello</td>
+      </tr>    <tr>
+        <td>bye</td><td>goodbye</td>
+      </tr></table>
+
+with column and row headers
+
+<table><colgroup>
+          <col class="font-bold" />
+        </colgroup>    <tr>
+        <th>simple table</th><th>a</th><th>b</th>
+      </tr>    <tr>
+        <td>1</td><td>a1</td><td>b1</td>
+      </tr>    <tr>
+        <td>2</td><td>a2</td><td>b2</td>
+      </tr></table>
+
+## links
+
+
+testing links in the paragraph. ([this stuff in the parentheses](https://robinhood.com/us/en/)) should link to [robinhood.com](http://robinhood.com/) (as should this link).
+
+## todo list
+
+- [x] work on this website
+- [ ] finish this website
+    - [ ] no actually though
+
+<br />
+
+___
+
+multiple images and files below
+<Image src={import("@assets/file.6d021db5-5225-4247-9b4f-2566731ad2da.png")} width="1648" height="2124" format="webp" alt="Arc browser badge for Andrew with subtitle ‘Vague Big Shot’" />
+<Image src={import("@assets/file.f9a0b66f-20ab-4308-8d21-fafe79226db3.jpeg")} width="1542" height="1644" format="webp" alt="Watercolor painting by Hayao Miyazaki" />
+<video controls>
+          <source src="/assets/file.9ad42c18-94fe-4a22-8162-4f54b77081f0.qt" />
+        </video>
+<span id="label-71fcdbac-7108-4015-959c-5bd48c4ff0b0">PDF file containing EQ settings for the Sennheiser HD599 headphones</span>
+        <object
+          data="/assets/file.71fcdbac-7108-4015-959c-5bd48c4ff0b0.pdf"
+          type="application/pdf"
+          width="100%"
+          aria-labelledby="label-71fcdbac-7108-4015-959c-5bd48c4ff0b0"
+        >
+          <embed src="/assets/file.71fcdbac-7108-4015-959c-5bd48c4ff0b0.pdf" />
+          <p>This browser doesn't support embedded PDFs.</p>
+        </object>
+
+> [http://google.com](http://google.com)
+
+<audio controls src="/assets/file.08db2e1c-f6d4-4470-ae42-1dc291439a6c.mpga">
+          Your browser does not support the <code>audio</code> element.
+        </audio>
+
+> [https://soundcloud.com/herbbeatz/moving?in=kungpaogao/sets/corncorncorn](https://soundcloud.com/herbbeatz/moving?in=kungpaogao/sets/corncorncorn)
+
+[https://www.google.com/maps/place/Breakneck+Hill+Conservation+Land,+Southborough,+MA+01772/@42.2724994,-71.5345255,14z/data=!4m5!3m4!1s0x89e38a6ff7c803af:0x88e2e02613bc306f!8m2!3d42.2853249!4d-71.5145283](https://www.google.com/maps/place/Breakneck+Hill+Conservation+Land,+Southborough,+MA+01772/@42.2724994,-71.5345255,14z/data=!4m5!3m4!1s0x89e38a6ff7c803af:0x88e2e02613bc306f!8m2!3d42.2853249!4d-71.5145283)
+
+<br />
+

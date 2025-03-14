@@ -40,7 +40,7 @@ const Navigation: Component<NavigationProps> = ({
     history.replaceState(
       "",
       "",
-      window.location.pathname + window.location.search
+      window.location.pathname + window.location.search,
     );
     window.addEventListener(resizeEvent, onResize);
     window.addEventListener(scrollEvent, onScroll);
@@ -55,7 +55,7 @@ const Navigation: Component<NavigationProps> = ({
         { "border-b-0": !isBorderVisible() || checked() },
         "bg-stone-100/70 backdrop-blur backdrop-saturate-150",
         checked() && "bg-stone-100/100",
-        className
+        className,
       )}
     >
       <noscript
@@ -63,7 +63,7 @@ const Navigation: Component<NavigationProps> = ({
           "absolute top-0 left-0",
           "h-full w-full",
           "border-b border-gray-300/50",
-          "peer-target:border-b-0 peer-checked:border-b-0"
+          "peer-target:border-b-0 peer-checked:border-b-0",
         )}
         aria-hidden="true"
       />
@@ -82,7 +82,7 @@ const Navigation: Component<NavigationProps> = ({
         class={clsx(
           "relative mx-auto flex max-w-prose md:hidden",
           "peer-target:bg-white peer-checked:bg-white",
-          "z-30"
+          "z-30",
         )}
       >
         {/* use target pseudo-class to hide and show links without JS */}
@@ -90,7 +90,7 @@ const Navigation: Component<NavigationProps> = ({
           class={clsx(
             "absolute top-0 left-0 z-50 h-12 w-16",
             checked() && "hidden",
-            "nav-menu-open"
+            "nav-menu-open",
           )}
           href="#nav-menu-state"
           role="button"
@@ -107,7 +107,7 @@ const Navigation: Component<NavigationProps> = ({
           class={clsx(
             "absolute top-0 left-0 z-50 h-12 w-16",
             checked() ? "block" : "hidden",
-            "nav-menu-close"
+            "nav-menu-close",
           )}
           href="#"
           role="button"
@@ -120,7 +120,7 @@ const Navigation: Component<NavigationProps> = ({
             Close navigation menu
           </span>
         </a>
-        <label class="py-3 px-5" for="nav-menu-state">
+        <label class="px-5 py-3" for="nav-menu-state">
           <Icon
             iconName="menu"
             className={clsx("h-6 w-6", checked() && "hidden", "nav-menu-open")}
@@ -130,7 +130,7 @@ const Navigation: Component<NavigationProps> = ({
             className={clsx(
               "h-6 w-6",
               checked() ? "block" : "hidden",
-              "nav-menu-close"
+              "nav-menu-close",
             )}
           />
         </label>
@@ -148,11 +148,11 @@ const Navigation: Component<NavigationProps> = ({
           "absolute right-0 left-0 md:static",
           "bg-white md:bg-transparent",
           "border-gray-300/50",
-          contentClassName
+          contentClassName,
         )}
       >
         <NavigationItem href="/">
-          <Icon iconName="gao" className="h-7 w-7 hover:fill-gray-500" />
+          <h1 class="hover:fill-gray-500">高 Andrew</h1>
         </NavigationItem>
         <li class="hidden flex-1 md:block" aria-hidden="true" />
         {routes.map(({ name, path }) => (
@@ -162,12 +162,12 @@ const Navigation: Component<NavigationProps> = ({
       {/* background shade */}
       <div
         class={clsx(
-          "absolute top-0 left-0 right-0 bottom-0 h-[100vh]",
+          "absolute top-0 right-0 bottom-0 left-0 h-[100vh]",
           "bg-black/0 backdrop-blur-xs",
           "transition-opacity",
           "hidden md:hidden",
           "peer-target:block peer-checked:block",
-          "peer-target:bg-black/50 peer-checked:bg-black/50"
+          "peer-target:bg-black/50 peer-checked:bg-black/50",
         )}
         onClick={() => {
           setChecked(!checked());
@@ -199,7 +199,7 @@ const NavigationItem: Component<NavigationItemProps> = ({
       "mx-auto w-full max-w-[650px]",
       "md:w-auto md:max-w-none md:px-0",
       "hover:text-gray-500 hover:underline",
-      className
+      className,
     )}
   >
     <a href={href}>{children}</a>

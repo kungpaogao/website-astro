@@ -22,4 +22,5 @@
   --font-newsreader: "Newsreader", serif;
   --font-serif: var(--font-newsreader);
   --font-sans: var(--font-inter);
+  --font-arial: "Arial", sans-serif;
 }
