@@ -29,7 +29,9 @@ const { Content } = await render(post);
 
 <Layout {...post.data as any} className="prose mx-auto break-words">
   <h1>{post.data.title}</h1>
-  <h2 class="mb-8! mt-0! text-lg! font-semibold! text-gray-400 leading-none">
+  <h2
+    class="mb-8! mt-0! text-lg! font-semibold! text-gray-400 leading-none font-sans!"
+  >
     {
       format(
         parse(post.data.published, "yyyy-MM-dd", new Date()),
