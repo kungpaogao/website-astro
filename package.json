@@ -1,7 +1,7 @@
 {
   "name": "andrewgao.org",
   "type": "module",
-  "version": "0.0.1",
+  "version": "2025.3.0",
   "private": true,
   "scripts": {
     "predev": "jiti scripts/index.ts",

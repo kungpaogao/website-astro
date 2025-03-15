@@ -56,8 +56,44 @@ const allergies = marked.parse(
         无防腐剂<br />NO PRESERVATIVE
       </p>
     </div>
-    <!-- TODO: logo or brand or something-->
-    <!-- <div></div> -->
+    <div class="flex items-center gap-3">
+      <svg class="h-15 w-15" viewBox="0 0 60 60">
+        <style>
+          .center-text {
+            font-size: 2rem;
+          }
+          .path-text {
+            font-size: 0.5rem;
+          }
+        </style>
+        <circle
+          cx="30"
+          cy="30"
+          r="20"
+          fill="none"
+          stroke="black"
+          stroke-width="2"></circle>
+        <circle
+          id="TextPath"
+          cx="30"
+          cy="30"
+          r="22"
+          fill="none"
+          stroke="none"
+          transform="rotate(90 30 30)"
+          stroke-width="2"></circle>
+        <text x="15" y="40" class="center-text">高</text>
+        <text class="path-text">
+          <textPath href="#TextPath" startOffset="14.5%">
+            ANDREW GAO FOOD INC.
+          </textPath>
+        </text>
+      </svg>
+      <p class="text-center uppercase text-xs leading-none">
+        高 崧 柏 食 品 公 司<br />Andrew Gao Food Inc.<br />75 E. Broadway<br
+        />New York, NY 10002
+      </p>
+    </div>
     <div>
       <img src="barcode.svg" alt="barcode" />
     </div>
