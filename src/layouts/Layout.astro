@@ -4,7 +4,6 @@ import type { Props as HeadProps } from "../components/Head.astro";
 import Head from "../components/Head.astro";
 import Navigation from "../components/Navigation";
 import "../styles/global.css";
-import { parsePageUrl } from "src/lib/notion-cms-page";
 import { queryNotionDatabase } from "src/lib/notion-cms";
 import { parseProperty } from "src/lib/notion-parse";
 
@@ -16,9 +15,7 @@ interface Props extends HeadProps {
 const { title, description, path, imageUrl, className, bodyClassName } =
   Astro.props as Props;
 
-const databaseId = parsePageUrl(
-  "https://www.notion.so/kungpaogao/9e108442735a4e52940277f6e11ae2c1"
-);
+const databaseId = import.meta.env.NOTION_DB_ID_PAGES;
 const pages = await queryNotionDatabase({
   database_id: databaseId,
   filter: {

@@ -1,13 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { getBlock } from "../lib/notion-cms";
-import { parsePageUrl, getPageProperties } from "../lib/notion-cms-page";
+import { getPageProperties } from "../lib/notion-cms-page";
 import { parseBlocks } from "../lib/notion-parse";
 import { marked } from "../lib/marked";
 
-const homePageId = parsePageUrl(
-  "https://www.notion.so/kungpaogao/Home-b509f95388e84863a95d103eceab812e"
-);
+const homePageId = import.meta.env.NOTION_PAGE_ID_HOME;
 
 const properties = await getPageProperties(homePageId);
 const lastEditDate = new Date(properties.last_edited_time).toLocaleDateString(
@@ -17,22 +15,10 @@ const lastEditDate = new Date(properties.last_edited_time).toLocaleDateString(
 
 const headlineContent = marked.parse(parseBlocks(await getBlock(homePageId)));
 const ingredients = marked.parse(
-  parseBlocks(
-    await getBlock(
-      parsePageUrl(
-        "https://www.notion.so/kungpaogao/Ingredients-bd0d4055c64d47f0bb0c01160ce7239e?pvs=4"
-      )
-    )
-  )
+  parseBlocks(await getBlock(import.meta.env.NOTION_PAGE_ID_HOME_INGR))
 );
 const allergies = marked.parse(
-  parseBlocks(
-    await getBlock(
-      parsePageUrl(
-        "https://www.notion.so/kungpaogao/Allergy-info-1b63c61bf68d805287c3c547885a8a42?pvs=4"
-      )
-    )
-  )
+  parseBlocks(await getBlock(import.meta.env.NOTION_PAGE_ID_HOME_ALLE))
 );
 ---
 

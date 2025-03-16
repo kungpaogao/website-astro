@@ -1,27 +1,18 @@
 ---
 import { getBlock, queryNotionDatabase } from "src/lib/notion-cms";
 import Layout from "../layouts/Layout.astro";
-import { parsePageUrl } from "../lib/notion-cms-page";
 import { getPageProperties } from "../lib/notion-cms-page";
 import { marked } from "marked";
 import { parseBlocks } from "src/lib/notion-parse";
 import ReadingEntry from "@components/ReadingEntry.astro";
 
-const databaseId2024 = parsePageUrl(
-  "https://www.notion.so/kungpaogao/0078e2525cd04d6584cb8baf87fc1945"
-);
-const databaseId2025 = parsePageUrl(
-  "https://www.notion.so/kungpaogao/16e3c61bf68d80769930c0f282d5a309"
-);
-const pageId = parsePageUrl(
-  "https://www.notion.so/kungpaogao/Reading-ccd59d90822d402b8cc69d482bbd55c5"
-);
+const pageId = import.meta.env.NOTION_PAGE_ID_READ;
 
 const dbPages2024 = await queryNotionDatabase({
-  database_id: databaseId2024,
+  database_id: import.meta.env.NOTION_DB_ID_KNOWLEDGE_2024,
 });
 const dbPages2025 = await queryNotionDatabase({
-  database_id: databaseId2025,
+  database_id: import.meta.env.NOTION_DB_ID_KNOWLEDGE_2024,
 });
 
 const pageProperties = await getPageProperties(pageId);

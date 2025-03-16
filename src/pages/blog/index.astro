@@ -2,14 +2,12 @@
 import { format, parse } from "date-fns";
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
-import { getPageProperties, parsePageUrl } from "../../lib/notion-cms-page";
+import { getPageProperties } from "../../lib/notion-cms-page";
 import { marked } from "marked";
 import { getBlock } from "src/lib/notion-cms";
 import { parseBlocks } from "src/lib/notion-parse";
 
-const pageId = parsePageUrl(
-  "https://www.notion.so/kungpaogao/Blog-f3362e0d348e4bdeaea895b36c7801f0"
-);
+const pageId = import.meta.env.NOTION_PAGE_ID_BLOG;
 
 const properties = await getPageProperties(pageId);
 const posts = (await getCollection("blog")).sort((a, b) =>

@@ -1,14 +1,12 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
-import { getPageProperties, parsePageUrl } from "../../lib/notion-cms-page";
+import { getPageProperties } from "../../lib/notion-cms-page";
 import { marked } from "marked";
 import { getBlock } from "src/lib/notion-cms";
 import { parseBlocks } from "src/lib/notion-parse";
 
-const pageId = parsePageUrl(
-  "https://www.notion.so/kungpaogao/Projects-043bbef2e61041a583d68ce2551cee0f"
-);
+const pageId = import.meta.env.NOTION_PAGE_ID_PROJECTS;
 
 const properties = await getPageProperties(pageId);
 const projects = (await getCollection("projects")).sort((a, b) =>
