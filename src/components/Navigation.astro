@@ -1,0 +1,61 @@
+---
+import clsx from "clsx";
+import { queryNotionDatabase } from "src/lib/notion-cms";
+import { parseProperty } from "src/lib/notion-parse";
+const databaseId = import.meta.env.NOTION_DB_ID_PAGES;
+const pages = await queryNotionDatabase({
+  database_id: databaseId,
+  filter: {
+    and: [
+      {
+        property: "path",
+        rich_text: {
+          does_not_equal: "/",
+        },
+      },
+      {
+        property: "public",
+        checkbox: {
+          equals: true,
+        },
+      },
+    ],
+  },
+  sorts: [
+    {
+      property: "order",
+      direction: "ascending",
+    },
+  ],
+});
+const routes = pages.map((page) => ({
+  name: parseProperty(page.properties["title"]),
+  path: parseProperty(page.properties["path"]),
+}));
+const isHomePage = Astro.url.pathname === "/";
+---
+
+<header class={clsx(!isHomePage && "sticky top-3", "max-w-prose mx-auto mt-3")}>
+  <ul
+    class={clsx(
+      "flex gap-3",
+      "uppercase text-white text-xl font-arial",
+      "px-2 py-1 bg-black mx-5 md:mx-0"
+    )}
+  >
+    <li><a href="/">高 <span class="hidden md:inline">Andrew</span></a></li>
+    <li class="flex-1 block" aria-hidden="true"></li>
+    {
+      routes.map((route) => (
+        <li
+          class={clsx(
+            route.path === Astro.url.pathname && "underline",
+            "hover:underline"
+          )}
+        >
+          <a href={route.path}>{route.name}</a>
+        </li>
+      ))
+    }
+  </ul>
+</header>

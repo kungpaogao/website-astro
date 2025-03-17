@@ -3,8 +3,7 @@ import clsx from "clsx";
 import type { Props as HeadProps } from "../components/Head.astro";
 import Head from "../components/Head.astro";
 import "../styles/global.css";
-import { queryNotionDatabase } from "src/lib/notion-cms";
-import { parseProperty } from "src/lib/notion-parse";
+import Navigation from "@components/Navigation.astro";
 
 interface Props extends HeadProps {
   className?: string;
@@ -13,38 +12,6 @@ interface Props extends HeadProps {
 
 const { title, description, path, imageUrl, className, bodyClassName } =
   Astro.props as Props;
-
-const databaseId = import.meta.env.NOTION_DB_ID_PAGES;
-const pages = await queryNotionDatabase({
-  database_id: databaseId,
-  filter: {
-    and: [
-      {
-        property: "path",
-        rich_text: {
-          does_not_equal: "/",
-        },
-      },
-      {
-        property: "public",
-        checkbox: {
-          equals: true,
-        },
-      },
-    ],
-  },
-  sorts: [
-    {
-      property: "order",
-      direction: "ascending",
-    },
-  ],
-});
-const routes = pages.map((page) => ({
-  name: parseProperty(page.properties["title"]),
-  path: parseProperty(page.properties["path"]),
-}));
-const isHomePage = Astro.url.pathname === "/";
 ---
 
 <!doctype html>
@@ -59,32 +26,7 @@ const isHomePage = Astro.url.pathname === "/";
   </head>
 
   <body class={clsx(bodyClassName)}>
-    <header
-      class={clsx(!isHomePage && "sticky top-3", "max-w-prose mx-auto mt-3")}
-    >
-      <ul
-        class={clsx(
-          "flex gap-3",
-          "uppercase text-white text-xl font-arial",
-          "px-2 py-1 bg-black mx-5 md:mx-0"
-        )}
-      >
-        <li><a href="/">高 <span class="hidden md:inline">Andrew</span></a></li>
-        <li class="flex-1 block" aria-hidden="true"></li>
-        {
-          routes.map((route) => (
-            <li
-              class={clsx(
-                route.path === Astro.url.pathname && "underline",
-                "hover:underline"
-              )}
-            >
-              <a href={route.path}>{route.name}</a>
-            </li>
-          ))
-        }
-      </ul>
-    </header>
+    <Navigation />
     <main class={clsx("px-5 pt-3 pb-7", "md:px-0", className)}>
       <slot />
     </main>
