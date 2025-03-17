@@ -106,7 +106,7 @@ export function parseRichTextBlock({
 export function parseHeading(
   richTextBlock: RichTextBlock,
   level: number,
-  children: string[]
+  children: string[],
 ): string {
   return "#"
     .repeat(level)
@@ -116,7 +116,7 @@ export function parseHeading(
 export function parseListItem(
   richTextBlock: RichTextBlock,
   symbol: string,
-  children: string[]
+  children: string[],
 ): string {
   return symbol.concat(parseRichTextBlock(richTextBlock), EOL, ...children);
 }
@@ -129,13 +129,13 @@ export function parseListItem(
  */
 export function parse(
   block: BlockObjectResponseWithChildren,
-  depth = 0
+  depth = 0,
 ): string {
   let children: string[] = [];
 
   if (block.has_children && block.children) {
     children = block.children.map((child) =>
-      INDENT.repeat(depth + 2).concat(parse(child, depth + 2))
+      INDENT.repeat(depth + 2).concat(parse(child, depth + 2)),
     );
   }
 
@@ -170,14 +170,14 @@ export function parse(
         parseRichTextBlock(block.quote),
         EOL,
         children.map((child) => ">".concat(child)).join(""),
-        EOL
+        EOL,
       );
     case "to_do":
       const toDoIsChecked = block.to_do.checked;
       return parseListItem(
         block.to_do,
         toDoIsChecked ? "- [x] " : "- [ ] ",
-        children
+        children,
       );
     case "toggle":
       // TODO: fix this because this doesn't work for children :,(
@@ -197,7 +197,7 @@ export function parse(
         parseRichTextBlock(block.code),
         EOL,
         "```",
-        EOL
+        EOL,
       );
     case "callout":
       // TODO: custom callout div + style
@@ -206,7 +206,7 @@ export function parse(
         parseRichTextBlock(block.callout),
         EOL,
         "```",
-        EOL
+        EOL,
       );
     case "divider":
       return "___".concat(EOL, ...children);
@@ -229,9 +229,9 @@ export function parse(
         return html`<img src="${imgSrc}" alt="${imgAlt}"`.concat(EOL);
       } else {
         return `<Image src=${imgSrc} width="${imgParams.get(
-          "w"
+          "w",
         )}" height="${imgParams.get(
-          "h"
+          "h",
         )}" format="webp" alt="${imgAlt}" />`.concat(EOL);
       }
     case "video":
@@ -271,7 +271,7 @@ export function parse(
       return EOL.concat(
         `> [${block[block.type].url}](${block[block.type].url})`,
         EOL,
-        EOL
+        EOL,
       );
     case "table":
       const rows = children.map((child, index) => {
@@ -291,7 +291,9 @@ export function parse(
     case "table_row":
       const cellStrings = block.table_row.cells.map((cell) =>
         // TODO: handle rich text
-        cell.map((cellBlock) => html`<td>${cellBlock.plain_text}</td>`).join("")
+        cell
+          .map((cellBlock) => html`<td>${cellBlock.plain_text}</td>`)
+          .join(""),
       );
       return html`<tr>
         ${cellStrings.join("")}
@@ -322,7 +324,7 @@ export function parseProperty(property: PagePropertyResponse): string {
     case "rich_text":
       return richTextToPlainText(property.rich_text);
     case "number":
-      return property.number.toString();
+      return property.number?.toString();
     case "url":
       return property.url;
     case "checkbox":
