@@ -24,7 +24,6 @@ const allergies = marked.parse(
 
 <Layout {...properties} className="mx-auto max-w-prose prose-a:underline">
   <div class="text-center flex flex-col items-center font-arial gap-2">
-    <div class="bg-black w-full text-white px-2">菜单 MENU</div>
     <h1 class="text-5xl font-extrabold">高崧柏</h1>
     <h2 class="uppercase font-arial text-xl font-bold">Andrew Gao</h2>
     <div class="bg-black w-full text-white px-2">
@@ -87,7 +86,9 @@ const allergies = marked.parse(
       <Fragment set:html={allergies} />
     </div>
     <p class="text-sm font-semibold">SHAKE WELL<br />BEFORE CONSUME</p>
-    <div class="bg-black w-full px-2 uppercase flex place-content-center gap-5">
+    <div
+      class="bg-black w-full px-2 py-1 text-lg uppercase flex place-content-center gap-5"
+    >
       <a href="https://twitter.com/ndrewgao/" class="text-white">Twitter</a>
       <a href="https://www.linkedin.com/in/andrewxgao/" class="text-white"
         >LinkedIn</a
