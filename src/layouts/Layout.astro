@@ -23,6 +23,7 @@ const { title, description, path, imageUrl, className, bodyClassName } =
       path={path}
       imageUrl={imageUrl}
     />
+    <slot name="head" />
   </head>
 
   <body class={clsx(bodyClassName)}>
