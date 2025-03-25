@@ -1,9 +1,24 @@
 import puppeteer from "puppeteer";
 import chromium from "@sparticuz/chromium";
 import fs from "fs/promises";
+import notion from "./notion-client";
+import { queryNotionDatabase } from "./notion-cms";
+import type { CreatePageResponse } from "@notionhq/client/build/src/api-endpoints";
+
+const PLACES_SAVE_PATH = "public/places.json";
+
+interface Place {
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  notes: string;
+  timestampMs: number;
+  graphId: string;
+}
 
 // Function to parse the array into a JSON object
-function parseArrayToJson(data: any[]): any {
+function parseArrayToJson(data: any[]): Place {
   return {
     name: data[2],
     address: data[1][4],
@@ -29,12 +44,12 @@ async function getData() {
   try {
     const page = await browser.newPage();
 
-    console.log("Navigating to", url);
+    console.log("getData:", "Navigating to", url);
     await page.goto(url, {
       waitUntil: "networkidle0",
       timeout: 30000,
     });
-    console.log("Loaded");
+    console.log("getData:", "Loaded url");
 
     // Wait a bit for dynamic content
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -44,7 +59,7 @@ async function getData() {
       return (window as any).APP_INITIALIZATION_STATE;
     });
 
-    console.log("Parsing");
+    console.log("getData:", "Parsing response");
     const reduceLongest = (longest: any, current: any) => {
       // find longest non-null array
       if (current && current.length > longest.length) {
@@ -64,18 +79,123 @@ async function getData() {
       .replace(/\\"/g, "'");
 
     const rawData = JSON.parse(cleanJsonString)[0].reduce(reduceLongest, []);
-    const parsedData = rawData.map((arr: any) => parseArrayToJson(arr));
+    const parsedData: Place[] = rawData.map((arr: any) =>
+      parseArrayToJson(arr),
+    );
 
     // Save parsed data
-    await fs.writeFile(
-      "src/content/places.json",
-      JSON.stringify(parsedData, null, 2)
-    );
+    await fs.writeFile(PLACES_SAVE_PATH, JSON.stringify(parsedData, null, 2));
   } catch (error) {
-    console.error("Error:", error);
+    console.error("getData:", "Error:", error);
   } finally {
     await browser.close();
   }
 }
 
+async function getExistingPages(): Promise<Map<string, string>> {
+  const placesDbId = import.meta.env.NOTION_DB_ID_PLACES;
+  // call helper so that we can handle paginated results
+  const response = await queryNotionDatabase({
+    database_id: placesDbId,
+  });
+  // create map
+  const pages = new Map<string, string>();
+  // save each existing page to map
+  response.forEach((page) => {
+    const coords =
+      page.properties.latitude["number"] +
+      "," +
+      page.properties.longitude["number"];
+    pages.set(coords, page.properties.name["title"][0].text.content);
+  });
+  return pages;
+}
+
+async function createPlacePage(place: Place): Promise<CreatePageResponse> {
+  const placesDbId = import.meta.env.NOTION_DB_ID_PLACES;
+
+  return await notion.pages.create({
+    parent: { database_id: placesDbId, type: "database_id" },
+    properties: {
+      name: {
+        title: [
+          {
+            text: {
+              content: place.name,
+            },
+          },
+        ],
+      },
+      address: {
+        type: "rich_text",
+        rich_text: [
+          {
+            text: {
+              content: place.address,
+            },
+          },
+        ],
+      },
+      latitude: {
+        type: "number",
+        number: place.latitude,
+      },
+      longitude: {
+        type: "number",
+        number: place.longitude,
+      },
+      notes: {
+        type: "rich_text",
+        rich_text: [
+          {
+            text: {
+              content: place.notes,
+            },
+          },
+        ],
+      },
+      timestampMs: {
+        type: "number",
+        number: place.timestampMs,
+      },
+      graphId: {
+        type: "rich_text",
+        rich_text: [
+          {
+            text: {
+              content: place.graphId || "",
+            },
+          },
+        ],
+      },
+    },
+  });
+}
+
+async function writeToNotion() {
+  // get data from file
+  const data = await fs.readFile(PLACES_SAVE_PATH);
+  const parsedData: Place[] = JSON.parse(data.toString());
+
+  const existingPages = await getExistingPages();
+  let skippedPages = [];
+  let newPages = [];
+
+  parsedData.forEach(async (place) => {
+    const coords = place.latitude + "," + place.longitude;
+    // check if page already exists
+    if (existingPages.has(coords)) {
+      skippedPages.push({ name: place.name, coords: coords });
+      return;
+    }
+    // attempt to create page
+    const response = await createPlacePage(place);
+    newPages.push({ id: response.id, ...place });
+  });
+
+  console.log("writeToNotion:", "Created pages", newPages);
+  console.log("writeToNotion:", "Skipped pages", skippedPages.length);
+}
+
 getData();
+writeToNotion();
