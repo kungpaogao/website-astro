@@ -7,7 +7,7 @@ import type { CreatePageResponse } from "@notionhq/client/build/src/api-endpoint
 
 const PLACES_SAVE_PATH = "public/places.json";
 
-interface Place {
+export interface Place {
   name: string;
   address: string;
   latitude: number;

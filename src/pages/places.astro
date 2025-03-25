@@ -5,7 +5,7 @@ import { getPageProperties } from "../lib/notion-cms-page";
 import { marked } from "marked";
 import { parseBlocks, parseProperty } from "src/lib/notion-parse";
 import { format, parseISO } from "date-fns";
-
+import Map from "../components/Map.tsx";
 // fetch google maps list
 // create map using leaflet
 // mark places on maps
@@ -15,8 +15,48 @@ import { format, parseISO } from "date-fns";
 const pageId = import.meta.env.NOTION_PAGE_ID_PLACES;
 const pageProperties = await getPageProperties(pageId);
 const pageContent = marked.parse(parseBlocks(await getBlock(pageId)));
+
+const places = [
+  {
+    name: "212 East",
+    address: "212 E 9th St, New York, NY 10003",
+    latitude: 40.729667,
+    longitude: -73.9887628,
+    notes: "",
+    timestampMs: 1730747983000,
+    graphId: "/g/11b6g99g3m",
+  },
+  {
+    name: "Otaru Sushi Bar",
+    address: "21 Temple St, New Haven, CT 06510",
+    latitude: 41.3043772,
+    longitude: -72.92839099999999,
+    notes: "",
+    timestampMs: 1730747983000,
+    graphId: "/g/11gyxh3p93",
+  },
+  {
+    name: "Fish Cheeks",
+    address: "55 Bond St, New York, NY 10012",
+    latitude: 40.725708999999995,
+    longitude: -73.992682,
+    notes: "",
+    timestampMs: 1730747962000,
+    graphId: "/g/11c1ptf2bs",
+  },
+];
 ---
 
 <Layout {...pageProperties} className="prose mx-auto">
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+    slot="head"
+  />
+
   <Fragment set:html={pageContent} />
+  <Map client:only="solid-js" places={places} />
+  <noscript>Unfortunately, you need JavaScript to see the map :^(</noscript>
 </Layout>
