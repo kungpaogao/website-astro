@@ -35,7 +35,6 @@ const Map: Component<MapProps> = ({ places }) => {
 
   return (
     <div>
-      hello
       <div id="map" class="h-[400px] w-full" />
     </div>
   );
