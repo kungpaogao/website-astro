@@ -2,6 +2,11 @@
 import clsx from "clsx";
 import { queryNotionDatabase } from "src/lib/notion-cms";
 import { parseProperty } from "src/lib/notion-parse";
+
+interface Props {
+  isFixed?: boolean;
+}
+
 const databaseId = import.meta.env.NOTION_DB_ID_PAGES;
 const pages = await queryNotionDatabase({
   database_id: databaseId,
@@ -32,15 +37,21 @@ const routes = pages.map((page) => ({
   name: parseProperty(page.properties["title"]),
   path: parseProperty(page.properties["path"]),
 }));
-const isHomePage = Astro.url.pathname === "/";
+
+const { isFixed } = Astro.props as Props;
 ---
 
-<header class={clsx(!isHomePage && "sticky top-3", "max-w-prose mx-auto mt-3")}>
+<header
+  class={clsx(
+    isFixed && "fixed top-3 left-0 right-0",
+    "max-w-prose mx-auto mt-3",
+  )}
+>
   <ul
     class={clsx(
       "flex gap-3",
       "uppercase text-stone-100 text-xl font-arial",
-      "px-2 py-1 bg-black mx-5 md:mx-0"
+      "px-2 py-1 bg-black mx-5 md:mx-0",
     )}
   >
     <li><a href="/">高 <span class="hidden md:inline">Andrew</span></a></li>
@@ -50,7 +61,7 @@ const isHomePage = Astro.url.pathname === "/";
         <li
           class={clsx(
             route.path === Astro.url.pathname && "underline",
-            "hover:underline"
+            "hover:underline",
           )}
         >
           <a href={route.path}>{route.name}</a>

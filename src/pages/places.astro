@@ -47,7 +47,12 @@ const places = [
 ];
 ---
 
-<Layout {...pageProperties} className="prose mx-auto">
+<Layout
+  {...pageProperties}
+  className="prose mx-auto top-0 pb-3!"
+  bodyClassName="h-full"
+  mainClassName="flex flex-col h-full"
+>
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -56,7 +61,6 @@ const places = [
     slot="head"
   />
 
-  <Fragment set:html={pageContent} />
-  <Map client:only="solid-js" places={places} />
-  <noscript>Unfortunately, you need JavaScript to see the map :^(</noscript>
+  <Fragment set:html={pageContent} slot="default" />
+  <Map client:only="solid-js" places={places} slot="main-p-0" />
 </Layout>

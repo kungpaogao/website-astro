@@ -6,12 +6,35 @@ import "../styles/global.css";
 import Navigation from "@components/Navigation.astro";
 
 interface Props extends HeadProps {
+  /**
+   * Class for default slot
+   */
   className?: string;
+  /**
+   * Class for `<body>` section
+   */
   bodyClassName?: string;
+  /**
+   * Class for `<main>` section
+   */
+  mainClassName?: string;
+  /**
+   * Whether the navigation should be sticky
+   * @default true
+   */
+  isNavigationFixed?: boolean;
 }
 
-const { title, description, path, imageUrl, className, bodyClassName } =
-  Astro.props as Props;
+const {
+  title,
+  description,
+  path,
+  imageUrl,
+  className,
+  bodyClassName,
+  mainClassName,
+  isNavigationFixed = true,
+} = Astro.props as Props;
 ---
 
 <!doctype html>
@@ -26,10 +49,20 @@ const { title, description, path, imageUrl, className, bodyClassName } =
     <slot name="head" />
   </head>
 
-  <body class={clsx(bodyClassName)}>
-    <Navigation />
-    <main class={clsx("px-5 pt-3 pb-7", "md:px-0", className)}>
-      <slot />
+  <body class={bodyClassName}>
+    <Navigation isFixed={isNavigationFixed} />
+    <main class={mainClassName}>
+      <div
+        class={clsx(
+          isNavigationFixed ? "pt-13" : "pt-3",
+          "px-5 pb-7",
+          "md:px-0",
+          className,
+        )}
+      >
+        <slot />
+      </div>
+      <slot name="main-p-0" />
     </main>
   </body>
 </html>

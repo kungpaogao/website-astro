@@ -10,30 +10,34 @@ const homePageId = import.meta.env.NOTION_PAGE_ID_HOME;
 const properties = await getPageProperties(homePageId);
 const lastEditDate = new Date(properties.last_edited_time).toLocaleDateString(
   "en-US",
-  { year: "numeric", month: "2-digit", day: "2-digit" }
+  { year: "numeric", month: "2-digit", day: "2-digit" },
 );
 
 const headlineContent = marked.parse(parseBlocks(await getBlock(homePageId)));
 const ingredients = marked.parse(
-  parseBlocks(await getBlock(import.meta.env.NOTION_PAGE_ID_HOME_INGR))
+  parseBlocks(await getBlock(import.meta.env.NOTION_PAGE_ID_HOME_INGR)),
 );
 const allergies = marked.parse(
-  parseBlocks(await getBlock(import.meta.env.NOTION_PAGE_ID_HOME_ALLE))
+  parseBlocks(await getBlock(import.meta.env.NOTION_PAGE_ID_HOME_ALLE)),
 );
 ---
 
-<Layout {...properties} className="mx-auto max-w-prose prose-a:underline">
+<Layout
+  {...properties}
+  className="mx-auto max-w-prose prose-a:underline"
+  isNavigationFixed={false}
+>
   <div class="text-center flex flex-col items-center font-arial gap-2">
     <h1 class="text-5xl font-extrabold">高崧柏</h1>
     <h2 class="uppercase font-arial text-xl font-bold">Andrew Gao</h2>
-    <div class="bg-black w-full text-stone-100 px-2">
+    <div class="bg-black w-full text-stone-100 px-2 py-1">
       <Fragment set:html={headlineContent} />
     </div>
     <div class="uppercase">
       <Fragment set:html={ingredients} />
     </div>
     <div>
-      <p class="uppercase"><b>Net wt.:</b> Like 160 lbs</p>
+      <p class="uppercase"><b>Net wt.:</b> Like 160 lbs (72 kg)</p>
       <p class="uppercase font-bold">KEEP REFRIGERATED</p>
     </div>
     <div class="flex place-content-between w-full px-3">
@@ -95,11 +99,22 @@ const allergies = marked.parse(
       >
       <a href="https://github.com/kungpaogao" class="text-stone-100">GitHub</a>
     </div>
-    <!-- TODO: different font -->
-    <p
-      class="font-['Comic_Sans_MS'] rotate-2 text-2xl text-gray-600/90 -translate-y-4"
-    >
-      PROD. ON {lastEditDate}
-    </p>
+    <svg class="-translate-y-3">
+      <path
+        id="ProdTextPath"
+        d="M5,18 
+        C25,17.5 45,18.5 65,18 
+        C85,17.7 105,18.3 125,18 
+        C145,17.8 165,18.2 185,18 
+        C205,17.6 225,18.4 245,18 
+        C265,17.5 285,18.5 305,18"
+        fill="none"
+        stroke="none"></path>
+      <text class="font-mono rotate-1 text-2xl fill-gray-500/80">
+        <textPath href="#ProdTextPath">
+          PROD. ON {lastEditDate}
+        </textPath>
+      </text>
+    </svg>
   </div>
 </Layout>
