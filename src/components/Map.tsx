@@ -25,7 +25,15 @@ const Map: Component<MapProps> = ({ places }) => {
 
     // add markers for each place
     places.forEach((place) => {
-      L.marker([place.latitude, place.longitude])
+      L.marker([place.latitude, place.longitude], {
+        icon: L.icon({
+          iconUrl: "assets/pin.png",
+          iconSize: [25, 25],
+          shadowUrl: "assets/pin-shadow.png",
+          shadowSize: [27, 27],
+          shadowAnchor: [13.5, 13],
+        }),
+      })
         .addTo(map)
         .bindPopup(place.name);
     });
