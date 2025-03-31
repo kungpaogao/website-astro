@@ -2,3 +2,7 @@ onlyBuiltDependencies:
   - esbuild
   - puppeteer
   - sharp
+
+# workaround until this is fixed in vercel: https://github.com/pnpm/pnpm/issues/8968
+packages:
+  - .
