@@ -30,3 +30,4 @@ pnpm-debug.log*
 
 # chrome
 chrome/
+.vercel
