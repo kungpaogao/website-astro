@@ -6,6 +6,7 @@ import { marked } from "marked";
 import { parseBlocks, parseProperty } from "src/lib/notion-parse";
 import { format, parseISO } from "date-fns";
 import Map from "../components/Map.tsx";
+import "../styles/leaflet.css";
 // fetch google maps list
 // create map using leaflet
 // mark places on maps
@@ -22,7 +23,7 @@ const places = [
     address: "212 E 9th St, New York, NY 10003",
     latitude: 40.729667,
     longitude: -73.9887628,
-    notes: "",
+    notes: "hello some test notes",
     timestampMs: 1730747983000,
     graphId: "/g/11b6g99g3m",
   },

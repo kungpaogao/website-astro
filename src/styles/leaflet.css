@@ -1,0 +1,16 @@
+.tailwind-leaflet .leaflet-popup-content-wrapper {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.tailwind-leaflet .leaflet-popup-content {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tailwind-leaflet .leaflet-popup-content p {
+  margin: 0;
+}
