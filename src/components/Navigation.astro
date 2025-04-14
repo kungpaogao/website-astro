@@ -43,8 +43,8 @@ const { isFixed } = Astro.props as Props;
 
 <header
   class={clsx(
-    isFixed && "fixed top-3 left-0 right-0",
-    "max-w-prose mx-auto mt-3",
+    isFixed ? "fixed top-3 left-0 right-0" : "mt-3",
+    "max-w-prose mx-auto w-full",
   )}
 >
   <ul
