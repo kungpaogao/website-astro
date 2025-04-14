@@ -14,12 +14,15 @@ interface MapProps {
   places: Place[];
 }
 
+/**
+ * ideal behavior:
+ * - click marker on mobile -> full screen map and show bottom sheet
+ * - click marker on desktop -> show popup with nice ui
+ */
+
 const Popup: Component<{ place: Place }> = ({ place }) => {
   return (
-    <div class="bg-white">
-      <p class="m-0 text-gray-500">This is a popup for {place.name}.</p>
-      <p class="m-0 text-gray-500">This is a popup for {place.name}.</p>
-      <p class="m-0 text-gray-500">This is a popup for {place.name}.</p>
+    <div class="mb-[1px] rounded-sm bg-white p-3 drop-shadow-2xl">
       <p class="m-0 text-gray-500">This is a popup for {place.name}.</p>
     </div>
   );
@@ -112,7 +115,12 @@ const Sheet: Component<{ place: () => Place }> = (props) => {
     <div class="prose absolute top-0 right-0 left-1/2 z-[1000] m-3 rounded-md bg-stone-100 px-5 pb-3 shadow-2xl">
       <h2>{props.place().name}</h2>
       <p>{props.place().address}</p>
-      <p>{props.place().notes}</p>
+      <Show when={props.place().notes}>
+        <div class="h-2" role="separator" aria-orientation="vertical"></div>
+        <p>
+          Notes: <i>{props.place().notes}</i>
+        </p>
+      </Show>
       <p class="text-gray-400">
         Added on {format(new Date(props.place().timestampMs), "yyyy-MM-dd")}
       </p>

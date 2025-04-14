@@ -4,48 +4,26 @@ import Layout from "../layouts/Layout.astro";
 import { getPageProperties } from "../lib/notion-cms-page";
 import { marked } from "marked";
 import { parseBlocks, parseProperty } from "src/lib/notion-parse";
-import { format, parseISO } from "date-fns";
 import Map from "../components/Map.tsx";
 import "../styles/leaflet.css";
-// fetch google maps list
-// create map using leaflet
-// mark places on maps
-// fetch db on notion
-// match based on id
-// display notes and stuff
+import type { Place } from "../lib/places";
+
 const pageId = import.meta.env.NOTION_PAGE_ID_PLACES;
 const pageProperties = await getPageProperties(pageId);
 const pageContent = marked.parse(parseBlocks(await getBlock(pageId)));
+const dbPlaces = await queryNotionDatabase({
+  database_id: import.meta.env.NOTION_DB_ID_PLACES,
+});
 
-const places = [
-  {
-    name: "212 East",
-    address: "212 E 9th St, New York, NY 10003",
-    latitude: 40.729667,
-    longitude: -73.9887628,
-    notes: "hello some test notes",
-    timestampMs: 1730747983000,
-    graphId: "/g/11b6g99g3m",
-  },
-  {
-    name: "Otaru Sushi Bar",
-    address: "21 Temple St, New Haven, CT 06510",
-    latitude: 41.3043772,
-    longitude: -72.92839099999999,
-    notes: "",
-    timestampMs: 1730747983000,
-    graphId: "/g/11gyxh3p93",
-  },
-  {
-    name: "Fish Cheeks",
-    address: "55 Bond St, New York, NY 10012",
-    latitude: 40.725708999999995,
-    longitude: -73.992682,
-    notes: "",
-    timestampMs: 1730747962000,
-    graphId: "/g/11c1ptf2bs",
-  },
-];
+const places: Place[] = dbPlaces.map((page) => ({
+  name: parseProperty(page.properties["name"]),
+  address: parseProperty(page.properties["address"]),
+  latitude: parseFloat(parseProperty(page.properties["latitude"])),
+  longitude: parseFloat(parseProperty(page.properties["longitude"])),
+  notes: parseProperty(page.properties["notes"]),
+  timestampMs: parseInt(parseProperty(page.properties["timestampMs"])),
+  graphId: parseProperty(page.properties["graphId"]),
+}));
 ---
 
 <Layout
