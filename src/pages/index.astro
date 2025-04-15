@@ -36,16 +36,16 @@ const allergies = marked.parse(
     <div class="uppercase">
       <Fragment set:html={ingredients} />
     </div>
-    <div>
+    <div data-nosnippet>
       <p class="uppercase"><b>Net wt.:</b> Like 160 lbs (72 kg)</p>
       <p class="uppercase font-bold">KEEP REFRIGERATED</p>
     </div>
-    <div class="flex place-content-between w-full px-3">
+    <div data-nosnippet class="flex place-content-between w-full px-3">
       <p class="text-start">美国生产<br />MADE IN USA</p><p class="text-end">
         无防腐剂<br />NO PRESERVATIVE
       </p>
     </div>
-    <div class="flex items-center gap-3">
+    <div data-nosnippet class="flex items-center gap-3">
       <svg class="h-15 w-15" viewBox="0 0 60 60">
         <style>
           .center-text {
@@ -83,7 +83,7 @@ const allergies = marked.parse(
         />New York, NY 10002
       </p>
     </div>
-    <div>
+    <div data-nosnippet>
       <img
         src="assets/barcode.svg"
         alt="barcode"
@@ -91,11 +91,14 @@ const allergies = marked.parse(
         height="120px"
       />
     </div>
-    <div class="uppercase text-sm">
+    <div data-nosnippet class="uppercase text-sm">
       <Fragment set:html={allergies} />
     </div>
-    <p class="text-sm font-semibold">SHAKE WELL<br />BEFORE CONSUME</p>
+    <p data-nosnippet class="text-sm font-semibold">
+      SHAKE WELL<br />BEFORE CONSUME
+    </p>
     <div
+      data-nosnippet
       class="bg-black w-full px-2 py-1 text-lg uppercase flex place-content-center gap-5"
     >
       <a href="https://twitter.com/ndrewgao/" class="text-stone-100">Twitter</a>
@@ -104,7 +107,7 @@ const allergies = marked.parse(
       >
       <a href="https://github.com/kungpaogao" class="text-stone-100">GitHub</a>
     </div>
-    <div class="w-2xs">
+    <div data-nosnippet class="w-2xs">
       <svg class="-translate-y-3" viewBox="0 0 305 30">
         <path
           id="ProdTextPath"

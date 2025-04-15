@@ -11,7 +11,7 @@ const pageId = import.meta.env.NOTION_PAGE_ID_BLOG;
 
 const properties = await getPageProperties(pageId);
 const posts = (await getCollection("blog")).sort((a, b) =>
-  a.data.published > b.data.published ? -1 : 1
+  a.data.published > b.data.published ? -1 : 1,
 );
 const pageContent = marked.parse(parseBlocks(await getBlock(pageId)));
 ---
@@ -37,7 +37,7 @@ const pageContent = marked.parse(parseBlocks(await getBlock(pageId)));
           >
             {format(
               parse(post.data.published, "yyyy-MM-dd", new Date()),
-              "yyyy-MM-dd"
+              "yyyy-MM-dd",
             )}
           </div>
         </div>
