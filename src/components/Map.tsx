@@ -42,8 +42,10 @@ const Map: Component<MapProps> = ({ places }) => {
     // set map tiles
     const googleStreetTiles =
       "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}";
-    L.tileLayer(googleStreetTiles, {
-      maxZoom: 19,
+    const stadiaTiles =
+      "https://tiles.stadiamaps.com/tiles/alidade_bright/{z}/{x}/{y}{r}.png";
+    L.tileLayer(stadiaTiles, {
+      maxZoom: 20,
       subdomains: ["mt0", "mt1", "mt2", "mt3"],
       attribution:
         '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
