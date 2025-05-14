@@ -37,8 +37,16 @@ const Map: Component<MapProps> = ({ places }) => {
     // NYC coordinates to center map
     const latitude = 40.74900042010468;
     const longitude = -73.98575388499262;
+    // max bounds for map
+    const southWest = L.latLng(38, -79);
+    const northEast = L.latLng(47, -68);
+    const bounds = L.latLngBounds(southWest, northEast);
     // init leaflet
-    const map = L.map("map").setView([latitude, longitude], 11);
+    const map = L.map("map", {
+      maxBounds: bounds,
+      maxZoom: 20,
+      minZoom: 7,
+    }).setView([latitude, longitude], 11);
     // set map tiles
     const googleStreetTiles =
       "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}";
