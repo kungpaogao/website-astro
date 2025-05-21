@@ -32,21 +32,25 @@ const Map: Component<MapProps> = ({ places }) => {
   const [map, setMap] = createSignal<L.Map | null>(null);
   const [selectedPlace, setSelectedPlace] = createSignal<Place | null>(null);
   const [viewport, setViewport] = createSignal(null);
+  const MIN_ZOOM_PINS = 11;
 
   onMount(() => {
     // NYC coordinates to center map
     const latitude = 40.74900042010468;
     const longitude = -73.98575388499262;
+
     // max bounds for map
     const southWest = L.latLng(38, -79);
     const northEast = L.latLng(47, -68);
     const bounds = L.latLngBounds(southWest, northEast);
+
     // init leaflet
     const map = L.map("map", {
       maxBounds: bounds,
       maxZoom: 20,
       minZoom: 7,
-    }).setView([latitude, longitude], 11);
+    }).setView([latitude, longitude], MIN_ZOOM_PINS);
+
     // set map tiles
     const googleStreetTiles =
       "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}";
@@ -55,13 +59,29 @@ const Map: Component<MapProps> = ({ places }) => {
     L.tileLayer(stadiaTiles, {
       maxZoom: 20,
       subdomains: ["mt0", "mt1", "mt2", "mt3"],
-      attribution:
-        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
     // set map events
     map.on("click", () => {
       onClickMap();
+    });
+    map.on("zoomend", () => {
+      updateMarkerVisibility(pinMarkerGroup, dotMarkerGroup);
+    });
+
+    const pinMarkerGroup = L.layerGroup().addTo(map);
+    const dotMarkerGroup = L.layerGroup();
+    const grayDotIcon = L.divIcon({
+      className: "gray-dot-icon",
+      iconSize: [8, 8],
+      iconAnchor: [4, 4],
+      html: '<div class="bg-red-600 rounded-full w-2 h-2 border border-white"></div>',
+    });
+    const pinIcon = L.divIcon({
+      className: "pin-icon",
+      iconSize: [25, 25],
+      iconAnchor: [12.5, 12.5],
+      html: '<div class="bg-stone-100 border-2 border-white w-6 h-6 rounded-full flex items-center justify-center shadow-sm">📌</div>',
     });
 
     // add markers for each place
@@ -74,26 +94,54 @@ const Map: Component<MapProps> = ({ places }) => {
       // render solid component in popup
       render(() => <Popup place={place} />, popupContainer);
 
-      L.marker([place.latitude, place.longitude], {
-        // custom icons and shadows
-        icon: L.icon({
-          iconUrl: "assets/pin.png",
-          iconSize: [25, 25],
-          shadowUrl: "assets/pin-shadow.png",
-          shadowSize: [27, 27],
-          shadowAnchor: [13.5, 13],
-        }),
+      const pinMarker = L.marker([place.latitude, place.longitude], {
+        icon: pinIcon,
       })
-        .addTo(map)
         .on("click", () => {
           // custom click behavior
           onClickMarker(place);
         })
         .bindPopup(popup);
+
+      const dotMarker = L.marker([place.latitude, place.longitude], {
+        icon: grayDotIcon,
+      })
+        .on("click", () => {
+          // custom click behavior
+          onClickMarker(place);
+        })
+        .bindPopup(popup);
+
+      pinMarker.addTo(pinMarkerGroup);
+      dotMarker.addTo(dotMarkerGroup);
     });
 
     setMap(map);
   });
+
+  function updateMarkerVisibility(
+    pinMarkerGroup: L.LayerGroup,
+    dotMarkerGroup: L.LayerGroup,
+  ) {
+    const currentMap = map();
+    if (!currentMap) return;
+    const zoom = currentMap.getZoom();
+    if (zoom < MIN_ZOOM_PINS) {
+      if (currentMap.hasLayer(pinMarkerGroup)) {
+        pinMarkerGroup.remove();
+      }
+      if (!currentMap.hasLayer(dotMarkerGroup)) {
+        dotMarkerGroup.addTo(currentMap);
+      }
+    } else {
+      if (!currentMap.hasLayer(pinMarkerGroup)) {
+        pinMarkerGroup.addTo(currentMap);
+      }
+      if (currentMap.hasLayer(dotMarkerGroup)) {
+        dotMarkerGroup.remove();
+      }
+    }
+  }
 
   function onClickMarker(place: Place) {
     setSelectedPlace(place);
