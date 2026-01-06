@@ -10,9 +10,12 @@ const pageId = import.meta.env.NOTION_PAGE_ID_READ;
 
 const dbPages2024 = await queryNotionDatabase({
   database_id: import.meta.env.NOTION_DB_ID_KNOWLEDGE_2024,
+  sorts: [{ property: "Date", direction: "descending" }],
 });
+
 const dbPages2025 = await queryNotionDatabase({
   database_id: import.meta.env.NOTION_DB_ID_KNOWLEDGE_2025,
+  sorts: [{ property: "Date", direction: "descending" }],
 });
 
 const pageProperties = await getPageProperties(pageId);
