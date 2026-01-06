@@ -167,6 +167,7 @@ NOTION_DB_ID_PAGES       # Navigation pages database
 NOTION_DB_ID_PLACES      # Places/map entries database
 NOTION_DB_ID_KNOWLEDGE_2024 # 2024 knowledge entries
 NOTION_DB_ID_KNOWLEDGE_2025 # 2025 knowledge entries
+NOTION_DB_ID_KNOWLEDGE_2026 # 2026 knowledge entries
 ```
 
 #### Database Schema
@@ -663,6 +664,7 @@ NOTION_DB_ID_PAGES=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 NOTION_DB_ID_PLACES=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 NOTION_DB_ID_KNOWLEDGE_2024=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 NOTION_DB_ID_KNOWLEDGE_2025=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+NOTION_DB_ID_KNOWLEDGE_2026=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 **How to get Notion IDs:**
