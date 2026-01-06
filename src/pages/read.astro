@@ -18,12 +18,21 @@ const dbPages2025 = await queryNotionDatabase({
   sorts: [{ property: "Date", direction: "descending" }],
 });
 
+const dbPages2026 = await queryNotionDatabase({
+  database_id: import.meta.env.NOTION_DB_ID_KNOWLEDGE_2026,
+  sorts: [{ property: "Date", direction: "descending" }],
+});
+
 const pageProperties = await getPageProperties(pageId);
 const pageContent = marked.parse(parseBlocks(await getBlock(pageId)));
 ---
 
 <Layout {...pageProperties} className="prose mx-auto">
   <Fragment set:html={pageContent} />
+  <h2>2026</h2>
+  <div class="mt-3 flex flex-col items-start gap-3">
+    {dbPages2026.map((page) => <ReadingEntry page={page} />)}
+  </div>
   <h2>2025</h2>
   <div class="mt-3 flex flex-col items-start gap-3">
     {dbPages2025.map((page) => <ReadingEntry page={page} />)}
