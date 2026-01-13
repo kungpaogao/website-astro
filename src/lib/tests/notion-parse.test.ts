@@ -60,7 +60,7 @@ test("parse rich text single annotations", () => {
   const richTextUnderline = annotate({ underline: true });
   const outputUnderline = parseRichTextBlock(richTextUnderline);
 
-  const expectedCode = `\`hello world\``;
+  const expectedCode = `<code>hello world</code>`;
   const richTextCode = annotate({ code: true });
   const outputCode = parseRichTextBlock(richTextCode);
 
@@ -80,7 +80,7 @@ test("parse rich text combined annotations", () => {
   });
   const outputStack = parseRichTextBlock(richTextStack);
 
-  const expectedStackMore = `<u><s><i><b>\`hello world\`</b></i></s></u>`;
+  const expectedStackMore = `<u><s><i><b><code>hello world</code></b></i></s></u>`;
   const richTextStackMore = annotateAll(richTextStack, {
     underline: true,
     code: true,
