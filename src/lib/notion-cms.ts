@@ -1,9 +1,11 @@
 import type {
   BlockObjectResponse,
+  DataSourceObjectResponse,
   PageObjectResponse,
   PartialBlockObjectResponse,
+  PartialDataSourceObjectResponse,
   PartialPageObjectResponse,
-  QueryDatabaseParameters,
+  QueryDataSourceParameters,
 } from "@notionhq/client/build/src/api-endpoints";
 import { getAssetUrl } from "./notion-cms-asset";
 import notion from "./notion-client";
@@ -23,31 +25,34 @@ export function ensureFullResponse<T, PT>(result: T | PT): T {
 }
 
 /**
- * It takes a Notion database query and returns an unpaginated list of all the
+ * It takes a Notion data source query and returns an unpaginated list of all the
  * pages
- * @param {QueryDatabaseParameters} options - QueryDatabaseParameters
+ * @param {QueryDataSourceParameters} options - QueryDataSourceParameters
  * @returns An array of pages
  */
 export async function queryNotionDatabase(
-  options: QueryDatabaseParameters,
+  options: QueryDataSourceParameters,
 ): Promise<PageObjectResponse[]> {
-  console.log("Fetching pages from Notion database:", options);
+  console.log("Fetching pages from Notion data source:", options);
   const pages: PageObjectResponse[] = [];
   let cursor = undefined;
   while (true) {
-    const { results, next_cursor } = await notion.databases.query({
+    const { results, next_cursor } = await notion.dataSources.query({
       ...options,
       start_cursor: cursor,
     });
 
     for (const result of results) {
-      // extract to make sure it is not partial response:
-      // https://github.com/makenotion/notion-sdk-js/issues/219#issuecomment-1016095615
-      const page = ensureFullResponse<
-        PageObjectResponse,
-        PartialPageObjectResponse
-      >(result);
-      pages.push(page);
+      // Filter for page objects only (results can also include data sources)
+      if ('object' in result && result.object === 'page') {
+        // extract to make sure it is not partial response:
+        // https://github.com/makenotion/notion-sdk-js/issues/219#issuecomment-1016095615
+        const page = ensureFullResponse<
+          PageObjectResponse,
+          PartialPageObjectResponse
+        >(result as PageObjectResponse | PartialPageObjectResponse);
+        pages.push(page);
+      }
     }
 
     if (!next_cursor) {

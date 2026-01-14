@@ -96,7 +96,7 @@ async function getExistingPages(): Promise<Map<string, string>> {
   const placesDbId = import.meta.env.NOTION_DB_ID_PLACES;
   // call helper so that we can handle paginated results
   const response = await queryNotionDatabase({
-    database_id: placesDbId,
+    data_source_id: placesDbId,
   });
   // create map
   const pages = new Map<string, string>();
@@ -115,7 +115,7 @@ async function createPlacePage(place: Place): Promise<CreatePageResponse> {
   const placesDbId = import.meta.env.NOTION_DB_ID_PLACES;
 
   return await notion.pages.create({
-    parent: { database_id: placesDbId, type: "database_id" },
+    parent: { data_source_id: placesDbId, type: "data_source_id" },
     properties: {
       name: {
         title: [

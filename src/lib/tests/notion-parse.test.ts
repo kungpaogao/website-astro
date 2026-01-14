@@ -2,7 +2,7 @@ import type { RichTextBlock } from "../notion-types";
 import { expect, test } from "vitest";
 import * as sample from "../../../public/tests/sample.json";
 import { parse, parseRichTextBlock } from "../notion-parse";
-import type { TextRichTextItemResponse } from "@notionhq/client/build/src/api-endpoints";
+import type { RichTextItemResponse } from "@notionhq/client/build/src/api-endpoints";
 
 const RICH_TEXT_BASE: RichTextBlock = {
   rich_text: [
@@ -25,7 +25,7 @@ const RICH_TEXT_BASE: RichTextBlock = {
 
 function annotateAll(richText: RichTextBlock, annotations: any): RichTextBlock {
   return {
-    rich_text: richText.rich_text.map((token: TextRichTextItemResponse) => ({
+    rich_text: richText.rich_text.map((token: RichTextItemResponse) => ({
       ...token,
       annotations: { ...token.annotations, ...annotations },
     })),

@@ -1,5 +1,7 @@
 import type {
+  DataSourceObjectResponse,
   PageObjectResponse,
+  PartialDataSourceObjectResponse,
   PartialPageObjectResponse,
 } from "@notionhq/client/build/src/api-endpoints";
 import { ensureFullResponse } from "./notion-cms";
@@ -24,11 +26,11 @@ export async function getPageProperties(pageId: string): Promise<any> {
   return result;
 }
 
-export async function getDatabaseProperties(databaseId: string): Promise<any> {
-  const response = await notion.databases.retrieve({ database_id: databaseId });
+export async function getDataSourceProperties(dataSourceId: string): Promise<any> {
+  const response = await notion.dataSources.retrieve({ data_source_id: dataSourceId });
   const fullResponse = ensureFullResponse<
-    PageObjectResponse,
-    PartialPageObjectResponse
+    DataSourceObjectResponse,
+    PartialDataSourceObjectResponse
   >(response);
 
   const properties = fullResponse.properties;
@@ -41,3 +43,6 @@ export async function getDatabaseProperties(databaseId: string): Promise<any> {
 
   return result;
 }
+
+// Deprecated: Use getDataSourceProperties instead
+export const getDatabaseProperties = getDataSourceProperties;

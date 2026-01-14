@@ -28,18 +28,18 @@ function pagePropertiesToFrontmatter(
  * so, writes the file to disk as MDX file
  */
 export async function downloadPostsAsMdx(collection: "projects" | "blog") {
-  let databaseId: string;
+  let dataSourceId: string;
 
   if (collection === "projects") {
-    databaseId = import.meta.env.NOTION_PROJECTS_DB_ID;
+    dataSourceId = import.meta.env.NOTION_PROJECTS_DB_ID;
   } else if (collection === "blog") {
-    databaseId = import.meta.env.NOTION_BLOG_DB_ID;
+    dataSourceId = import.meta.env.NOTION_BLOG_DB_ID;
   } else {
     throw Error("invalid collection");
   }
 
   const posts = await queryNotionDatabase({
-    database_id: databaseId,
+    data_source_id: dataSourceId,
     filter: {
       and: [
         {
