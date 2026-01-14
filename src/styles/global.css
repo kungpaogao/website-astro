@@ -31,3 +31,10 @@ input[type="checkbox"]:disabled.task-list-item-checkbox {
 #nav-menu-state:target ~ #nav-menu-container .nav-menu-close {
   display: block;
 }
+
+/* progressive blur for navigation fade overlay */
+.nav-fade-blur {
+  backdrop-filter: blur(4px);
+  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+}
