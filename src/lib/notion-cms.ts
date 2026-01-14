@@ -1,9 +1,9 @@
 import type {
   BlockObjectResponse,
-  DataSourceObjectResponse,
+  DatabaseObjectResponse,
   PageObjectResponse,
   PartialBlockObjectResponse,
-  PartialDataSourceObjectResponse,
+  PartialDatabaseObjectResponse,
   PartialPageObjectResponse,
   QueryDataSourceParameters,
 } from "@notionhq/client/build/src/api-endpoints";
@@ -24,21 +24,74 @@ export function ensureFullResponse<T, PT>(result: T | PT): T {
   return result as Extract<T, { parent: {} }>;
 }
 
+// Cache for database_id -> data_source_id mapping
+const dataSourceIdCache = new Map<string, string>();
+
 /**
- * It takes a Notion data source query and returns an unpaginated list of all the
- * pages
- * @param {QueryDataSourceParameters} options - QueryDataSourceParameters
+ * Gets the primary data_source_id for a database.
+ * In the new Notion API (2025-09-03), databases contain one or more data sources.
+ * This function retrieves the database and returns the first data source's ID.
+ *
+ * @param {string} databaseId - The database ID
+ * @returns The data_source_id for the primary data source
+ */
+export async function getDataSourceId(databaseId: string): Promise<string> {
+  // Check cache first
+  if (dataSourceIdCache.has(databaseId)) {
+    return dataSourceIdCache.get(databaseId)!;
+  }
+
+  console.log("Fetching data_source_id for database:", databaseId);
+  const response = await notion.databases.retrieve({ database_id: databaseId });
+
+  const database = ensureFullResponse<
+    DatabaseObjectResponse,
+    PartialDatabaseObjectResponse
+  >(response);
+
+  if (!database.data_sources || database.data_sources.length === 0) {
+    throw new Error(`No data sources found for database: ${databaseId}`);
+  }
+
+  const dataSourceId = database.data_sources[0].id;
+  console.log("Resolved data_source_id:", dataSourceId, "for database:", databaseId);
+
+  // Cache the result
+  dataSourceIdCache.set(databaseId, dataSourceId);
+
+  return dataSourceId;
+}
+
+/**
+ * Query options that accept a database_id instead of data_source_id.
+ * The function will automatically resolve the data_source_id.
+ */
+export type QueryDatabaseOptions = Omit<QueryDataSourceParameters, 'data_source_id'> & {
+  database_id: string;
+};
+
+/**
+ * It takes a Notion database query and returns an unpaginated list of all the
+ * pages. This function automatically resolves the data_source_id from the database_id.
+ *
+ * @param {QueryDatabaseOptions} options - Query options with database_id
  * @returns An array of pages
  */
 export async function queryNotionDatabase(
-  options: QueryDataSourceParameters,
+  options: QueryDatabaseOptions,
 ): Promise<PageObjectResponse[]> {
-  console.log("Fetching pages from Notion data source:", options);
+  const { database_id, ...queryOptions } = options;
+
+  // Resolve database_id to data_source_id
+  const dataSourceId = await getDataSourceId(database_id);
+
+  console.log("Fetching pages from Notion data source:", dataSourceId);
   const pages: PageObjectResponse[] = [];
   let cursor = undefined;
   while (true) {
     const { results, next_cursor } = await notion.dataSources.query({
-      ...options,
+      ...queryOptions,
+      data_source_id: dataSourceId,
       start_cursor: cursor,
     });
 
@@ -56,7 +109,7 @@ export async function queryNotionDatabase(
     }
 
     if (!next_cursor) {
-      console.log("Finished fetching pages from Notion database:", options);
+      console.log("Finished fetching pages from Notion data source:", dataSourceId);
       break;
     }
 
