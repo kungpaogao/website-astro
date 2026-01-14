@@ -1,7 +1,5 @@
-import * as dotenv from "dotenv";
+import "dotenv/config";
 import { downloadPostsAsMdx } from "../src/lib/notion-download";
-
-dotenv.config();
 
 downloadPostsAsMdx("blog");
 downloadPostsAsMdx("projects");
