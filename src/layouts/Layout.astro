@@ -50,6 +50,11 @@ const {
   </head>
 
   <body class={bodyClassName}>
+    {
+      isNavigationFixed && (
+        <div class="fixed top-0 left-0 right-0 h-24 bg-gradient-to-b from-stone-100 to-transparent pointer-events-none z-10" />
+      )
+    }
     <Navigation isFixed={isNavigationFixed} />
     <main class={mainClassName}>
       <div
