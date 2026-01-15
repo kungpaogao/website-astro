@@ -11,9 +11,7 @@ import type { Place } from "../lib/places";
 const pageId = import.meta.env.NOTION_PAGE_ID_PLACES;
 const pageProperties = await getPageProperties(pageId);
 const pageContent = marked.parse(parseBlocks(await getBlock(pageId)));
-const dbPlaces = await queryNotionDatabase({
-  database_id: import.meta.env.NOTION_DB_ID_PLACES,
-});
+const dbPlaces = await queryNotionDatabase(import.meta.env.NOTION_DB_ID_PLACES);
 
 const places: Place[] = dbPlaces.map((page) => ({
   name: parseProperty(page.properties["name"]),
