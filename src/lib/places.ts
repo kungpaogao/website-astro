@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 import chromium from "@sparticuz/chromium";
 import fs from "fs/promises";
 import notion from "./notion-client";
-import { queryNotionDatabase } from "./notion-cms";
+import { getDataSourceId, queryNotionDatabase } from "./notion-cms";
 import type { CreatePageResponse } from "@notionhq/client/build/src/api-endpoints";
 
 const PLACES_SAVE_PATH = "public/places.json";
@@ -95,9 +95,7 @@ async function getData() {
 async function getExistingPages(): Promise<Map<string, string>> {
   const placesDbId = import.meta.env.NOTION_DB_ID_PLACES;
   // call helper so that we can handle paginated results
-  const response = await queryNotionDatabase({
-    database_id: placesDbId,
-  });
+  const response = await queryNotionDatabase(placesDbId);
   // create map
   const pages = new Map<string, string>();
   // save each existing page to map
@@ -113,9 +111,11 @@ async function getExistingPages(): Promise<Map<string, string>> {
 
 async function createPlacePage(place: Place): Promise<CreatePageResponse> {
   const placesDbId = import.meta.env.NOTION_DB_ID_PLACES;
+  // Resolve the data_source_id from the database_id
+  const dataSourceId = await getDataSourceId(placesDbId);
 
   return await notion.pages.create({
-    parent: { database_id: placesDbId, type: "database_id" },
+    parent: { data_source_id: dataSourceId, type: "data_source_id" },
     properties: {
       name: {
         title: [

@@ -8,8 +8,7 @@ interface Props {
 }
 
 const databaseId = import.meta.env.NOTION_DB_ID_PAGES;
-const pages = await queryNotionDatabase({
-  database_id: databaseId,
+const pages = await queryNotionDatabase(databaseId, {
   filter: {
     and: [
       {
