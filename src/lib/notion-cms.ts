@@ -63,22 +63,14 @@ export async function getDataSourceId(databaseId: string): Promise<string> {
 }
 
 /**
- * Query options that accept a database_id instead of data_source_id.
- * The function will automatically resolve the data_source_id.
- */
-export type QueryDatabaseOptions = Omit<QueryDataSourceParameters, 'data_source_id'> & {
-  database_id: string;
-};
-
-/**
  * It takes a Notion database query and returns an unpaginated list of all the
  * pages. This function automatically resolves the data_source_id from the database_id.
  *
- * @param {QueryDatabaseOptions} options - Query options with database_id
+ * @param options - Query options with database_id
  * @returns An array of pages
  */
 export async function queryNotionDatabase(
-  options: QueryDatabaseOptions,
+  options: Omit<QueryDataSourceParameters, 'data_source_id'> & { database_id: string },
 ): Promise<PageObjectResponse[]> {
   const { database_id, ...queryOptions } = options;
 
