@@ -95,9 +95,7 @@ async function getData() {
 async function getExistingPages(): Promise<Map<string, string>> {
   const placesDbId = import.meta.env.NOTION_DB_ID_PLACES;
   // call helper so that we can handle paginated results
-  const response = await queryNotionDatabase({
-    database_id: placesDbId,
-  });
+  const response = await queryNotionDatabase(placesDbId);
   // create map
   const pages = new Map<string, string>();
   // save each existing page to map

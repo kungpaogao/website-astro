@@ -38,8 +38,7 @@ export async function downloadPostsAsMdx(collection: "projects" | "blog") {
     throw Error("invalid collection");
   }
 
-  const posts = await queryNotionDatabase({
-    database_id: databaseId,
+  const posts = await queryNotionDatabase(databaseId, {
     filter: {
       and: [
         {
