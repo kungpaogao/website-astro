@@ -1,0 +1,41 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [-74.00136429999999, 40.733959399999996],
+        "type": "Point"
+      },
+      "properties": {
+        "Title": "Jeffrey's Grocery",
+        "Location": {
+          "Address": "172 Waverly Pl, New York, NY 10014"
+        },
+        "Comment": "caesar salad foodnyc",
+        "Updated": {
+          "timestamp": "2025-03-24T22:55:19.000Z"
+        },
+        "Google Maps URL": "https://maps.google.com/?cid=/g/1tfbjn1p"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [-73.9775784, 40.746083399999996],
+        "type": "Point"
+      },
+      "properties": {
+        "Title": "Shuya",
+        "Location": {
+          "Address": "517 3rd Ave, New York, NY 10016"
+        },
+        "Comment": "foodnyc",
+        "Updated": {
+          "timestamp": "2025-03-24T15:50:30.000Z"
+        },
+        "Google Maps URL": "https://maps.google.com/?cid=/g/11vx4bwpl8"
+      },
+      "type": "Feature"
+    }
+  ]
+}
