@@ -10,6 +10,7 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "places": "jiti scripts/places.ts",
     "test": "vitest",
     "coverage": "vitest run --coverage"
   },
