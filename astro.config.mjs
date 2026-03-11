@@ -13,40 +13,38 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   site: "https://www.andrewgao.org/",
 
-  experimental: {
-    fonts: [
-      {
-        provider: fontProviders.local(),
-        name: "Inter",
-        cssVariable: "--font-inter",
-        options: {
-          variants: [
-            {
-              weight: "100 900",
-              style: "normal",
-              src: ["./src/assets/fonts/Inter-Variable-Latin.woff2"],
-              display: "swap",
-            },
-          ],
-        },
+  fonts: [
+    {
+      provider: fontProviders.local(),
+      name: "Inter",
+      cssVariable: "--font-inter",
+      options: {
+        variants: [
+          {
+            weight: "100 900",
+            style: "normal",
+            src: ["./src/assets/fonts/Inter-Variable-Latin.woff2"],
+            display: "swap",
+          },
+        ],
       },
-      {
-        provider: fontProviders.local(),
-        name: "Newsreader",
-        cssVariable: "--font-newsreader",
-        options: {
-          variants: [
-            {
-              weight: "100 900",
-              style: "normal",
-              src: ["./src/assets/fonts/Newsreader-Variable-Latin.woff2"],
-              display: "swap",
-            },
-          ],
-        },
+    },
+    {
+      provider: fontProviders.local(),
+      name: "Newsreader",
+      cssVariable: "--font-newsreader",
+      options: {
+        variants: [
+          {
+            weight: "100 900",
+            style: "normal",
+            src: ["./src/assets/fonts/Newsreader-Variable-Latin.woff2"],
+            display: "swap",
+          },
+        ],
       },
-    ],
-  },
+    },
+  ],
 
   integrations: [
     solid(),
