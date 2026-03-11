@@ -1,5 +1,6 @@
 import { glob } from "astro/loaders";
-import { z, defineCollection } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 
 const projectSchema = z.object({
   lastEditedTime: z.string().transform((str) => new Date(str)),
