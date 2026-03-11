@@ -1,4 +1,6 @@
 ---
+import { Font } from "astro:assets";
+
 export interface Props {
   title: string;
   description: string;
@@ -58,18 +60,5 @@ const fullTitle = path === "/" ? "Andrew Gao" : `${title} | Andrew Gao`;
 <meta property="twitter:image:alt" content={fullTitle} />
 
 <!-- styles and fonts -->
-<link
-  rel="preload"
-  href="/fonts/Inter-Variable-Latin.woff2"
-  crossorigin="anonymous"
-  as="font"
-  type="font/woff2"
-/>
-
-<link
-  rel="preload"
-  href="/fonts/Newsreader-Variable-Latin.woff2"
-  crossorigin="anonymous"
-  as="font"
-  type="font/woff2"
-/>
+<Font cssVariable="--font-inter" preload />
+<Font cssVariable="--font-newsreader" preload />
