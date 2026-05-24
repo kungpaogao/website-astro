@@ -22,9 +22,12 @@ const smoothstep = (edge0: number, edge1: number, x: number) => {
 // Deterministic value noise so wind animation only scrolls the field rather
 // than reshuffling it, and "regenerate" is reproducible from a seed.
 const hash = (ix: number, iy: number, seed: number) => {
-  let h = (ix | 0) * 374761393 + (iy | 0) * 668265263 + seed * 1274126177;
-  h = (h ^ (h >> 13)) * 1274126177;
-  h = h ^ (h >> 16);
+  let h =
+    Math.imul(ix | 0, 374761393) ^
+    Math.imul(iy | 0, 668265263) ^
+    Math.imul(seed | 0, 1274126177);
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  h ^= h >>> 16;
   return (h >>> 0) / 4294967295;
 };
 
