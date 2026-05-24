@@ -8,7 +8,10 @@ import type {
   QueryDataSourceParameters,
 } from "@notionhq/client/build/src/api-endpoints";
 import { getAssetUrl } from "./notion-cms-asset";
-import notion from "./notion-client";
+import notion, {
+  isNotionConfigured,
+  warnNotionNotConfigured,
+} from "./notion-client";
 
 /**
  * If the result is a partial response, return the full response.
@@ -74,6 +77,11 @@ export async function queryNotionDatabase(
   databaseId: string,
   options?: Omit<QueryDataSourceParameters, 'data_source_id'>,
 ): Promise<PageObjectResponse[]> {
+  if (!isNotionConfigured()) {
+    warnNotionNotConfigured("queryNotionDatabase");
+    return [];
+  }
+
   const dataSourceId = await getDataSourceId(databaseId);
 
   console.log("Fetching pages from Notion data source:", dataSourceId);
@@ -142,6 +150,11 @@ async function getBlockChildren(blockId: string) {
  */
 export async function getBlock(blockId: string) {
   // TODO: add check to see if page is public
+
+  if (!isNotionConfigured()) {
+    warnNotionNotConfigured("getBlock");
+    return [];
+  }
 
   let content = await getBlockChildren(blockId);
 

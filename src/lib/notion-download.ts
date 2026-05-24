@@ -7,6 +7,7 @@ import { getBlock, queryNotionDatabase } from "./notion-cms";
 import { parseBlocks } from "./notion-parse";
 import { EOL } from "./constants";
 import { getPageProperties } from "./notion-cms-page";
+import { isNotionConfigured, warnNotionNotConfigured } from "./notion-client";
 
 function pagePropertiesToFrontmatter(
   pageProperties: any,
@@ -28,6 +29,11 @@ function pagePropertiesToFrontmatter(
  * so, writes the file to disk as MDX file
  */
 export async function downloadPostsAsMdx(collection: "projects" | "blog") {
+  if (!isNotionConfigured()) {
+    warnNotionNotConfigured("downloadPostsAsMdx");
+    return [];
+  }
+
   let databaseId: string;
 
   if (collection === "projects") {

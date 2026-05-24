@@ -4,9 +4,17 @@ import type {
 } from "@notionhq/client/build/src/api-endpoints";
 import { ensureFullResponse } from "./notion-cms";
 import { parseProperty } from "./notion-parse";
-import notion from "./notion-client";
+import notion, {
+  isNotionConfigured,
+  warnNotionNotConfigured,
+} from "./notion-client";
 
 export async function getPageProperties(pageId: string): Promise<any> {
+  if (!isNotionConfigured()) {
+    warnNotionNotConfigured("getPageProperties");
+    return {};
+  }
+
   const response = await notion.pages.retrieve({ page_id: pageId });
   const fullResponse = ensureFullResponse<
     PageObjectResponse,
