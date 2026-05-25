@@ -225,47 +225,53 @@ const LeafShadowSimulator: Component = () => {
     };
 
     // Trunk leans up and to the right; canopy sweeps across the frame.
-    grow(baseX, baseY, lean, SIM_H * 0.24, SIM_W * 0.02, MAXD);
+    grow(baseX, baseY, lean, SIM_H * 0.18, SIM_W * 0.02, MAXD);
     branchSegs = segs;
     twigSegs = twigs;
   };
 
-  // Scatter discrete leaves in clustered tufts along the outer twigs. Density
-  // (control) sets how many; a Gaussian offset bunches them near each twig, and
-  // a falloff with distance from the trunk thins the far side into isolated
-  // leaf shadows.
+  // Scatter discrete leaves to fill the canopy *densely* around the branches —
+  // leaves on a jittered grid, kept only near a twig, packed tight enough that
+  // they leave small interstitial GAPS. Those small gaps are the pinholes: the
+  // sun-disk convolution turns each into a round sun-spot (a crescent during an
+  // eclipse). Density thins toward the canopy edge and the far side, so there
+  // the leaves read as individual shadows instead of dense shade.
   const scatterLeaves = () => {
     const rng = makeRng(seed ^ 0x9e3779b9);
     const out: number[] = [];
-    const gauss = () =>
-      Math.sqrt(-2 * Math.log(rng() + 1e-9)) * Math.cos(6.2831853 * rng());
-    const dens = lerp(0.35, 1.2, density());
-    for (let s = 0; s < twigSegs.length; s += 4) {
-      const x0 = twigSegs[s];
-      const y0 = twigSegs[s + 1];
-      const dx = twigSegs[s + 2] - x0;
-      const dy = twigSegs[s + 3] - y0;
-      const len = Math.hypot(dx, dy) || 1;
-      const tx = dx / len;
-      const ty = dy / len;
-      const nx = -ty;
-      const ny = tx;
-      const count = Math.max(1, Math.round(len * dens));
-      for (let k = 0; k < count; k++) {
-        const t = rng();
-        const ax = x0 + dx * t;
-        const ay = y0 + dy * t;
-        const spread = 5 + rng() * 7;
-        const g1 = gauss();
-        const g2 = gauss() * 0.6;
-        const lx = ax + (nx * g1 + tx * g2) * spread;
-        const ly = ay + (ny * g1 + ty * g2) * spread;
-        // Thin the canopy toward the far edge (away from the trunk base).
-        const dist = Math.hypot(lx - baseX, ly - baseY) / reach;
-        if (rng() > lerp(1, 0.3, clamp(dist, 0, 1))) continue;
-        const r = 2.4 + rng() * 3;
-        const ang = Math.atan2(ty, tx) + (rng() - 0.5) * 1.3;
-        out.push(lx, ly, r, ang);
+    const cell = lerp(8, 5, density()); // grid spacing — smaller = denser
+    const r = cell * 0.6; // leaves ~ a cell wide => heavy overlap, small gaps
+    const band = 26; // canopy thickness around each twig
+    const band2 = band * band;
+    const jit = cell * 0.9;
+    for (let gy = 0; gy < SIM_H; gy += cell) {
+      for (let gx = 0; gx < SIM_W; gx += cell) {
+        const cx = gx + (rng() - 0.5) * jit;
+        const cy = gy + (rng() - 0.5) * jit;
+        let best = 1e9;
+        for (let s = 0; s < twigSegs.length; s += 4) {
+          const x0 = twigSegs[s];
+          const y0 = twigSegs[s + 1];
+          const dx = twigSegs[s + 2] - x0;
+          const dy = twigSegs[s + 3] - y0;
+          const L = dx * dx + dy * dy || 1;
+          let t = ((cx - x0) * dx + (cy - y0) * dy) / L;
+          if (t < 0) t = 0;
+          else if (t > 1) t = 1;
+          const ex = cx - (x0 + t * dx);
+          const ey = cy - (y0 + t * dy);
+          const d = ex * ex + ey * ey;
+          if (d < best) best = d;
+        }
+        if (best > band2) continue;
+        // Dense in the canopy interior (a leaf at nearly every cell, heavy
+        // overlap leaving small gaps); only the band edge and the far side thin
+        // out into individual leaf shadows.
+        const edge = 1 - Math.sqrt(best) / band;
+        const far = clamp(Math.hypot(cx - baseX, cy - baseY) / reach, 0, 1);
+        const keep = smoothstep(0, 0.4, edge) * lerp(1, 0.35, far);
+        if (rng() > keep) continue;
+        out.push(cx, cy, r * (0.8 + rng() * 0.5), rng() * Math.PI);
       }
     }
     leaves = out;
@@ -335,7 +341,7 @@ const LeafShadowSimulator: Component = () => {
       }
     }
 
-    const scale = lerp(0.8, 1.7, leafSize());
+    const scale = lerp(0.9, 1.4, leafSize());
     for (let l = 0; l < leaves.length; l += 4) {
       const ly = leaves[l + 1];
       const lx = shx(leaves[l], ly);
