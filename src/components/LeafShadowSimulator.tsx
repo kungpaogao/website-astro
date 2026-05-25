@@ -91,6 +91,17 @@ const canopyOpenness = (u: number, v: number, seed: number) => {
   return foliage - 0.7 * branch + 0.25;
 };
 
+// Small deterministic PRNG (mulberry32) for growing a repeatable tree skeleton.
+const makeRng = (s: number) => {
+  let a = s >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+
 // The sun's image is the convolution kernel. Default is a filled disk; an
 // eclipse subtracts an offset "moon" disk, leaving a crescent. Each row of the
 // kernel is stored as up to two integer column spans so the convolution can
@@ -199,51 +210,74 @@ const LeafShadowSimulator: Component = () => {
   const stride = SIM_W + 1;
   const rawCanopy = new Float32Array(SIM_W * SIM_H);
   const envelope = new Float32Array(SIM_W * SIM_H);
+  const woodC = new Float32Array(SIM_W * SIM_H);
+  const folC = new Float32Array(SIM_W * SIM_H);
   const prefix = new Float32Array(SIM_H * stride);
   const swayCosX = new Float32Array(SIM_W * SIM_H);
   const swaySinX = new Float32Array(SIM_W * SIM_H);
   const swayCosY = new Float32Array(SIM_W * SIM_H);
   const swaySinY = new Float32Array(SIM_W * SIM_H);
+  // Tree skeleton, cached by seed: branches as flat [x0,y0,x1,y1,w0,w1,...] and
+  // foliage clusters as [x,y,r,...] in unsheared pixel space.
+  let treeSegs: number[] = [];
+  let treeFols: number[] = [];
   let ctx: CanvasRenderingContext2D | null = null;
   let image: ImageData | null = null;
 
-  // Expensive (runs only on regenerate / detail / skew change): evaluate the
-  // warped fractal foliage and the tree-shaped shadow envelope into the caches,
-  // build the per-region sway basis, then threshold the canopy. Skew shears
-  // everything horizontally to mimic a low sun stretching the shadow.
-  const computeCanopy = () => {
+  // Grow a recursive tree skeleton from the seed: a trunk rooted at the bottom
+  // centre that forks into ever-thinner limbs, with foliage clusters at the
+  // tips (and inner forks). Cached until the seed changes.
+  const buildTree = () => {
+    const rng = makeRng(seed);
+    const segs: number[] = [];
+    const fols: number[] = [];
+    const grow = (
+      x: number,
+      y: number,
+      ang: number,
+      len: number,
+      wid: number,
+      depth: number,
+    ) => {
+      const x1 = x + Math.cos(ang) * len;
+      const y1 = y + Math.sin(ang) * len;
+      segs.push(x, y, x1, y1, wid, wid * 0.72);
+      if (depth <= 0 || len < 6) {
+        fols.push(x1, y1, 11 + rng() * 9);
+        return;
+      }
+      // Clusters along the inner/mid branches fill the canopy so it isn't a
+      // hollow ring of tip foliage.
+      if (depth <= 3) fols.push(x1, y1, 9 + rng() * 8);
+      const n = rng() < 0.3 ? 3 : 2;
+      for (let i = 0; i < n; i++) {
+        const sign = i === 0 ? -1 : i === 1 ? 1 : rng() < 0.5 ? -1 : 1;
+        const da = (0.24 + rng() * 0.32) * sign;
+        grow(x1, y1, ang + da, len * (0.68 + rng() * 0.12), wid * 0.66, depth - 1);
+      }
+    };
+    const baseAng = -Math.PI / 2 + (rng() - 0.5) * 0.2;
+    grow(SIM_W * 0.5, SIM_H * 0.99, baseAng, SIM_H * 0.24, SIM_W * 0.018, 6);
+    treeSegs = segs;
+    treeFols = fols;
+  };
+
+  // Expensive (detail / seed): the warped fractal leaf texture that dapples the
+  // foliage, plus the per-region sway basis (split into cos/sin parts; see
+  // buffer notes). Sampled in unsheared space so skew needn't recompute it.
+  const computeTexture = () => {
     const freq = lerp(6, 24, detail());
     const aspect = SIM_H / SIM_W;
-    // Sway phase varies at branch scale (coarser than the leaf clumps) so a
-    // branch and its clusters swing together while neighbouring branches lag.
     const pf = freq * 0.28;
     const TAU = Math.PI * 2;
-    const skewK = skew() * 0.7;
     for (let py = 0; py < SIM_H; py++) {
-      const skewPx = skewK * (py - SIM_H / 2);
       const v = (py / SIM_H) * freq * aspect;
       const pv = (py / SIM_H) * pf * aspect;
-      const ny = py / SIM_H;
-      const ey = ny - 0.45;
       const base = py * SIM_W;
       for (let px = 0; px < SIM_W; px++) {
-        const sxN = (px + skewPx) / SIM_W;
-        rawCanopy[base + px] = canopyOpenness(sxN * freq, v, seed);
-
-        // Tree-shadow envelope: a lumpy elliptical blob with a ragged foliage
-        // boundary, hard-faded at the canvas border so no rectangle shows.
-        const ex = sxN - 0.5;
-        const d = Math.sqrt(ex * ex + ey * ey * 1.35);
-        const lobe = valueNoise(sxN * 2 + 13, ny * 2 + 27, seed ^ 0x7a1);
-        const lobe2 = valueNoise(sxN * 4 + 5, ny * 4 + 3, seed ^ 0x18d);
-        const rag = valueNoise(sxN * 7 + 4, ny * 7 + 9, seed ^ 0x2c) - 0.5;
-        const edge = 0.32 + 0.14 * lobe + 0.06 * lobe2 + 0.04 * rag;
-        let env = 1 - smoothstep(edge, edge + 0.1, d);
-        env *= clamp(Math.min(px, SIM_W - 1 - px, py, SIM_H - 1 - py) / 16, 0, 1);
-        envelope[base + px] = env;
-
-        // Per-region sway basis (split into cos/sin parts; see buffer notes).
-        const pu = sxN * pf;
+        const nx = px / SIM_W;
+        rawCanopy[base + px] = canopyOpenness(nx * freq, v, seed);
+        const pu = nx * pf;
         const phX = valueNoise(pu + 2.7, pv + 8.1, seed ^ 0x6d2) * TAU;
         const phY = valueNoise(pu + 5.3, pv + 1.9, seed ^ 0x3b7) * TAU;
         const aX = 0.5 + 0.5 * valueNoise(pu + 9.4, pv + 4.2, seed ^ 0x91c);
@@ -255,11 +289,85 @@ const LeafShadowSimulator: Component = () => {
         swaySinY[idx] = aY * Math.sin(phY);
       }
     }
+  };
+
+  // Cheap (skew / seed): stamp the cached skeleton into coverage fields — solid
+  // `woodC` for branches, soft `folC` for foliage — then form the envelope.
+  // Skew shears horizontally about the trunk base to mimic a low sun.
+  const rasterizeTree = () => {
+    woodC.fill(0);
+    folC.fill(0);
+    const slope = skew() * 0.6;
+    const shx = (x: number, y: number) => x + slope * (SIM_H - y);
+
+    for (let s = 0; s < treeSegs.length; s += 6) {
+      const x0 = shx(treeSegs[s], treeSegs[s + 1]);
+      const y0 = treeSegs[s + 1];
+      const x1 = shx(treeSegs[s + 2], treeSegs[s + 3]);
+      const y1 = treeSegs[s + 3];
+      const w0 = treeSegs[s + 4];
+      const w1 = treeSegs[s + 5];
+      const maxw = Math.max(w0, w1) * 0.5 + 1;
+      const minX = Math.max(0, Math.floor(Math.min(x0, x1) - maxw));
+      const maxX = Math.min(SIM_W - 1, Math.ceil(Math.max(x0, x1) + maxw));
+      const minY = Math.max(0, Math.floor(Math.min(y0, y1) - maxw));
+      const maxY = Math.min(SIM_H - 1, Math.ceil(Math.max(y0, y1) + maxw));
+      const dx = x1 - x0;
+      const dy = y1 - y0;
+      const len2 = dx * dx + dy * dy || 1;
+      for (let py = minY; py <= maxY; py++) {
+        for (let px = minX; px <= maxX; px++) {
+          let t = ((px - x0) * dx + (py - y0) * dy) / len2;
+          if (t < 0) t = 0;
+          else if (t > 1) t = 1;
+          const dist = Math.hypot(px - (x0 + t * dx), py - (y0 + t * dy));
+          const halfW = (w0 + (w1 - w0) * t) * 0.5;
+          const cov = smoothstep(halfW + 0.8, halfW - 0.8, dist);
+          const idx = py * SIM_W + px;
+          if (cov > woodC[idx]) woodC[idx] = cov;
+        }
+      }
+    }
+
+    for (let f = 0; f < treeFols.length; f += 3) {
+      const fx = shx(treeFols[f], treeFols[f + 1]);
+      const fy = treeFols[f + 1];
+      const r = treeFols[f + 2];
+      const minX = Math.max(0, Math.floor(fx - r));
+      const maxX = Math.min(SIM_W - 1, Math.ceil(fx + r));
+      const minY = Math.max(0, Math.floor(fy - r));
+      const maxY = Math.min(SIM_H - 1, Math.ceil(fy + r));
+      const inner = r * 0.5;
+      for (let py = minY; py <= maxY; py++) {
+        for (let px = minX; px <= maxX; px++) {
+          const cov = smoothstep(r, inner, Math.hypot(px - fx, py - fy));
+          const idx = py * SIM_W + px;
+          if (cov > folC[idx]) folC[idx] = cov;
+        }
+      }
+    }
+
+    for (let py = 0; py < SIM_H; py++) {
+      const bf = Math.min(py, SIM_H - 1 - py);
+      for (let px = 0; px < SIM_W; px++) {
+        const idx = py * SIM_W + px;
+        const border = clamp(Math.min(px, SIM_W - 1 - px, bf) / 16, 0, 1);
+        envelope[idx] = Math.max(woodC[idx], folC[idx]) * border;
+      }
+    }
+  };
+
+  const computeCanopy = () => {
+    buildTree();
+    computeTexture();
+    rasterizeTree();
     applyThreshold();
   };
 
-  // Cheap (runs on gap change): turn the cached field into a transmission mask
-  // (1 = gap) and accumulate the per-row prefix sums the convolution reads.
+  // Cheap (runs on gap change): combine the leaf texture with the tree coverage
+  // into a transmission mask (1 = light passes) and accumulate the per-row
+  // prefix sums the convolution reads. Foliage admits dappled light through its
+  // gaps; bare branches block fully; open sky outside the tree passes freely.
   const applyThreshold = () => {
     const threshold = lerp(0.72, 0.5, gap());
     for (let py = 0; py < SIM_H; py++) {
@@ -268,7 +376,10 @@ const LeafShadowSimulator: Component = () => {
       prefix[pBase] = 0;
       let acc = 0;
       for (let px = 0; px < SIM_W; px++) {
-        acc += smoothstep(threshold, threshold + 0.04, rawCanopy[rBase + px]);
+        const i = rBase + px;
+        const leaf = smoothstep(threshold, threshold + 0.04, rawCanopy[i]);
+        const t = (1 - folC[i] * (1 - leaf)) * (1 - woodC[i]);
+        acc += t;
         prefix[pBase + px + 1] = acc;
       }
     }
@@ -368,7 +479,8 @@ const LeafShadowSimulator: Component = () => {
   };
   const onDetail = (v: number) => {
     setDetail(v);
-    computeCanopy();
+    computeTexture();
+    applyThreshold();
     redrawIfPaused();
   };
   const onGap = (v: number) => {
@@ -378,7 +490,8 @@ const LeafShadowSimulator: Component = () => {
   };
   const onSkew = (v: number) => {
     setSkew(v);
-    computeCanopy();
+    rasterizeTree();
+    applyThreshold();
     redrawIfPaused();
   };
   const onShade = (setter: (v: number) => void) => (v: number) => {
