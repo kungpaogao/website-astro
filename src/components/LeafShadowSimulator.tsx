@@ -200,14 +200,15 @@ const LeafShadowSimulator: Component = () => {
   let ctx: CanvasRenderingContext2D | null = null;
   let image: ImageData | null = null;
 
-  // Grow a crown of branches from the seed. Only the foliage matters, so the
-  // structure forks upward and outward to fill a rounded crown; outer (thinner)
-  // limbs get a larger foliage influence radius, since leaves bunch toward the
-  // branch ends. The segments feed a smooth density field, never drawn directly.
+  // Grow several overlapping branch layers from the seed. Real canopies stack
+  // foliage at many depths, so a single tidy recursion looks too synthetic;
+  // overlaying a few crowns (varied centre, angle, length) gives a denser, more
+  // tangled structure. The branches are never drawn — they define where leaves
+  // bunch (the density field), and the gaps between twigs become the dapples.
   const buildTree = () => {
     const rng = makeRng(seed);
     const segs: number[] = [];
-    const MAXD = 7;
+    const MAXD = 6;
     const grow = (
       x: number,
       y: number,
@@ -217,21 +218,24 @@ const LeafShadowSimulator: Component = () => {
     ) => {
       const x1 = x + Math.cos(ang) * len;
       const y1 = y + Math.sin(ang) * len;
-      segs.push(x, y, x1, y1, 11 + (MAXD - depth) * 2.4);
-      if (depth <= 0 || len < 5) return;
-      const n = rng() < 0.45 ? 3 : 2;
+      segs.push(x, y, x1, y1, 8 + (MAXD - depth) * 2);
+      if (depth <= 0 || len < 4) return;
+      const n = rng() < 0.4 ? 3 : 2;
       for (let i = 0; i < n; i++) {
         const sign = i === 0 ? -1 : i === 1 ? 1 : rng() < 0.5 ? -1 : 1;
-        const da = (0.2 + rng() * 0.32) * sign;
+        const da = (0.2 + rng() * 0.34) * sign;
         grow(x1, y1, ang + da, len * (0.72 + rng() * 0.1), depth - 1);
       }
     };
-    // A few branches radiating from the base avoid a single trunk-like stub.
-    const cx = SIM_W * 0.5;
-    const cy = SIM_H * 0.74;
-    for (let i = 0; i < 3; i++) {
-      const a = -Math.PI / 2 + (i - 1) * 0.5 + (rng() - 0.5) * 0.3;
-      grow(cx, cy, a, SIM_H * 0.13, MAXD);
+    for (let layer = 0; layer < 3; layer++) {
+      const cx = SIM_W * (0.42 + rng() * 0.16);
+      const cy = SIM_H * (0.6 + rng() * 0.18);
+      const baseLen = SIM_H * (0.1 + rng() * 0.05);
+      const branches = 3 + ((rng() * 2) | 0);
+      for (let i = 0; i < branches; i++) {
+        const a = -Math.PI / 2 + (rng() - 0.5) * 1.6;
+        grow(cx, cy, a, baseLen, MAXD);
+      }
     }
     treeSegs = segs;
   };
@@ -265,11 +269,11 @@ const LeafShadowSimulator: Component = () => {
     }
   };
 
-  // Cheap (skew / seed): accumulate a smooth foliage-density field `folC` from
-  // the branch skeleton — each limb contributes a soft falloff, so overlapping
-  // limbs build a denser, lumpy crown that follows the branching. The leaf noise
-  // later carves the dapples into this field. Skew shears about the crown base
-  // to mimic a low sun; a border fade keeps the shadow off the canvas edge.
+  // Cheap (skew / seed): build a foliage-density field `folC` by accumulating a
+  // soft falloff along every limb. Overlapping limbs sum into dense clumps,
+  // while the spaces between separate limb systems stay low — so the field has
+  // real structure (clumps and gaps) rather than a saturated blob. Mapped into
+  // [0,1). Skew shears about the base; a border fade hides the canvas edge.
   const rasterizeFoliage = () => {
     folC.fill(0);
     const slope = skew() * 0.6;
@@ -295,18 +299,17 @@ const LeafShadowSimulator: Component = () => {
           const dist = Math.hypot(px - (x0 + t * dx), py - (y0 + t * dy));
           if (dist < infl) {
             const c = 1 - dist * inv;
-            folC[py * SIM_W + px] += c * c * 0.6;
+            folC[py * SIM_W + px] += c * c;
           }
         }
       }
     }
-    // Saturate the accumulation into [0,1) and fade at the border.
     for (let py = 0; py < SIM_H; py++) {
       const bfY = Math.min(py, SIM_H - 1 - py);
       const base = py * SIM_W;
       for (let px = 0; px < SIM_W; px++) {
         const border = clamp(Math.min(px, SIM_W - 1 - px, bfY) / 16, 0, 1);
-        folC[base + px] = (1 - Math.exp(-folC[base + px] * 1.4)) * border;
+        folC[base + px] = (1 - Math.exp(-folC[base + px])) * border;
       }
     }
   };
@@ -318,12 +321,13 @@ const LeafShadowSimulator: Component = () => {
     applyThreshold();
   };
 
-  // Cheap (runs on gap change): combine the leaf texture with foliage coverage
-  // into a transmission mask (1 = light passes) and accumulate the per-row
-  // prefix sums the convolution reads. Foliage admits dappled light through its
-  // gaps; open ground outside the canopy passes freely.
+  // Cheap (runs on gap change): turn the branch-proximity field into a leaf mask
+  // and from it the transmission (1 = light passes). A leaf sits where proximity
+  // (nudged by fine leaf noise for ragged edges) clears a threshold; the gaps
+  // between twigs stay open and become the dappled sun-spots. So the gap pattern
+  // is set by the branch structure, not an unrelated noise field.
   const applyThreshold = () => {
-    const threshold = lerp(0.64, 0.4, gap());
+    const threshold = lerp(1.12, 0.8, gap());
     for (let py = 0; py < SIM_H; py++) {
       const rBase = py * SIM_W;
       const pBase = py * stride;
@@ -331,8 +335,11 @@ const LeafShadowSimulator: Component = () => {
       let acc = 0;
       for (let px = 0; px < SIM_W; px++) {
         const i = rBase + px;
-        const leaf = smoothstep(threshold, threshold + 0.04, rawCanopy[i]);
-        acc += 1 - folC[i] * (1 - leaf);
+        // Where (structure density + leaf noise) clears the threshold a leaf
+        // sits; elsewhere light passes. The structure decides how readily the
+        // noise tips into shadow, so dapples thin out away from the limbs.
+        const o = folC[i] * 0.5 + rawCanopy[i];
+        acc += 1 - smoothstep(threshold - 0.1, threshold + 0.1, o);
         prefix[pBase + px + 1] = acc;
       }
     }
@@ -344,7 +351,7 @@ const LeafShadowSimulator: Component = () => {
   // waving as one sheet.
   const draw = () => {
     if (!ctx || !image) return;
-    const radius = Math.round(lerp(2, 26, spotSize()));
+    const radius = Math.round(lerp(0, 26, spotSize()));
     const { spans, area } = getKernel(radius, eclipse());
 
     // Global oscillation; per-region phase lives in the sway basis fields.
