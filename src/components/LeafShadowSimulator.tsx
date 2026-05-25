@@ -43,6 +43,54 @@ const valueNoise = (x: number, y: number, seed: number) => {
   return lerp(lerp(n00, n10, u), lerp(n01, n11, u), v);
 };
 
+// Fractal noise: stacking octaves adds the fine, self-similar structure that
+// reads as clustered foliage rather than one smooth blob.
+const OCTAVES = 5;
+const fbm = (x: number, y: number, seed: number) => {
+  let sum = 0;
+  let amp = 0.5;
+  let f = 1;
+  let norm = 0;
+  for (let o = 0; o < OCTAVES; o++) {
+    sum += amp * valueNoise(x * f, y * f, seed + o * 1013);
+    norm += amp;
+    f *= 2;
+    amp *= 0.5;
+  }
+  return sum / norm;
+};
+
+// Ridged noise folds the field at its midpoint into thin creases, standing in
+// for the darker twigs and branches threading through the leaves.
+const RIDGE_OCTAVES = 3;
+const ridged = (x: number, y: number, seed: number) => {
+  let sum = 0;
+  let amp = 0.5;
+  let f = 1;
+  let norm = 0;
+  for (let o = 0; o < RIDGE_OCTAVES; o++) {
+    const r = 1 - Math.abs(2 * valueNoise(x * f, y * f, seed + o * 131) - 1);
+    sum += amp * r * r;
+    norm += amp;
+    f *= 2;
+    amp *= 0.5;
+  }
+  return sum / norm;
+};
+
+// Canopy openness in [0,1] (high = a gap that lets light through). Domain
+// warping bends the fractal foliage into ragged, leaf-like clumps, and the
+// ridged branch term carves dark twig-like channels through it.
+const canopyOpenness = (u: number, v: number, seed: number) => {
+  const wx = valueNoise(u * 0.4 + 3.1, v * 0.4 + 1.7, seed ^ 0x1f3) - 0.5;
+  const wy = valueNoise(u * 0.4 + 8.3, v * 0.4 + 5.9, seed ^ 0x2a7) - 0.5;
+  const uu = u + 0.8 * wx;
+  const vv = v + 0.8 * wy;
+  const foliage = fbm(uu, vv, seed);
+  const branch = ridged(uu * 0.6 + 1.5, vv * 0.6, seed ^ 0x55);
+  return foliage - 0.7 * branch + 0.25;
+};
+
 // The sun's image is the convolution kernel. Default is a filled disk; an
 // eclipse subtracts an offset "moon" disk, leaving a crescent. Each row of the
 // kernel is stored as up to two integer column spans so the convolution can
@@ -114,82 +162,112 @@ const Slider: Component<SliderProps> = (props) => (
 const LeafShadowSimulator: Component = () => {
   let canvasRef!: HTMLCanvasElement;
 
-  const [spotSize, setSpotSize] = createSignal(0.55);
-  const [gap, setGap] = createSignal(0.4);
-  const [detail, setDetail] = createSignal(0.4);
+  const [spotSize, setSpotSize] = createSignal(0.3);
+  const [gap, setGap] = createSignal(0.42);
+  const [detail, setDetail] = createSignal(0.5);
   const [eclipse, setEclipse] = createSignal(0);
-  const [wind, setWind] = createSignal(0.3);
+  const [wind, setWind] = createSignal(0.35);
   const [playing, setPlaying] = createSignal(true);
 
   let seed = Math.floor(Math.random() * 1e6);
-  let windOffset = 0;
+  let windPhase = 0;
   let raf = 0;
   let lastTime = 0;
 
-  // Buffers allocated once.
-  const mask = new Float32Array(SIM_W * SIM_H);
-  const prefix = new Float32Array(SIM_H * (SIM_W + 1));
+  // Cache the kernel so the animation loop doesn't re-allocate its span arrays
+  // every frame; it only changes with sun-spot size or eclipse.
+  let kernel = buildKernel(8, 0);
+  let kRadius = -1;
+  let kEclipse = -1;
+  const getKernel = (radius: number, ecl: number) => {
+    if (radius !== kRadius || ecl !== kEclipse) {
+      kernel = buildKernel(radius, ecl);
+      kRadius = radius;
+      kEclipse = ecl;
+    }
+    return kernel;
+  };
+
+  // Buffers allocated once. `rawCanopy` caches the expensive fractal field so
+  // shading tweaks and wind animation never recompute it.
+  const stride = SIM_W + 1;
+  const rawCanopy = new Float32Array(SIM_W * SIM_H);
+  const prefix = new Float32Array(SIM_H * stride);
+  const rowShift = new Int32Array(SIM_H);
   let ctx: CanvasRenderingContext2D | null = null;
   let image: ImageData | null = null;
 
-  const draw = () => {
-    if (!ctx || !image) return;
-
-    const radius = Math.round(lerp(3, 30, spotSize()));
-    const threshold = lerp(0.78, 0.46, gap());
-    const freq = lerp(6, 26, detail());
-    const kernel = buildKernel(radius, eclipse());
-
-    // 1. Canopy occlusion mask: transmission in [0,1] (1 = open gap).
+  // Expensive (runs only on regenerate / detail change): evaluate the warped
+  // fractal foliage into the cache, then threshold it.
+  const computeCanopy = () => {
+    const freq = lerp(6, 24, detail());
     const aspect = SIM_H / SIM_W;
     for (let py = 0; py < SIM_H; py++) {
       const v = (py / SIM_H) * freq * aspect;
+      const base = py * SIM_W;
       for (let px = 0; px < SIM_W; px++) {
-        const u = (px / SIM_W) * freq + windOffset;
-        const n =
-          valueNoise(u, v, seed) * 0.65 +
-          valueNoise(u * 2.3 + 11.3, v * 2.3 + 5.7, seed ^ 0x9e37) * 0.35;
-        mask[py * SIM_W + px] = smoothstep(threshold, threshold + 0.05, n);
+        rawCanopy[base + px] = canopyOpenness((px / SIM_W) * freq, v, seed);
       }
     }
+    applyThreshold();
+  };
 
-    // 2. Per-row prefix sums for O(1) span lookups.
-    const stride = SIM_W + 1;
+  // Cheap (runs on gap change): turn the cached field into a transmission mask
+  // (1 = gap) and accumulate the per-row prefix sums the convolution reads.
+  const applyThreshold = () => {
+    const threshold = lerp(0.72, 0.5, gap());
     for (let py = 0; py < SIM_H; py++) {
+      const rBase = py * SIM_W;
       const pBase = py * stride;
-      const mBase = py * SIM_W;
       prefix[pBase] = 0;
       let acc = 0;
       for (let px = 0; px < SIM_W; px++) {
-        acc += mask[mBase + px];
+        acc += smoothstep(threshold, threshold + 0.04, rawCanopy[rBase + px]);
         prefix[pBase + px + 1] = acc;
       }
     }
+  };
 
-    // 3. Convolve canopy with the sun-shaped kernel.
-    const { spans, area, radius: r } = kernel;
+  // Per frame: convolve the cached canopy with the sun-shaped kernel. Wind is a
+  // back-and-forth sway — each source row gets an oscillating horizontal offset
+  // (plus a gentle vertical bob) so the foliage rocks in place rather than
+  // scrolling endlessly in one direction.
+  const draw = () => {
+    if (!ctx || !image) return;
+    const radius = Math.round(lerp(2, 26, spotSize()));
+    const { spans, area } = getKernel(radius, eclipse());
+
+    const ampX = wind() * 7;
+    for (let y = 0; y < SIM_H; y++) {
+      rowShift[y] = Math.round(Math.sin(windPhase * 1.6 + y * 0.045) * ampX);
+    }
+    const vBob = Math.round(Math.sin(windPhase * 1.1) * wind() * 3);
+
     const data = image.data;
     for (let py = 0; py < SIM_H; py++) {
       for (let px = 0; px < SIM_W; px++) {
         let sum = 0;
-        for (let dy = -r; dy <= r; dy++) {
-          const yy = clamp(py + dy, 0, SIM_H - 1);
-          const row = spans[dy + r];
+        for (let dy = -radius; dy <= radius; dy++) {
+          let yy = py + dy - vBob;
+          if (yy < 0) yy = 0;
+          else if (yy > SIM_H - 1) yy = SIM_H - 1;
+          const sx = rowShift[yy];
+          const row = spans[dy + radius];
           const pBase = yy * stride;
           for (let i = 0; i < row.length; i += 2) {
-            let lo = px + row[i];
-            let hi = px + row[i + 1];
+            let lo = px + row[i] - sx;
+            let hi = px + row[i + 1] - sx;
             if (hi < 0 || lo > SIM_W - 1) continue;
             if (lo < 0) lo = 0;
             if (hi > SIM_W - 1) hi = SIM_W - 1;
             sum += prefix[pBase + hi + 1] - prefix[pBase + lo];
           }
         }
-        const b = Math.pow(sum / area, 0.75);
+        const b = Math.pow(sum / area, 0.8);
         const idx = (py * SIM_W + px) * 4;
-        data[idx] = lerp(30, 255, b);
-        data[idx + 1] = lerp(44, 248, b);
-        data[idx + 2] = lerp(28, 222, b * 0.95);
+        data[idx] = lerp(26, 250, b);
+        data[idx + 1] = lerp(38, 244, b);
+        data[idx + 2] = lerp(24, 210, b * 0.92);
         data[idx + 3] = 255;
       }
     }
@@ -199,7 +277,7 @@ const LeafShadowSimulator: Component = () => {
   const loop = (time: number) => {
     const dt = lastTime ? (time - lastTime) / 1000 : 0;
     lastTime = time;
-    windOffset += wind() * dt * 1.2;
+    windPhase += dt;
     draw();
     if (playing()) raf = requestAnimationFrame(loop);
   };
@@ -219,13 +297,28 @@ const LeafShadowSimulator: Component = () => {
 
   const regenerate = () => {
     seed = Math.floor(Math.random() * 1e6);
+    computeCanopy();
     if (!playing()) draw();
   };
 
-  // When a control changes while paused, redraw immediately.
-  const onControl = (setter: (v: number) => void) => (v: number) => {
-    setter(v);
+  // While paused, redraw immediately. `detail` reshapes the foliage so it
+  // rebuilds the cache; `gap` only re-thresholds it; the rest just re-shade.
+  const redrawIfPaused = () => {
     if (!playing()) draw();
+  };
+  const onDetail = (v: number) => {
+    setDetail(v);
+    computeCanopy();
+    redrawIfPaused();
+  };
+  const onGap = (v: number) => {
+    setGap(v);
+    applyThreshold();
+    redrawIfPaused();
+  };
+  const onShade = (setter: (v: number) => void) => (v: number) => {
+    setter(v);
+    redrawIfPaused();
   };
 
   onMount(() => {
@@ -233,6 +326,7 @@ const LeafShadowSimulator: Component = () => {
     canvasRef.height = SIM_H;
     ctx = canvasRef.getContext("2d");
     if (ctx) image = ctx.createImageData(SIM_W, SIM_H);
+    computeCanopy();
     draw();
     if (playing()) startLoop();
   });
@@ -248,7 +342,7 @@ const LeafShadowSimulator: Component = () => {
         min={0}
         max={1}
         step={0.01}
-        onInput={onControl(setSpotSize)}
+        onInput={onShade(setSpotSize)}
       />
       <Slider
         label="Gap size"
@@ -257,7 +351,7 @@ const LeafShadowSimulator: Component = () => {
         min={0}
         max={1}
         step={0.01}
-        onInput={onControl(setGap)}
+        onInput={onGap}
       />
       <Slider
         label="Leaf detail"
@@ -266,7 +360,7 @@ const LeafShadowSimulator: Component = () => {
         min={0}
         max={1}
         step={0.01}
-        onInput={onControl(setDetail)}
+        onInput={onDetail}
       />
       <Slider
         label="Eclipse"
@@ -275,7 +369,7 @@ const LeafShadowSimulator: Component = () => {
         min={0}
         max={1}
         step={0.01}
-        onInput={onControl(setEclipse)}
+        onInput={onShade(setEclipse)}
       />
       <Slider
         label="Wind"
@@ -284,7 +378,7 @@ const LeafShadowSimulator: Component = () => {
         min={0}
         max={1}
         step={0.01}
-        onInput={onControl(setWind)}
+        onInput={onShade(setWind)}
       />
       <div class="flex items-end gap-2">
         <button
