@@ -166,7 +166,9 @@ const LeafShadowSimulator: Component = () => {
   const [gap, setGap] = createSignal(0.42);
   const [detail, setDetail] = createSignal(0.5);
   const [eclipse, setEclipse] = createSignal(0);
-  const [wind, setWind] = createSignal(0.35);
+  const [wind, setWind] = createSignal(0.3);
+  const [skew, setSkew] = createSignal(0);
+  const [temp, setTemp] = createSignal(0.5);
   const [playing, setPlaying] = createSignal(true);
 
   let seed = Math.floor(Math.random() * 1e6);
@@ -196,6 +198,7 @@ const LeafShadowSimulator: Component = () => {
   // cos(wt)*amp*sin(phase).
   const stride = SIM_W + 1;
   const rawCanopy = new Float32Array(SIM_W * SIM_H);
+  const envelope = new Float32Array(SIM_W * SIM_H);
   const prefix = new Float32Array(SIM_H * stride);
   const swayCosX = new Float32Array(SIM_W * SIM_H);
   const swaySinX = new Float32Array(SIM_W * SIM_H);
@@ -204,25 +207,43 @@ const LeafShadowSimulator: Component = () => {
   let ctx: CanvasRenderingContext2D | null = null;
   let image: ImageData | null = null;
 
-  // Expensive (runs only on regenerate / detail change): evaluate the warped
-  // fractal foliage into the cache, build the per-region sway basis, then
-  // threshold the canopy.
+  // Expensive (runs only on regenerate / detail / skew change): evaluate the
+  // warped fractal foliage and the tree-shaped shadow envelope into the caches,
+  // build the per-region sway basis, then threshold the canopy. Skew shears
+  // everything horizontally to mimic a low sun stretching the shadow.
   const computeCanopy = () => {
     const freq = lerp(6, 24, detail());
     const aspect = SIM_H / SIM_W;
     // Sway phase varies at branch scale (coarser than the leaf clumps) so a
     // branch and its clusters swing together while neighbouring branches lag.
-    const pf = freq * 0.5;
+    const pf = freq * 0.28;
     const TAU = Math.PI * 2;
+    const skewK = skew() * 0.7;
     for (let py = 0; py < SIM_H; py++) {
+      const skewPx = skewK * (py - SIM_H / 2);
       const v = (py / SIM_H) * freq * aspect;
       const pv = (py / SIM_H) * pf * aspect;
+      const ny = py / SIM_H;
+      const ey = ny - 0.45;
       const base = py * SIM_W;
       for (let px = 0; px < SIM_W; px++) {
-        const u = (px / SIM_W) * freq;
-        rawCanopy[base + px] = canopyOpenness(u, v, seed);
+        const sxN = (px + skewPx) / SIM_W;
+        rawCanopy[base + px] = canopyOpenness(sxN * freq, v, seed);
 
-        const pu = (px / SIM_W) * pf;
+        // Tree-shadow envelope: a lumpy elliptical blob with a ragged foliage
+        // boundary, hard-faded at the canvas border so no rectangle shows.
+        const ex = sxN - 0.5;
+        const d = Math.sqrt(ex * ex + ey * ey * 1.35);
+        const lobe = valueNoise(sxN * 2 + 13, ny * 2 + 27, seed ^ 0x7a1);
+        const lobe2 = valueNoise(sxN * 4 + 5, ny * 4 + 3, seed ^ 0x18d);
+        const rag = valueNoise(sxN * 7 + 4, ny * 7 + 9, seed ^ 0x2c) - 0.5;
+        const edge = 0.32 + 0.14 * lobe + 0.06 * lobe2 + 0.04 * rag;
+        let env = 1 - smoothstep(edge, edge + 0.1, d);
+        env *= clamp(Math.min(px, SIM_W - 1 - px, py, SIM_H - 1 - py) / 16, 0, 1);
+        envelope[base + px] = env;
+
+        // Per-region sway basis (split into cos/sin parts; see buffer notes).
+        const pu = sxN * pf;
         const phX = valueNoise(pu + 2.7, pv + 8.1, seed ^ 0x6d2) * TAU;
         const phY = valueNoise(pu + 5.3, pv + 1.9, seed ^ 0x3b7) * TAU;
         const aX = 0.5 + 0.5 * valueNoise(pu + 9.4, pv + 4.2, seed ^ 0x91c);
@@ -263,10 +284,22 @@ const LeafShadowSimulator: Component = () => {
     const { spans, area } = getKernel(radius, eclipse());
 
     // Global oscillation; per-region phase lives in the sway basis fields.
-    const st = Math.sin(windPhase * 2);
-    const ct = Math.cos(windPhase * 2);
-    const gx = wind() * 9;
-    const gy = wind() * 4;
+    // Gentle and slow, so foliage rustles rather than rippling like water.
+    const st = Math.sin(windPhase * 1.3);
+    const ct = Math.cos(windPhase * 1.3);
+    const gx = wind() * 5;
+    const gy = wind() * 2;
+
+    // Time-of-day palette: sun-spots run warm↔cool with temperature, shaded
+    // ground sits darker and slightly complementary. Alpha follows the tree
+    // envelope so the shadow composites onto the page's own background.
+    const tc = temp();
+    const sunR = lerp(255, 226, tc);
+    const sunG = lerp(225, 235, tc);
+    const sunB = lerp(170, 255, tc);
+    const shR = lerp(96, 104, tc);
+    const shG = lerp(99, 105, tc);
+    const shB = lerp(118, 102, tc);
 
     const data = image.data;
     for (let py = 0; py < SIM_H; py++) {
@@ -290,12 +323,12 @@ const LeafShadowSimulator: Component = () => {
             sum += prefix[pBase + hi + 1] - prefix[pBase + lo];
           }
         }
-        const b = Math.pow(sum / area, 0.8);
-        const idx = (py * SIM_W + px) * 4;
-        data[idx] = lerp(26, 250, b);
-        data[idx + 1] = lerp(38, 244, b);
-        data[idx + 2] = lerp(24, 210, b * 0.92);
-        data[idx + 3] = 255;
+        const tone = Math.pow(sum / area, 0.85);
+        const idx = sidx * 4;
+        data[idx] = lerp(shR, sunR, tone);
+        data[idx + 1] = lerp(shG, sunG, tone);
+        data[idx + 2] = lerp(shB, sunB, tone);
+        data[idx + 3] = envelope[sidx] * 255;
       }
     }
     ctx.putImageData(image, 0, 0);
@@ -341,6 +374,11 @@ const LeafShadowSimulator: Component = () => {
   const onGap = (v: number) => {
     setGap(v);
     applyThreshold();
+    redrawIfPaused();
+  };
+  const onSkew = (v: number) => {
+    setSkew(v);
+    computeCanopy();
     redrawIfPaused();
   };
   const onShade = (setter: (v: number) => void) => (v: number) => {
@@ -407,6 +445,24 @@ const LeafShadowSimulator: Component = () => {
         step={0.01}
         onInput={onShade(setWind)}
       />
+      <Slider
+        label="Skew"
+        hint="sun angle"
+        value={skew()}
+        min={-1}
+        max={1}
+        step={0.01}
+        onInput={onSkew}
+      />
+      <Slider
+        label="Color temperature"
+        hint="warm → cool"
+        value={temp()}
+        min={0}
+        max={1}
+        step={0.01}
+        onInput={onShade(setTemp)}
+      />
       <div class="flex items-end gap-2">
         <button
           type="button"
@@ -428,14 +484,11 @@ const LeafShadowSimulator: Component = () => {
 
   return (
     <div class="not-prose flex flex-col gap-5">
-      <div class="overflow-hidden rounded-xl shadow-lg ring-1 ring-stone-900/10">
-        <canvas
-          ref={canvasRef}
-          class="block h-auto w-full"
-          style={{ "image-rendering": "auto" }}
-          aria-label="Simulated dappled light from leaf shadows"
-        />
-      </div>
+      <canvas
+        ref={canvasRef}
+        class="block h-auto w-full"
+        aria-label="Simulated leaf shadow cast on the page"
+      />
       {controls}
     </div>
   );
