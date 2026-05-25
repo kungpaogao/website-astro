@@ -189,24 +189,49 @@ const LeafShadowSimulator: Component = () => {
   };
 
   // Buffers allocated once. `rawCanopy` caches the expensive fractal field so
-  // shading tweaks and wind animation never recompute it.
+  // shading tweaks and wind animation never recompute it. The `*ph*` fields
+  // hold a per-pixel sway basis: each region's own phase and amplitude, split
+  // into cos/sin parts so a frame's offset is a multiply-add, not a per-pixel
+  // sine. Displacement = amp * sin(wt + phase) = sin(wt)*amp*cos(phase) +
+  // cos(wt)*amp*sin(phase).
   const stride = SIM_W + 1;
   const rawCanopy = new Float32Array(SIM_W * SIM_H);
   const prefix = new Float32Array(SIM_H * stride);
-  const rowShift = new Int32Array(SIM_H);
+  const swayCosX = new Float32Array(SIM_W * SIM_H);
+  const swaySinX = new Float32Array(SIM_W * SIM_H);
+  const swayCosY = new Float32Array(SIM_W * SIM_H);
+  const swaySinY = new Float32Array(SIM_W * SIM_H);
   let ctx: CanvasRenderingContext2D | null = null;
   let image: ImageData | null = null;
 
   // Expensive (runs only on regenerate / detail change): evaluate the warped
-  // fractal foliage into the cache, then threshold it.
+  // fractal foliage into the cache, build the per-region sway basis, then
+  // threshold the canopy.
   const computeCanopy = () => {
     const freq = lerp(6, 24, detail());
     const aspect = SIM_H / SIM_W;
+    // Sway phase varies at branch scale (coarser than the leaf clumps) so a
+    // branch and its clusters swing together while neighbouring branches lag.
+    const pf = freq * 0.5;
+    const TAU = Math.PI * 2;
     for (let py = 0; py < SIM_H; py++) {
       const v = (py / SIM_H) * freq * aspect;
+      const pv = (py / SIM_H) * pf * aspect;
       const base = py * SIM_W;
       for (let px = 0; px < SIM_W; px++) {
-        rawCanopy[base + px] = canopyOpenness((px / SIM_W) * freq, v, seed);
+        const u = (px / SIM_W) * freq;
+        rawCanopy[base + px] = canopyOpenness(u, v, seed);
+
+        const pu = (px / SIM_W) * pf;
+        const phX = valueNoise(pu + 2.7, pv + 8.1, seed ^ 0x6d2) * TAU;
+        const phY = valueNoise(pu + 5.3, pv + 1.9, seed ^ 0x3b7) * TAU;
+        const aX = 0.5 + 0.5 * valueNoise(pu + 9.4, pv + 4.2, seed ^ 0x91c);
+        const aY = 0.3 + 0.4 * valueNoise(pu + 3.1, pv + 7.7, seed ^ 0x55a);
+        const idx = base + px;
+        swayCosX[idx] = aX * Math.cos(phX);
+        swaySinX[idx] = aX * Math.sin(phX);
+        swayCosY[idx] = aY * Math.cos(phY);
+        swaySinY[idx] = aY * Math.sin(phY);
       }
     }
     applyThreshold();
@@ -228,35 +253,37 @@ const LeafShadowSimulator: Component = () => {
     }
   };
 
-  // Per frame: convolve the cached canopy with the sun-shaped kernel. Wind is a
-  // back-and-forth sway — each source row gets an oscillating horizontal offset
-  // (plus a gentle vertical bob) so the foliage rocks in place rather than
-  // scrolling endlessly in one direction.
+  // Per frame: convolve the cached canopy with the sun-shaped kernel. Wind
+  // displaces each region of the canopy by its own oscillation, so individual
+  // branches sway out of phase with one another instead of the whole field
+  // waving as one sheet.
   const draw = () => {
     if (!ctx || !image) return;
     const radius = Math.round(lerp(2, 26, spotSize()));
     const { spans, area } = getKernel(radius, eclipse());
 
-    const ampX = wind() * 7;
-    for (let y = 0; y < SIM_H; y++) {
-      rowShift[y] = Math.round(Math.sin(windPhase * 1.6 + y * 0.045) * ampX);
-    }
-    const vBob = Math.round(Math.sin(windPhase * 1.1) * wind() * 3);
+    // Global oscillation; per-region phase lives in the sway basis fields.
+    const st = Math.sin(windPhase * 2);
+    const ct = Math.cos(windPhase * 2);
+    const gx = wind() * 9;
+    const gy = wind() * 4;
 
     const data = image.data;
     for (let py = 0; py < SIM_H; py++) {
       for (let px = 0; px < SIM_W; px++) {
+        const sidx = py * SIM_W + px;
+        const dispX = Math.round(gx * (st * swayCosX[sidx] + ct * swaySinX[sidx]));
+        const dispY = Math.round(gy * (st * swayCosY[sidx] + ct * swaySinY[sidx]));
         let sum = 0;
         for (let dy = -radius; dy <= radius; dy++) {
-          let yy = py + dy - vBob;
+          let yy = py + dy - dispY;
           if (yy < 0) yy = 0;
           else if (yy > SIM_H - 1) yy = SIM_H - 1;
-          const sx = rowShift[yy];
           const row = spans[dy + radius];
           const pBase = yy * stride;
           for (let i = 0; i < row.length; i += 2) {
-            let lo = px + row[i] - sx;
-            let hi = px + row[i + 1] - sx;
+            let lo = px + row[i] - dispX;
+            let hi = px + row[i + 1] - dispX;
             if (hi < 0 || lo > SIM_W - 1) continue;
             if (lo < 0) lo = 0;
             if (hi > SIM_W - 1) hi = SIM_W - 1;
