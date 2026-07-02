@@ -1,0 +1,19 @@
+---
+import type { Props } from "../components/Head.astro";
+import ShadowSim from "../components/ShadowSim.tsx";
+import Layout from "../layouts/Layout.astro";
+
+const layoutProps: Props = {
+  title: "Shadow",
+  description: "A dappled tree shadow simulator.",
+  path: "/shadow",
+};
+---
+
+<Layout
+  {...layoutProps}
+  bodyClassName="h-full"
+  mainClassName="flex flex-col h-full"
+>
+  <ShadowSim client:only="solid-js" slot="main-p-0" />
+</Layout>
