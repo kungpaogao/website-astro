@@ -32,9 +32,9 @@ describe("mulberry32", () => {
 });
 
 describe("sliderToLeafCount", () => {
-  it("maps the slider ends to 300 and 9000", () => {
-    expect(sliderToLeafCount(0)).toBe(300);
-    expect(sliderToLeafCount(1)).toBe(9000);
+  it("maps the slider ends to 500 and 18000", () => {
+    expect(sliderToLeafCount(0)).toBe(500);
+    expect(sliderToLeafCount(1)).toBe(18000);
   });
 
   it("is monotonic", () => {

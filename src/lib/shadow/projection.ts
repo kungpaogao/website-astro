@@ -11,6 +11,14 @@
 /** tan of the sun's angular half-radius (0.267°) */
 export const TAN_SUN_HALF_ANGLE = Math.tan((0.267 * Math.PI) / 180);
 
+/**
+ * Artistic exaggeration of the sun's angular size used by the renderer:
+ * at web scale the physical 0.5° disk yields pinhole images too small to
+ * read, so the shader renders a modestly larger sun. penumbraRadii stays
+ * physical; consumers apply this scale.
+ */
+export const SUN_ANGLE_SCALE = 1.75;
+
 export interface PenumbraRadii {
   /** meters, along the sun azimuth (shadow-elongation axis) */
   rPar: number;

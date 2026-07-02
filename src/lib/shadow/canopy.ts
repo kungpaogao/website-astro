@@ -19,6 +19,18 @@ export interface Leaf {
  */
 export const UV_MARGIN = 0.07;
 
+/**
+ * Leaves cluster around branch-end clumps; the holes BETWEEN clumps are
+ * what project the round pinhole sun images. Clump count is a fixed
+ * constant — deriving it from leaf count would break prefix stability.
+ */
+const NUM_CLUMPS = 128;
+/** gaussian spread of leaves around a clump, as fraction of usable UV width */
+const CLUMP_SIGMA = 0.05;
+/** vertical spread, in normalized canopy-height units */
+const CLUMP_SIGMA_Y = 0.06;
+const CLUMP_SALT = 0x5f356495;
+
 interface ShapeParams {
   /** canopy width / canopy height */
   aspect: number;
@@ -78,17 +90,57 @@ export function canopyProfile(shape: number, y: number): number {
   return Math.pow(1 - Math.pow(d, exponent), 1 / exponent);
 }
 
-/** Log mapping of slider t ∈ [0, 1] to leaf count 300 → 9000. */
+/** Log mapping of slider t ∈ [0, 1] to leaf count 500 → 18,000. */
 export function sliderToLeafCount(t: number): number {
-  return Math.round(300 * Math.pow(30, Math.min(1, Math.max(0, t))));
+  return Math.round(500 * Math.pow(36, Math.min(1, Math.max(0, t))));
+}
+
+interface Clump {
+  x: number;
+  z: number;
+  /** normalized canopy height */
+  y: number;
 }
 
 /**
- * Generate leaf sprites inside the canopy silhouette.
+ * Clump centers inside the canopy volume. Canonical randoms are mapped
+ * through the shape parameters (no rejection sampling) so clumps migrate
+ * smoothly as the shape slider scrubs.
+ */
+function generateClumps(seed: number, shape: number): Clump[] {
+  const half = 0.5 - UV_MARGIN;
+  const clumps: Clump[] = new Array(NUM_CLUMPS);
+  for (let j = 0; j < NUM_CLUMPS; j++) {
+    const rng = mulberry32(
+      (seed ^ CLUMP_SALT ^ Math.imul(j + 1, 0x9e3779b9)) >>> 0,
+    );
+    const y = rng();
+    const r = canopyProfile(shape, y) * Math.pow(rng(), 0.35); // shell bias
+    const theta = rng() * Math.PI * 2;
+    clumps[j] = {
+      x: 0.5 + r * Math.cos(theta) * half,
+      z: 0.5 + r * Math.sin(theta) * half,
+      y,
+    };
+  }
+  return clumps;
+}
+
+/** Box-Muller pair; 1 - u guards against ln(0). */
+function gaussianPair(u: number, v: number): [number, number] {
+  const m = Math.sqrt(-2 * Math.log(1 - u));
+  return [m * Math.cos(2 * Math.PI * v), m * Math.sin(2 * Math.PI * v)];
+}
+
+/**
+ * Generate leaf sprites clustered around branch clumps inside the canopy
+ * silhouette. The inter-clump holes are what make the dappled light: they
+ * are small enough for the sun's disk footprint to dominate, so they
+ * project round sun images instead of gap-shaped light.
  *
  * Stability guarantees:
- * - leaf i depends only on (seed, i), so raising `count` appends leaves
- *   without moving existing ones;
+ * - leaf i depends only on (seed, i) — and clump count is fixed — so
+ *   raising `count` appends leaves without moving existing ones;
  * - raw randoms are mapped *through* the shape parameters, so scrubbing
  *   the shape slider migrates leaves smoothly instead of reshuffling.
  */
@@ -98,48 +150,46 @@ export function generateLeaves(
   shape: number,
 ): Leaf[] {
   const params = shapeParams(shape);
+  const clumps = generateClumps(seed, shape);
+  const half = 0.5 - UV_MARGIN;
+  const sigmaUV = CLUMP_SIGMA * 2 * half;
   const leaves: Leaf[] = new Array(count);
 
   for (let i = 0; i < count; i++) {
     const rng = mulberry32((seed ^ Math.imul(i + 1, 0x9e3779b9)) >>> 0);
-    const u1 = rng();
-    const u2 = rng();
-    const u3 = rng();
-    const u4 = rng();
-    const u5 = rng();
-    const u6 = rng();
+    const clump = clumps[Math.min(NUM_CLUMPS - 1, Math.floor(rng() * NUM_CLUMPS))];
+    const [gx, gz] = gaussianPair(rng(), rng());
+    const size = (4.5 + 3.5 * rng()) / 512;
+    const rot = rng() * Math.PI * 2;
+    const layerJitter = rng();
+    const [gy] = gaussianPair(rng(), rng());
 
-    // vertical position in canopy, then radial position biased toward the
-    // shell (real canopies are shells — leaves grow at the sunlit exterior)
-    let y = u1;
-    const R = canopyProfile(shape, y);
-    const rNorm = Math.pow(u2, 0.35); // 0..1, shell-biased
-    const theta = u3 * Math.PI * 2;
+    let x = clump.x + gx * sigmaUV;
+    let z = clump.z + gz * sigmaUV;
+    let y = Math.min(1, Math.max(0, clump.y + gy * CLUMP_SIGMA_Y));
+
+    // clamp into the canopy silhouette at this height (never reject —
+    // rejection pops during shape scrub)
+    const maxR = canopyProfile(shape, y) * half;
+    const dx = x - 0.5;
+    const dz = z - 0.5;
+    const rUV = Math.hypot(dx, dz);
+    if (rUV > maxR && rUV > 0) {
+      x = 0.5 + (dx / rUV) * maxR;
+      z = 0.5 + (dz / rUV) * maxR;
+    }
 
     // weeping droop: silhouette-edge leaves get pulled down
-    y -= params.droop * rNorm * rNorm * 0.35;
-    y = Math.min(1, Math.max(0, y));
+    const rFrac = maxR > 0 ? Math.min(1, rUV / maxR) : 1;
+    y = Math.min(1, Math.max(0, y - params.droop * rFrac * rFrac * 0.35));
 
-    // top-down projection; normalize by aspect so the footprint always
-    // fills the usable texture area (world width applied via uniform)
-    const r = R * rNorm;
-    const half = 0.5 - UV_MARGIN;
-    const x = 0.5 + r * Math.cos(theta) * half;
-    const z = 0.5 + r * Math.sin(theta) * half;
-
-    // layer = vertical third, jittered to avoid sharpness terracing
+    // layer = vertical third of final height, jittered to avoid terracing
     const layer = Math.min(
       2,
-      Math.max(0, Math.floor(3 * (y + (u6 - 0.5) * 0.15))),
+      Math.max(0, Math.floor(3 * (y + (layerJitter - 0.5) * 0.15))),
     ) as 0 | 1 | 2;
 
-    leaves[i] = {
-      x,
-      y: z,
-      size: (3.5 + 3.5 * u4) / 512,
-      rot: u5 * Math.PI * 2,
-      layer,
-    };
+    leaves[i] = { x, y: z, size, rot, layer };
   }
 
   return leaves;

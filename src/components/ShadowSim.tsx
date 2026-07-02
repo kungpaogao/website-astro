@@ -48,8 +48,8 @@ const ShadowSim: Component = () => {
   ).matches;
 
   // all sliders are normalized 0..1
-  const [height, setHeight] = createSignal(1 / 3); // 12 m
-  const [leaves, setLeaves] = createSignal(0.9); // ~6,400 leaves
+  const [height, setHeight] = createSignal(13 / 27); // 16 m
+  const [leaves, setLeaves] = createSignal(0.8); // ~8,800 leaves
   const [shape, setShape] = createSignal(0.4);
   const [sun, setSun] = createSignal(0.75); // 55°
   const [wind, setWind] = createSignal(reducedMotion ? 0 : 0.5);
@@ -205,7 +205,7 @@ const ShadowSim: Component = () => {
       gl!.uniform1f(uniforms.u_invSinElev, 1 / Math.sin(elev));
       gl!.uniform1f(
         uniforms.u_penumbraMax,
-        Math.min(0.14 * canopyHalfW, 0.5),
+        Math.min(0.14 * canopyHalfW, 0.65),
       );
       gl!.uniform2f(
         uniforms.u_azDir,

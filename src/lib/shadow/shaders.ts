@@ -11,6 +11,8 @@
  * between layers that produces real dappled light.
  */
 
+import { SUN_ANGLE_SCALE, TAN_SUN_HALF_ANGLE } from "./projection";
+
 export const VERT_SRC = `
 attribute vec2 a_pos;
 void main() {
@@ -33,7 +35,8 @@ precision mediump float;
 
 const int K = ${K};
 const float K_F = ${K.toFixed(1)};
-const float TAN_SUN = 0.004661; // tan(0.267 deg), sun half-angle
+// sun half-angle tangent, artistically scaled (see SUN_ANGLE_SCALE)
+const float TAN_SUN = ${(TAN_SUN_HALF_ANGLE * SUN_ANGLE_SCALE).toFixed(6)};
 const float GOLDEN = 2.39996323;
 
 uniform vec2 u_resolution;      // device pixels
@@ -116,8 +119,9 @@ void main() {
   }
   light /= K_F;
 
-  // slight s-curve for punchier dapple cores
-  light = smoothstep(0.0, 1.0, light);
+  // pow lifts dim pinhole discs (a small gap passes only part of the sun's
+  // disk); the smoothstep then pushes the lifted floor back down
+  light = smoothstep(0.0, 1.0, pow(light, 0.6));
 
   vec3 color = mix(u_shadowColor, u_lightColor, light);
   color += (hash(gl_FragCoord.xy) - 0.5) * 0.012; // static film grain
