@@ -27,6 +27,7 @@ export function drawCanopy(
     for (const leaf of leaves) {
       if (leaf.layer !== layer) continue;
       const a = leaf.size * size;
+      const b = a * (leaf.aspect ?? 0.45);
       // start point of ellipse(θ=0) so subpaths don't get connecting lines
       ctx.moveTo(
         leaf.x * size + a * Math.cos(leaf.rot),
@@ -36,7 +37,7 @@ export function drawCanopy(
         leaf.x * size,
         leaf.y * size,
         a,
-        a * 0.45,
+        b,
         leaf.rot,
         0,
         Math.PI * 2,

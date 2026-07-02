@@ -8,6 +8,7 @@ import {
 import {
   canopyAspect,
   generateLeaves,
+  generateLimbStrokes,
   sliderToLeafCount,
   UV_MARGIN,
   type Leaf,
@@ -24,7 +25,7 @@ import { buildFragSrc, VERT_SRC } from "../lib/shadow/shaders";
 const SEED = 20260702;
 const TEX_SIZE = 512;
 /** ground meters spanned by the smaller canvas dimension */
-const GROUND_WINDOW_M = 8;
+const GROUND_WINDOW_M = 6.5;
 /** fixed sun azimuth, slightly diagonal (radians from screen-up) */
 const SUN_AZIMUTH = (35 * Math.PI) / 180;
 
@@ -49,7 +50,7 @@ const ShadowSim: Component = () => {
 
   // all sliders are normalized 0..1
   const [height, setHeight] = createSignal(13 / 27); // 16 m
-  const [leaves, setLeaves] = createSignal(0.8); // ~8,800 leaves
+  const [leaves, setLeaves] = createSignal(0.62); // ~4,600 leaves
   const [shape, setShape] = createSignal(0.4);
   const [sun, setSun] = createSignal(0.75); // 55°
   const [wind, setWind] = createSignal(reducedMotion ? 0 : 0.5);
@@ -77,7 +78,7 @@ const ShadowSim: Component = () => {
 
     // quality tier, fixed for the session
     const coarse = window.matchMedia("(pointer: coarse)").matches;
-    const K = coarse ? 8 : 16;
+    const K = coarse ? 8 : 24;
     const dprCap = coarse ? 1.5 : 2;
 
     const texCanvas = document.createElement("canvas");
@@ -164,7 +165,10 @@ const ShadowSim: Component = () => {
       if (key !== cachedLeafKey) {
         cachedLeafKey = key;
         cachedLeaves = generateLeaves(SEED, count, shape());
-        drawCanopy(texCtx, cachedLeaves);
+        drawCanopy(
+          texCtx,
+          cachedLeaves.concat(generateLimbStrokes(SEED, shape())),
+        );
       }
       gl!.bindTexture(gl!.TEXTURE_2D, texture);
       gl!.texImage2D(
@@ -198,14 +202,14 @@ const ShadowSim: Component = () => {
       // clamp layer separation so low sun elongates the pattern without the
       // three layers' shadows sliding fully apart (physically they would,
       // but then the dapples wash out of the fixed window)
-      const parLimit = 0.75 * canopyHalfW;
+      const parLimit = 0.4 * canopyHalfW;
       const clampPar = (h: number) =>
         Math.max(-parLimit, Math.min(parLimit, layerParallax(h, hMid, elev)));
       gl!.uniform3f(uniforms.u_parallax, clampPar(hLow), 0, clampPar(hHigh));
       gl!.uniform1f(uniforms.u_invSinElev, 1 / Math.sin(elev));
       gl!.uniform1f(
         uniforms.u_penumbraMax,
-        Math.min(0.14 * canopyHalfW, 0.65),
+        Math.min(0.17 * canopyHalfW, 0.85),
       );
       gl!.uniform2f(
         uniforms.u_azDir,

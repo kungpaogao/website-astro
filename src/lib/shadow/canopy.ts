@@ -1,7 +1,7 @@
 import { mulberry32 } from "./prng";
 
 /**
- * A leaf sprite in canopy-texture space.
+ * A sprite in canopy-texture space (leaf or limb-stroke segment).
  * x, y are texture UV coords in [0, 1]; size is the ellipse semi-major
  * axis in UV units; layer is the vertical canopy third (0 = low, 2 = high).
  */
@@ -11,6 +11,8 @@ export interface Leaf {
   size: number;
   rot: number;
   layer: 0 | 1 | 2;
+  /** minor/major axis ratio; defaults to the leaf shape (0.45) */
+  aspect?: number;
 }
 
 /**
@@ -20,16 +22,23 @@ export interface Leaf {
 export const UV_MARGIN = 0.07;
 
 /**
- * Leaves cluster around branch-end clumps; the holes BETWEEN clumps are
- * what project the round pinhole sun images. Clump count is a fixed
- * constant — deriving it from leaf count would break prefix stability.
+ * Canopy structure: NUM_LIMBS primary limbs radiate from the trunk;
+ * foliage clumps sit along the limbs; leaves cluster around clumps.
+ * The wedge-shaped sky channels BETWEEN limb lobes and the small holes
+ * inside lobes are what shape the dappled light. All counts are fixed
+ * constants — deriving them from leaf count would break prefix stability.
  */
+const NUM_LIMBS = 6;
 const NUM_CLUMPS = 128;
 /** gaussian spread of leaves around a clump, as fraction of usable UV width */
 const CLUMP_SIGMA = 0.05;
 /** vertical spread, in normalized canopy-height units */
 const CLUMP_SIGMA_Y = 0.06;
 const CLUMP_SALT = 0x5f356495;
+const LIMB_SALT = 0x1b873593;
+/** ellipse segments per limb stroke, plus trunk segments */
+const STROKE_SEGMENTS = 20;
+const TRUNK_SEGMENTS = 6;
 
 interface ShapeParams {
   /** canopy width / canopy height */
@@ -95,6 +104,76 @@ export function sliderToLeafCount(t: number): number {
   return Math.round(500 * Math.pow(36, Math.min(1, Math.max(0, t))));
 }
 
+/** How vertical the tree's limbs are: columnar 1 → spreading 0. */
+function verticality(params: ShapeParams): number {
+  return Math.min(1, Math.max(0, 1 - (params.aspect - 0.45) / 1.05));
+}
+
+interface Limb {
+  /** base direction; limb direction at station s is azimuth + curl·s */
+  azimuth: number;
+  curl: number;
+  /** horizontal reach as fraction of usable UV half-width */
+  reach: number;
+  /** normalized canopy heights of limb base and tip */
+  yBase: number;
+  yTip: number;
+  /** relative thickness of this limb's shadow stroke */
+  girth: number;
+}
+
+/**
+ * Primary limb skeleton. Azimuth and curl are shape-independent so limbs
+ * never rotate while the shape slider scrubs; reach and rise morph with
+ * the shape parameters.
+ */
+function generateLimbs(seed: number, params: ShapeParams): Limb[] {
+  const v = verticality(params);
+  const limbs: Limb[] = new Array(NUM_LIMBS);
+  for (let l = 0; l < NUM_LIMBS; l++) {
+    const rng = mulberry32(
+      (seed ^ LIMB_SALT ^ Math.imul(l + 1, 0x9e3779b9)) >>> 0,
+    );
+    const uAz = rng();
+    const uCurl = rng();
+    const uReach = rng();
+    const uGirth = rng();
+    limbs[l] = {
+      azimuth: ((l + 0.5 + 0.85 * (uAz - 0.5)) * 2 * Math.PI) / NUM_LIMBS,
+      curl: 0.5 * (uCurl - 0.5),
+      reach:
+        Math.min(1, Math.max(0.3, params.aspect / 1.5)) *
+        (0.75 + 0.35 * uReach),
+      yBase: params.centroid - (0.25 + 0.3 * v),
+      yTip: params.centroid + (0.12 + 0.28 * v),
+      girth: 0.75 + 0.5 * uGirth,
+    };
+  }
+  return limbs;
+}
+
+/**
+ * Smooth-min radial compression into the canopy silhouette at height y:
+ * positions well inside are untouched, positions past the profile are
+ * pressed against it (never beyond). Softness avoids the artificial dense
+ * rim a hard clamp creates, and keeps lobe tips as local maxima.
+ */
+function softClampRadial(
+  x: number,
+  z: number,
+  shape: number,
+  y: number,
+): [number, number] {
+  const half = 0.5 - UV_MARGIN;
+  const maxR = Math.max(canopyProfile(shape, y) * half, 1e-4);
+  const dx = x - 0.5;
+  const dz = z - 0.5;
+  const r = Math.hypot(dx, dz);
+  if (r < 1e-9) return [x, z];
+  const rc = r / Math.pow(1 + Math.pow(r / maxR, 4), 0.25);
+  return [0.5 + (dx / r) * rc, 0.5 + (dz / r) * rc];
+}
+
 interface Clump {
   x: number;
   z: number;
@@ -103,25 +182,47 @@ interface Clump {
 }
 
 /**
- * Clump centers inside the canopy volume. Canonical randoms are mapped
- * through the shape parameters (no rejection sampling) so clumps migrate
- * smoothly as the shape slider scrubs.
+ * Foliage clumps distributed along the limb skeleton. Station bias is
+ * shape-dependent: spreading trees mass foliage at limb ends, columnar
+ * trees fill the near-vertical limbs top to bottom (a pure outward bias
+ * would hollow the column into a lollipop).
  */
 function generateClumps(seed: number, shape: number): Clump[] {
+  const params = shapeParams(shape);
+  const limbs = generateLimbs(seed, params);
+  const v = verticality(params);
   const half = 0.5 - UV_MARGIN;
+  const sMin = 0.35 * (1 - 0.6 * v);
+  const p = 0.6 + 0.5 * v;
+
   const clumps: Clump[] = new Array(NUM_CLUMPS);
   for (let j = 0; j < NUM_CLUMPS; j++) {
+    const limb = limbs[j % NUM_LIMBS];
     const rng = mulberry32(
       (seed ^ CLUMP_SALT ^ Math.imul(j + 1, 0x9e3779b9)) >>> 0,
     );
-    const y = rng();
-    const r = canopyProfile(shape, y) * Math.pow(rng(), 0.35); // shell bias
-    const theta = rng() * Math.PI * 2;
-    clumps[j] = {
-      x: 0.5 + r * Math.cos(theta) * half,
-      z: 0.5 + r * Math.sin(theta) * half,
-      y,
-    };
+    const s = sMin + (1 - sMin) * Math.pow(rng(), p);
+    const [gLat] = gaussianPair(rng(), rng());
+    const [gH] = gaussianPair(rng(), rng());
+
+    const theta = limb.azimuth + limb.curl * s;
+    const r = limb.reach * s * half;
+    const sigmaLat = 0.02 + 0.035 * s;
+    const y = Math.min(
+      1,
+      Math.max(
+        0,
+        limb.yBase +
+          (limb.yTip - limb.yBase) * s -
+          0.3 * params.droop * s * s +
+          gH * 0.1,
+      ),
+    );
+
+    const x = 0.5 + r * Math.cos(theta) - gLat * sigmaLat * Math.sin(theta);
+    const z = 0.5 + r * Math.sin(theta) + gLat * sigmaLat * Math.cos(theta);
+    const [cx, cz] = softClampRadial(x, z, shape, y);
+    clumps[j] = { x: cx, z: cz, y };
   }
   return clumps;
 }
@@ -133,14 +234,82 @@ function gaussianPair(u: number, v: number): [number, number] {
 }
 
 /**
+ * Shadow strokes for the trunk and primary limbs: chains of overlapping
+ * thin ellipses along each limb's plan path. Widths are wider than
+ * botanical so the strokes survive the exaggerated penumbra blur as the
+ * soft dark streaks real limb shadows leave in the bright gaps.
+ * Fixed count, seed-only randoms — independent of the leaf count.
+ */
+export function generateLimbStrokes(seed: number, shape: number): Leaf[] {
+  const params = shapeParams(shape);
+  const limbs = generateLimbs(seed, params);
+  const half = 0.5 - UV_MARGIN;
+  const strokes: Leaf[] = [];
+
+  for (let l = 0; l < limbs.length; l++) {
+    const limb = limbs[l];
+    const segLen = (limb.reach * half) / STROKE_SEGMENTS;
+    for (let k = 0; k < STROKE_SEGMENTS; k++) {
+      const s = (k + 0.5) / STROKE_SEGMENTS;
+      const segRng = mulberry32(
+        (seed ^ Math.imul(l * STROKE_SEGMENTS + k + 1, 0x85ebca6b)) >>> 0,
+      );
+      const wobble = (segRng() - 0.5) * 0.008;
+      const theta = limb.azimuth + limb.curl * s;
+      const y = Math.min(
+        1,
+        Math.max(
+          0,
+          limb.yBase +
+            (limb.yTip - limb.yBase) * s -
+            0.3 * params.droop * s * s,
+        ),
+      );
+      const r = limb.reach * s * half;
+      const [x, z] = softClampRadial(
+        0.5 + r * Math.cos(theta) - wobble * Math.sin(theta),
+        0.5 + r * Math.sin(theta) + wobble * Math.cos(theta),
+        shape,
+        y,
+      );
+      const semiMinor = (0.013 - 0.008 * s) * limb.girth; // thick → thin
+      const semiMajor = Math.max(segLen * 0.7, semiMinor);
+      strokes.push({
+        x,
+        y: z,
+        size: semiMajor,
+        rot: theta, // local limb direction
+        layer: Math.min(2, Math.max(0, Math.floor(3 * y))) as 0 | 1 | 2,
+        aspect: semiMinor / semiMajor,
+      });
+    }
+  }
+
+  // trunk: a few stacked ellipses at the center, low layer
+  for (let k = 0; k < TRUNK_SEGMENTS; k++) {
+    const rng = mulberry32((seed ^ Math.imul(k + 101, 0x9e3779b9)) >>> 0);
+    strokes.push({
+      x: 0.5 + (rng() - 0.5) * 0.01,
+      y: 0.5 + (rng() - 0.5) * 0.01,
+      size: 0.025,
+      rot: rng() * Math.PI,
+      layer: 0,
+      aspect: 0.8,
+    });
+  }
+
+  return strokes;
+}
+
+/**
  * Generate leaf sprites clustered around branch clumps inside the canopy
- * silhouette. The inter-clump holes are what make the dappled light: they
- * are small enough for the sun's disk footprint to dominate, so they
- * project round sun images instead of gap-shaped light.
+ * silhouette. The inter-lobe wedges give broad bright splashes; the small
+ * holes inside lobes are smaller than the sun's disk footprint, so they
+ * project round sun images — the pinhole dapples.
  *
  * Stability guarantees:
- * - leaf i depends only on (seed, i) — and clump count is fixed — so
- *   raising `count` appends leaves without moving existing ones;
+ * - leaf i depends only on (seed, i) — and limb/clump counts are fixed —
+ *   so raising `count` appends leaves without moving existing ones;
  * - raw randoms are mapped *through* the shape parameters, so scrubbing
  *   the shape slider migrates leaves smoothly instead of reshuffling.
  */
@@ -164,24 +333,18 @@ export function generateLeaves(
     const layerJitter = rng();
     const [gy] = gaussianPair(rng(), rng());
 
-    let x = clump.x + gx * sigmaUV;
-    let z = clump.z + gz * sigmaUV;
     let y = Math.min(1, Math.max(0, clump.y + gy * CLUMP_SIGMA_Y));
+    const [x, z] = softClampRadial(
+      clump.x + gx * sigmaUV,
+      clump.z + gz * sigmaUV,
+      shape,
+      y,
+    );
 
-    // clamp into the canopy silhouette at this height (never reject —
-    // rejection pops during shape scrub)
-    const maxR = canopyProfile(shape, y) * half;
-    const dx = x - 0.5;
-    const dz = z - 0.5;
-    const rUV = Math.hypot(dx, dz);
-    if (rUV > maxR && rUV > 0) {
-      x = 0.5 + (dx / rUV) * maxR;
-      z = 0.5 + (dz / rUV) * maxR;
-    }
-
-    // weeping droop: silhouette-edge leaves get pulled down
-    const rFrac = maxR > 0 ? Math.min(1, rUV / maxR) : 1;
-    y = Math.min(1, Math.max(0, y - params.droop * rFrac * rFrac * 0.35));
+    // residual per-leaf droop (limb-path droop carries most of the weeping)
+    const maxR = Math.max(canopyProfile(shape, y) * half, 1e-4);
+    const rFrac = Math.min(1, Math.hypot(x - 0.5, z - 0.5) / maxR);
+    y = Math.min(1, Math.max(0, y - params.droop * rFrac * rFrac * 0.15));
 
     // layer = vertical third of final height, jittered to avoid terracing
     const layer = Math.min(

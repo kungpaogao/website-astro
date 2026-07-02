@@ -3,6 +3,7 @@ import {
   canopyAspect,
   canopyProfile,
   generateLeaves,
+  generateLimbStrokes,
   sliderToLeafCount,
   UV_MARGIN,
 } from "../shadow/canopy";
@@ -114,5 +115,46 @@ describe("generateLeaves", () => {
       seen.add(leaf.layer);
     }
     expect(seen.size).toBe(3);
+  });
+
+  it("keeps all leaves inside the silhouette radius (soft clamp)", () => {
+    for (const shape of [0, 0.33, 0.67, 1]) {
+      for (const leaf of generateLeaves(3, 1000, shape)) {
+        const r = Math.hypot(leaf.x - 0.5, leaf.y - 0.5);
+        expect(r).toBeLessThanOrEqual(0.5 - UV_MARGIN + 1e-9);
+      }
+    }
+  });
+
+  it("produces a lobed (non-uniform) azimuthal distribution", () => {
+    const leaves = generateLeaves(1, 4000, 2 / 3); // spreading
+    const bins = new Array(24).fill(0);
+    for (const leaf of leaves) {
+      const a = Math.atan2(leaf.y - 0.5, leaf.x - 0.5) + Math.PI;
+      bins[Math.min(23, Math.floor((a / (2 * Math.PI)) * 24))]++;
+    }
+    const min = Math.min(...bins);
+    const max = Math.max(...bins);
+    expect(min / max).toBeLessThan(0.5); // wedge gaps between limb lobes
+  });
+});
+
+describe("generateLimbStrokes", () => {
+  it("is deterministic with a fixed sprite count", () => {
+    const a = generateLimbStrokes(1, 0.5);
+    const b = generateLimbStrokes(1, 0.5);
+    expect(a).toEqual(b);
+    expect(a.length).toBe(6 * 20 + 6); // limbs × segments + trunk
+  });
+
+  it("stays inside the UV margin and moves continuously with shape", () => {
+    const a = generateLimbStrokes(1, 0.5);
+    const b = generateLimbStrokes(1, 0.51);
+    for (let i = 0; i < a.length; i++) {
+      const r = Math.hypot(a[i].x - 0.5, a[i].y - 0.5);
+      expect(r).toBeLessThanOrEqual(0.5 - UV_MARGIN + 1e-9);
+      const d = Math.hypot(a[i].x - b[i].x, a[i].y - b[i].y);
+      expect(d).toBeLessThan(0.05);
+    }
   });
 });

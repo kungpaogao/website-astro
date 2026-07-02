@@ -121,7 +121,7 @@ void main() {
 
   // pow lifts dim pinhole discs (a small gap passes only part of the sun's
   // disk); the smoothstep then pushes the lifted floor back down
-  light = smoothstep(0.0, 1.0, pow(light, 0.6));
+  light = smoothstep(0.06, 1.0, pow(light, 0.55));
 
   vec3 color = mix(u_shadowColor, u_lightColor, light);
   color += (hash(gl_FragCoord.xy) - 0.5) * 0.012; // static film grain
