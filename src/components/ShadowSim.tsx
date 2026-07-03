@@ -17,15 +17,12 @@ import { drawCanopy } from "../lib/shadow/draw-canopy";
 import {
   elevSliderToRad,
   layerHeights,
-  layerParallax,
   sunLightColor,
 } from "../lib/shadow/projection";
 import { buildFragSrc, VERT_SRC } from "../lib/shadow/shaders";
 
 const SEED = 20260702;
 const TEX_SIZE = 512;
-/** ground meters spanned by the smaller canvas dimension */
-const GROUND_WINDOW_M = 6.5;
 /** fixed sun azimuth, slightly diagonal (radians from screen-up) */
 const SUN_AZIMUTH = (35 * Math.PI) / 180;
 
@@ -133,9 +130,10 @@ const ShadowSim: Component = () => {
         "u_time",
         "u_canopy",
         "u_layerHeights",
-        "u_parallax",
-        "u_invSinElev",
-        "u_penumbraMax",
+        "u_sinElev",
+        "u_cosElev",
+        "u_rhoMax",
+        "u_spanPar",
         "u_azDir",
         "u_uvPerMeter",
         "u_windAmp",
@@ -192,24 +190,34 @@ const ShadowSim: Component = () => {
       const moodColors = MOODS[mood()];
       const light = moodColors.light ?? sunLightColor(elev);
 
+      // ground window follows the canopy footprint so every shape reads as
+      // a coherent tree shadow rather than an arbitrary crop
+      const windowM = Math.min(11, Math.max(5, 1.4 * canopyHalfW));
+
       gl!.uniform2f(uniforms.u_resolution, canvas.width, canvas.height);
       gl!.uniform1f(
         uniforms.u_metersPerPixel,
-        GROUND_WINDOW_M / Math.min(canvas.width, canvas.height),
+        windowM / Math.min(canvas.width, canvas.height),
       );
       gl!.uniform1f(uniforms.u_time, timeS);
       gl!.uniform3f(uniforms.u_layerHeights, hLow, hMid, hHigh);
-      // clamp layer separation so low sun elongates the pattern without the
-      // three layers' shadows sliding fully apart (physically they would,
-      // but then the dapples wash out of the fixed window)
-      const parLimit = 0.4 * canopyHalfW;
-      const clampPar = (h: number) =>
-        Math.max(-parLimit, Math.min(parLimit, layerParallax(h, hMid, elev)));
-      gl!.uniform3f(uniforms.u_parallax, clampPar(hLow), 0, clampPar(hHigh));
-      gl!.uniform1f(uniforms.u_invSinElev, 1 / Math.sin(elev));
+      gl!.uniform1f(uniforms.u_sinElev, Math.sin(elev));
+      gl!.uniform1f(uniforms.u_cosElev, Math.cos(elev));
+      gl!.uniform1f(uniforms.u_rhoMax, Math.min(0.18 * canopyHalfW, 0.9));
+      // Layers sit 0.2·treeH apart; when their plan-space offset exceeds
+      // the canopy's effective footprint (limb reach shrinks it for narrow
+      // trees) the three layer images separate into discrete blobs. Smear
+      // each layer along the azimuth only by the excess, so wide trees
+      // keep crisp pinhole discs while narrow trees stay one connected
+      // shadow.
+      const layerGap = 0.2 * treeHeight * Math.cos(elev);
+      const reachFrac = Math.min(
+        1,
+        Math.max(0.3, canopyAspect(shape()) / 1.5),
+      );
       gl!.uniform1f(
-        uniforms.u_penumbraMax,
-        Math.min(0.17 * canopyHalfW, 0.85),
+        uniforms.u_spanPar,
+        1.4 * Math.max(0, layerGap - 0.9 * canopyHalfW * reachFrac),
       );
       gl!.uniform2f(
         uniforms.u_azDir,

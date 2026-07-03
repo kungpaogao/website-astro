@@ -44,9 +44,10 @@ uniform float u_metersPerPixel;
 uniform float u_time;           // seconds
 uniform sampler2D u_canopy;     // R/G/B = low/mid/high layer opacity
 uniform vec3 u_layerHeights;    // meters
-uniform vec3 u_parallax;        // per-layer shadow shift along u_azDir, meters
-uniform float u_invSinElev;
-uniform float u_penumbraMax;    // meters, keeps low-sun dapples structured
+uniform float u_sinElev;
+uniform float u_cosElev;
+uniform float u_rhoMax;         // meters, caps low-sun penumbra blur
+uniform float u_spanPar;        // plan-space smear of a layer's own height span
 uniform vec2 u_azDir;           // sun azimuth unit vector (ground plane)
 uniform float u_uvPerMeter;     // canopy texture UV units per world meter
 uniform float u_windAmp;        // meters of sway at the canopy top
@@ -78,23 +79,33 @@ void main() {
   vec2 world = (gl_FragCoord.xy - 0.5 * u_resolution) * u_metersPerPixel;
   vec2 perpDir = vec2(-u_azDir.y, u_azDir.x);
 
-  // per-layer penumbra ellipse radii (meters), capped so extreme low-sun
-  // blur doesn't dissolve all structure
-  vec3 rPerp = min(u_layerHeights * TAN_SUN * u_invSinElev, vec3(u_penumbraMax));
-  // along-azimuth axis gets extra headroom so low-sun elongation survives
-  vec3 rPar = min(rPerp * u_invSinElev, vec3(2.5 * u_penumbraMax));
-  float hTop = u_layerHeights.z;
-  vec2 par0 = u_parallax.x * u_azDir;
-  vec2 par2 = u_parallax.z * u_azDir;
+  // Work in the plane perpendicular to the sun ray ("plan space"): the
+  // ground maps into it compressed by sin(elev) along the azimuth, so the
+  // shadow pattern on the ground is stretched 1/sin(elev) — the long
+  // shadow of a setting sun. Layer offsets become the tree's side-view
+  // displacement (h·cos(elev)) and the penumbra is isotropic here.
+  float wPar = dot(world, u_azDir) * u_sinElev;
+  float wPerp = dot(world, perpDir);
 
-  // wind: per layer, phase-shifted so gaps open and close between layers
+  // per-layer penumbra radius in plan space (grows as the sun sets),
+  // capped so extreme low-sun blur doesn't dissolve all structure
+  vec3 rho = min(
+    u_layerHeights * (TAN_SUN / max(u_sinElev, 0.15)),
+    vec3(u_rhoMax)
+  );
+  float hTop = u_layerHeights.z;
+  float par0 = (u_layerHeights.x - u_layerHeights.y) * u_cosElev;
+  float par2 = (u_layerHeights.z - u_layerHeights.y) * u_cosElev;
+
+  // wind: per layer (plan-space meters), phase-shifted so gaps open and
+  // close between layers
   vec2 wind0 = windOffset(u_time, world, u_layerHeights.x / hTop);
   vec2 wind1 = windOffset(u_time + 1.7, world, u_layerHeights.y / hTop);
   vec2 wind2 = windOffset(u_time + 3.1, world, 1.0);
 
-  vec2 base0 = world + par0 + wind0;
-  vec2 base1 = world + wind1;
-  vec2 base2 = world + par2 + wind2;
+  vec2 base0 = vec2(wPar + par0 + wind0.x, wPerp + wind0.y);
+  vec2 base1 = vec2(wPar + wind1.x, wPerp + wind1.y);
+  vec2 base2 = vec2(wPar + par2 + wind2.x, wPerp + wind2.y);
 
   // interleaved gradient noise: per-pixel rotation of the Vogel disk
   float ign = fract(52.9829189 *
@@ -108,12 +119,20 @@ void main() {
     float th = fi * GOLDEN + rot;
     vec2 d = r * vec2(cos(th), sin(th));
 
+    // each layer is a flat slice of a continuous volume: jitter the sample
+    // along the azimuth by the layer's own height span so consecutive
+    // layers' shadows connect instead of separating into discrete blobs
+    float hj = (fract(fi * 0.61803399 + ign) - 0.5) * u_spanPar;
+
     float vis = 1.0;
-    vec2 p0 = base0 + d.x * rPar.x * u_azDir + d.y * rPerp.x * perpDir;
+    vec2 q0 = base0 + d * rho.x + vec2(hj, 0.0);
+    vec2 p0 = q0.x * u_azDir + q0.y * perpDir;
     vis *= 1.0 - texture2D(u_canopy, p0 * u_uvPerMeter + 0.5).r;
-    vec2 p1 = base1 + d.x * rPar.y * u_azDir + d.y * rPerp.y * perpDir;
+    vec2 q1 = base1 + d * rho.y + vec2(hj, 0.0);
+    vec2 p1 = q1.x * u_azDir + q1.y * perpDir;
     vis *= 1.0 - texture2D(u_canopy, p1 * u_uvPerMeter + 0.5).g;
-    vec2 p2 = base2 + d.x * rPar.z * u_azDir + d.y * rPerp.z * perpDir;
+    vec2 q2 = base2 + d * rho.z + vec2(hj, 0.0);
+    vec2 p2 = q2.x * u_azDir + q2.y * perpDir;
     vis *= 1.0 - texture2D(u_canopy, p2 * u_uvPerMeter + 0.5).b;
     light += vis;
   }
