@@ -272,7 +272,10 @@ export function generateLimbStrokes(seed: number, shape: number): Leaf[] {
         shape,
         y,
       );
-      const semiMinor = (0.013 - 0.008 * s) * limb.girth; // thick → thin
+      // thick → thin along the limb; weeping trees hide their limbs under
+      // the hanging foliage, so strokes fade out with droop
+      const semiMinor =
+        (0.013 - 0.008 * s) * limb.girth * (1 - 0.9 * params.droop);
       const semiMajor = Math.max(segLen * 0.7, semiMinor);
       strokes.push({
         x,

@@ -17,7 +17,7 @@ export const TAN_SUN_HALF_ANGLE = Math.tan((0.267 * Math.PI) / 180);
  * read, so the shader renders a modestly larger sun. penumbraRadii stays
  * physical; consumers apply this scale.
  */
-export const SUN_ANGLE_SCALE = 2.2;
+export const SUN_ANGLE_SCALE = 2.6;
 
 export interface PenumbraRadii {
   /** meters, along the sun azimuth (shadow-elongation axis) */

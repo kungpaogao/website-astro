@@ -47,7 +47,7 @@ const ShadowSim: Component = () => {
 
   // all sliders are normalized 0..1
   const [height, setHeight] = createSignal(13 / 27); // 16 m
-  const [leaves, setLeaves] = createSignal(0.62); // ~4,600 leaves
+  const [leaves, setLeaves] = createSignal(0.58); // ~4,000 leaves
   const [shape, setShape] = createSignal(0.4);
   const [sun, setSun] = createSignal(0.75); // 55°
   const [wind, setWind] = createSignal(reducedMotion ? 0 : 0.5);
@@ -192,7 +192,7 @@ const ShadowSim: Component = () => {
 
       // ground window follows the canopy footprint so every shape reads as
       // a coherent tree shadow rather than an arbitrary crop
-      const windowM = Math.min(11, Math.max(5, 1.4 * canopyHalfW));
+      const windowM = Math.min(10, Math.max(4.5, 1.2 * canopyHalfW));
 
       gl!.uniform2f(uniforms.u_resolution, canvas.width, canvas.height);
       gl!.uniform1f(

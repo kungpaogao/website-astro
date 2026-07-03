@@ -54,21 +54,25 @@ uniform float u_windAmp;        // meters of sway at the canopy top
 uniform vec3 u_lightColor;
 uniform vec3 u_shadowColor;
 
-vec2 gust(float t) {
-  float envelope = 0.65 + 0.35 * sin(0.17 * t);
-  return envelope * vec2(
-    sin(0.9 * t) + 0.5 * sin(1.7 * t + 1.3),
-    sin(0.7 * t + 0.8) + 0.5 * sin(1.3 * t + 2.1)
-  );
-}
-
+/**
+ * Wind displacement as a spatial field, not a rigid per-layer shift:
+ * gusts are waves traveling across the canopy (phase depends on position)
+ * and a finer flutter rides on top, so nearby foliage moves together
+ * while distant parts lag — gaps genuinely open and close.
+ */
 vec2 windOffset(float t, vec2 world, float heightFrac) {
-  vec2 flutter = 0.25 * vec2(
-    sin(5.3 * t + world.x * 1.9 + world.y * 0.7),
-    sin(4.1 * t + world.y * 2.3)
+  float ph = dot(world, vec2(0.9, 0.6));   // gust wavefront, ~1 rad/m
+  vec2 gust = vec2(
+    sin(1.1 * t - 0.7 * ph) + 0.6 * sin(1.9 * t - 0.4 * ph + 1.3),
+    0.7 * sin(0.9 * t - 0.55 * ph + 0.8) + 0.4 * sin(1.6 * t - 0.3 * ph + 2.1)
   );
+  vec2 flutter = 0.3 * vec2(
+    sin(5.3 * t - 2.2 * ph + world.y * 1.6),
+    sin(4.4 * t - 1.8 * ph + world.x * 1.3)
+  );
+  float envelope = 0.6 + 0.4 * sin(0.31 * t - 0.25 * ph);
   float sway = pow(heightFrac, 1.5);
-  return u_windAmp * sway * (gust(t) + flutter);
+  return u_windAmp * sway * envelope * (gust + flutter);
 }
 
 float hash(vec2 p) {
@@ -140,7 +144,7 @@ void main() {
 
   // pow lifts dim pinhole discs (a small gap passes only part of the sun's
   // disk); the smoothstep then pushes the lifted floor back down
-  light = smoothstep(0.06, 1.0, pow(light, 0.55));
+  light = smoothstep(0.06, 1.0, pow(light, 0.5));
 
   vec3 color = mix(u_shadowColor, u_lightColor, light);
   color += (hash(gl_FragCoord.xy) - 0.5) * 0.012; // static film grain
