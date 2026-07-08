@@ -158,12 +158,13 @@ void main() {
   // bimodal tone, calibrated against photos: sunlit pools blow out to
   // near-white quickly while the canopy floor stays deep — real dappled
   // ground has surprisingly little mid-gray
-  light = smoothstep(0.05, 0.72, pow(light, 0.58));
+  light = smoothstep(0.07, 0.72, pow(light, 0.58));
 
   vec3 color = mix(u_shadowColor, u_lightColor, light);
-  // concrete-like surface: blotchy two-octave mottle + fine static grain
+  // concrete-like surface: blotchy two-octave mottle + fine static grain;
+  // mottle shows mostly where the sun lands — deep shade swallows it
   float mottle = 0.7 * vnoise(world * 1.3) + 0.3 * vnoise(world * 5.1);
-  color *= 0.965 + 0.07 * mottle;
+  color *= 1.0 + (0.07 * mottle - 0.035) * (0.3 + 0.7 * light);
   color += (hash(gl_FragCoord.xy) - 0.5) * 0.022;
   gl_FragColor = vec4(color, 1.0);
 }

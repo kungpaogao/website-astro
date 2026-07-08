@@ -212,10 +212,15 @@ const ShadowSim: Component = () => {
       gl!.uniform3f(uniforms.u_layerHeights, hLow, hMid, hHigh);
       gl!.uniform1f(uniforms.u_sinElev, Math.sin(elev));
       gl!.uniform1f(uniforms.u_cosElev, Math.cos(elev));
-      gl!.uniform1f(uniforms.u_rhoMax, Math.min(0.18 * canopyHalfW, 0.9));
+      gl!.uniform1f(uniforms.u_rhoMax, Math.min(0.14 * canopyHalfW, 0.6));
       // tall trees cast disproportionately softer, dimmer dapples; short
-      // trees crisp sharp ones (leaves don't scale with the tree)
-      gl!.uniform1f(uniforms.u_penumbraBoost, Math.sqrt(treeHeight / 16));
+      // trees crisp sharp ones (leaves don't scale with the tree). Capped —
+      // the physical rho already grows with height, and past ~1.15x the
+      // extra blur reads as haze rather than shade.
+      gl!.uniform1f(
+        uniforms.u_penumbraBoost,
+        Math.min(1.15, Math.sqrt(treeHeight / 16)),
+      );
       // Layers sit 0.2·treeH apart; when their plan-space offset exceeds
       // the canopy's effective footprint (limb reach shrinks it for narrow
       // trees) the three layer images separate into discrete blobs. Smear
