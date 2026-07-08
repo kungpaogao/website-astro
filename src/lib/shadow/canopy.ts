@@ -331,15 +331,21 @@ export function generateLeaves(
     const rng = mulberry32((seed ^ Math.imul(i + 1, 0x9e3779b9)) >>> 0);
     const clump = clumps[Math.min(NUM_CLUMPS - 1, Math.floor(rng() * NUM_CLUMPS))];
     const [gx, gz] = gaussianPair(rng(), rng());
-    const size = (4.5 + 3.5 * rng()) / 512;
+    // heavy-tailed size mix: mostly small leaves, occasional big foliage
+    // tufts — real dapple pools are clusters of blobs at many scales
+    const u4 = rng();
+    const size = (3.5 + 8 * u4 * u4 * u4) / 512;
     const rot = rng() * Math.PI * 2;
     const layerJitter = rng();
     const [gy] = gaussianPair(rng(), rng());
+    // two-scale clustering: most leaves pack into a tight core, the rest
+    // form a sparse halo, so gaps cluster into big pools with satellites
+    const sigma = rng() < 0.65 ? 0.4 * sigmaUV : 1.3 * sigmaUV;
 
     let y = Math.min(1, Math.max(0, clump.y + gy * CLUMP_SIGMA_Y));
     const [x, z] = softClampRadial(
-      clump.x + gx * sigmaUV,
-      clump.z + gz * sigmaUV,
+      clump.x + gx * sigma,
+      clump.z + gz * sigma,
       shape,
       y,
     );

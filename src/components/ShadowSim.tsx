@@ -32,10 +32,11 @@ const MOODS: Record<
   Mood,
   { shadow: [number, number, number]; light?: [number, number, number] }
 > = {
-  // warm light comes from sunLightColor(elev); shadow is cool-nudged stone
-  warm: { shadow: [0.5, 0.485, 0.545] },
-  // stone-100 light, stone-500-ish shadow, no warmth ramp
-  neutral: { light: [0.961, 0.961, 0.957], shadow: [0.47, 0.445, 0.425] },
+  // warm light comes from sunLightColor(elev); shadow is deep cool stone
+  // (real shade on pavement is darker and bluer than you'd guess)
+  warm: { shadow: [0.44, 0.43, 0.51] },
+  // concrete: near-white light, deep neutral-gray shadow
+  neutral: { light: [0.97, 0.97, 0.96], shadow: [0.42, 0.415, 0.42] },
 };
 
 const SHAPE_NAMES = ["columnar", "oval", "spreading", "weeping"];
@@ -47,7 +48,7 @@ const ShadowSim: Component = () => {
 
   // all sliders are normalized 0..1
   const [height, setHeight] = createSignal(13 / 27); // 16 m
-  const [leaves, setLeaves] = createSignal(0.58); // ~4,000 leaves
+  const [leaves, setLeaves] = createSignal(0.63); // ~4,800 leaves
   const [shape, setShape] = createSignal(0.4);
   const [sun, setSun] = createSignal(0.75); // 55°
   const [wind, setWind] = createSignal(reducedMotion ? 0 : 0.5);

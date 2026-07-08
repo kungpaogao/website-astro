@@ -17,7 +17,7 @@ export const TAN_SUN_HALF_ANGLE = Math.tan((0.267 * Math.PI) / 180);
  * read, so the shader renders a modestly larger sun. penumbraRadii stays
  * physical; consumers apply this scale.
  */
-export const SUN_ANGLE_SCALE = 2.6;
+export const SUN_ANGLE_SCALE = 1.5;
 
 export interface PenumbraRadii {
   /** meters, along the sun azimuth (shadow-elongation axis) */
@@ -66,7 +66,7 @@ export function layerParallax(
  * elevation drops below ~30°.
  */
 export function sunLightColor(elevRad: number): [number, number, number] {
-  const high: [number, number, number] = [0.993, 0.965, 0.89]; // #fdf6e3
+  const high: [number, number, number] = [0.997, 0.985, 0.95]; // near-white
   const low: [number, number, number] = [0.957, 0.69, 0.376]; // #f4b060
   const elevDeg = (elevRad * 180) / Math.PI;
   // 0 above 30°, 1 at 10°

@@ -80,6 +80,18 @@ float hash(vec2 p) {
   return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
+// smooth value noise for the ground surface (blotchy, not directional)
+float vnoise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  float a = hash(i);
+  float b = hash(i + vec2(1.0, 0.0));
+  float c = hash(i + vec2(0.0, 1.0));
+  float d = hash(i + vec2(1.0, 1.0));
+  return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+}
+
 void main() {
   vec2 world = (gl_FragCoord.xy - 0.5 * u_resolution) * u_metersPerPixel;
   vec2 perpDir = vec2(-u_azDir.y, u_azDir.x);
@@ -143,12 +155,16 @@ void main() {
   }
   light /= K_F;
 
-  // pow lifts dim pinhole discs (a small gap passes only part of the sun's
-  // disk); the smoothstep then pushes the lifted floor back down
-  light = smoothstep(0.06, 1.0, pow(light, 0.5));
+  // bimodal tone, calibrated against photos: sunlit pools blow out to
+  // near-white quickly while the canopy floor stays deep — real dappled
+  // ground has surprisingly little mid-gray
+  light = smoothstep(0.05, 0.72, pow(light, 0.58));
 
   vec3 color = mix(u_shadowColor, u_lightColor, light);
-  color += (hash(gl_FragCoord.xy) - 0.5) * 0.012; // static film grain
+  // concrete-like surface: blotchy two-octave mottle + fine static grain
+  float mottle = 0.7 * vnoise(world * 1.3) + 0.3 * vnoise(world * 5.1);
+  color *= 0.965 + 0.07 * mottle;
+  color += (hash(gl_FragCoord.xy) - 0.5) * 0.022;
   gl_FragColor = vec4(color, 1.0);
 }
 `;
