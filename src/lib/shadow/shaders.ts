@@ -47,6 +47,7 @@ uniform vec3 u_layerHeights;    // meters
 uniform float u_sinElev;
 uniform float u_cosElev;
 uniform float u_rhoMax;         // meters, caps low-sun penumbra blur
+uniform float u_penumbraBoost;  // height-driven softness (tall = softer)
 uniform float u_spanPar;        // plan-space smear of a layer's own height span
 uniform vec2 u_azDir;           // sun azimuth unit vector (ground plane)
 uniform float u_uvPerMeter;     // canopy texture UV units per world meter
@@ -94,7 +95,7 @@ void main() {
   // per-layer penumbra radius in plan space (grows as the sun sets),
   // capped so extreme low-sun blur doesn't dissolve all structure
   vec3 rho = min(
-    u_layerHeights * (TAN_SUN / max(u_sinElev, 0.15)),
+    u_layerHeights * (TAN_SUN * u_penumbraBoost / max(u_sinElev, 0.15)),
     vec3(u_rhoMax)
   );
   float hTop = u_layerHeights.z;

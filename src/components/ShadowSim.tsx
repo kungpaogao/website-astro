@@ -51,7 +51,10 @@ const ShadowSim: Component = () => {
   const [shape, setShape] = createSignal(0.4);
   const [sun, setSun] = createSignal(0.75); // 55°
   const [wind, setWind] = createSignal(reducedMotion ? 0 : 0.5);
+  const [zoom, setZoom] = createSignal(0.25); // 0.5×–2.5×, 0.25 → 1×
   const [mood, setMood] = createSignal<Mood>("warm");
+
+  const zoomFactor = () => 0.5 + 2 * zoom();
   const [failed, setFailed] = createSignal(false);
 
   let container!: HTMLDivElement;
@@ -133,6 +136,7 @@ const ShadowSim: Component = () => {
         "u_sinElev",
         "u_cosElev",
         "u_rhoMax",
+        "u_penumbraBoost",
         "u_spanPar",
         "u_azDir",
         "u_uvPerMeter",
@@ -190,9 +194,13 @@ const ShadowSim: Component = () => {
       const moodColors = MOODS[mood()];
       const light = moodColors.light ?? sunLightColor(elev);
 
-      // ground window follows the canopy footprint so every shape reads as
-      // a coherent tree shadow rather than an arbitrary crop
-      const windowM = Math.min(10, Math.max(4.5, 1.2 * canopyHalfW));
+      // The window is fixed to a reference tree height (16 m) per shape, so
+      // the height slider genuinely grows/shrinks the shadow and its light
+      // discs on screen instead of being cancelled by an auto-zoom. The
+      // zoom slider is a debug view control on top.
+      const refHalfW = (canopyAspect(shape()) * 0.6 * 16) / 2;
+      const windowM =
+        Math.min(10, Math.max(4.5, 1.2 * refHalfW)) / zoomFactor();
 
       gl!.uniform2f(uniforms.u_resolution, canvas.width, canvas.height);
       gl!.uniform1f(
@@ -204,6 +212,9 @@ const ShadowSim: Component = () => {
       gl!.uniform1f(uniforms.u_sinElev, Math.sin(elev));
       gl!.uniform1f(uniforms.u_cosElev, Math.cos(elev));
       gl!.uniform1f(uniforms.u_rhoMax, Math.min(0.18 * canopyHalfW, 0.9));
+      // tall trees cast disproportionately softer, dimmer dapples; short
+      // trees crisp sharp ones (leaves don't scale with the tree)
+      gl!.uniform1f(uniforms.u_penumbraBoost, Math.sqrt(treeHeight / 16));
       // Layers sit 0.2·treeH apart; when their plan-space offset exceeds
       // the canopy's effective footprint (limb reach shrinks it for narrow
       // trees) the three layer images separate into discrete blobs. Smear
@@ -392,6 +403,15 @@ const ShadowSim: Component = () => {
           display={`${Math.round(100 * wind())}%`}
           onInput={(v) => {
             setWind(v);
+            invalidate();
+          }}
+        />
+        <Slider
+          label="zoom"
+          value={zoom}
+          display={`${zoomFactor().toFixed(1)}×`}
+          onInput={(v) => {
+            setZoom(v);
             invalidate();
           }}
         />
