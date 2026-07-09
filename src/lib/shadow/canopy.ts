@@ -246,8 +246,17 @@ function gaussianPair(u: number, v: number): [number, number] {
  * botanical so the strokes survive the exaggerated penumbra blur as the
  * soft dark streaks real limb shadows leave in the bright gaps.
  * Fixed count, seed-only randoms — independent of the leaf count.
+ *
+ * `scale` thins the strokes toward zero: with sparse foliage there is no
+ * canopy for branch shadows to belong to, and bare strokes read as a
+ * geometric asterisk rather than a tree.
  */
-export function generateLimbStrokes(seed: number, shape: number): Leaf[] {
+export function generateLimbStrokes(
+  seed: number,
+  shape: number,
+  scale = 1,
+): Leaf[] {
+  if (scale <= 0) return [];
   const params = shapeParams(shape);
   const limbs = generateLimbs(seed, params);
   const half = 0.5 - UV_MARGIN;
@@ -282,7 +291,7 @@ export function generateLimbStrokes(seed: number, shape: number): Leaf[] {
       // thick → thin along the limb; weeping trees hide their limbs under
       // the hanging foliage, so strokes fade out with droop
       const semiMinor =
-        (0.013 - 0.008 * s) * limb.girth * (1 - 0.9 * params.droop);
+        (0.013 - 0.008 * s) * limb.girth * (1 - 0.9 * params.droop) * scale;
       const semiMajor = Math.max(segLen * 0.7, semiMinor);
       strokes.push({
         x,
@@ -301,7 +310,7 @@ export function generateLimbStrokes(seed: number, shape: number): Leaf[] {
     strokes.push({
       x: 0.5 + (rng() - 0.5) * 0.01,
       y: 0.5 + (rng() - 0.5) * 0.01,
-      size: 0.025,
+      size: 0.025 * Math.sqrt(scale),
       rot: rng() * Math.PI,
       layer: 0,
       aspect: 0.8,
