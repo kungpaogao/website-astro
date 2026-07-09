@@ -54,6 +54,7 @@ const ShadowSim: Component = () => {
   const [wind, setWind] = createSignal(reducedMotion ? 0 : 0.5);
   const [zoom, setZoom] = createSignal(0.25); // 0.5×–2.5×, 0.25 → 1×
   const [mood, setMood] = createSignal<Mood>("warm");
+  const [panelOpen, setPanelOpen] = createSignal(true);
 
   const zoomFactor = () => 0.5 + 2 * zoom();
   const [failed, setFailed] = createSignal(false);
@@ -364,7 +365,29 @@ const ShadowSim: Component = () => {
           aria-label="Animated simulation of dappled tree shadows on the ground"
         />
       </Show>
+      <Show
+        when={panelOpen()}
+        fallback={
+          <button
+            type="button"
+            aria-expanded="false"
+            class="absolute bottom-3 left-3 rounded-md bg-stone-100/85 px-3 py-1.5 font-mono text-sm text-stone-700 shadow-md backdrop-blur hover:bg-stone-200/85 sm:bottom-4 sm:left-4"
+            onClick={() => setPanelOpen(true)}
+          >
+            controls
+          </button>
+        }
+      >
       <div class="absolute inset-x-3 bottom-3 flex flex-col gap-2 rounded-md bg-stone-100/85 p-4 font-mono text-sm shadow-md backdrop-blur sm:inset-x-auto sm:bottom-4 sm:left-4 sm:w-80">
+        <button
+          type="button"
+          aria-label="hide controls"
+          aria-expanded="true"
+          class="absolute top-1.5 right-2.5 px-1 text-stone-400 hover:text-stone-700"
+          onClick={() => setPanelOpen(false)}
+        >
+          ×
+        </button>
         <Slider
           label="height"
           value={height}
@@ -445,6 +468,7 @@ const ShadowSim: Component = () => {
           </div>
         </div>
       </div>
+      </Show>
     </div>
   );
 };
