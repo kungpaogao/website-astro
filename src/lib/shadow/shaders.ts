@@ -56,10 +56,10 @@ uniform vec3 u_lightColor;
 uniform vec3 u_shadowColor;
 
 /**
- * Wind displacement as a spatial field, not a rigid per-layer shift:
- * gusts are waves traveling across the canopy (phase depends on position)
- * and a finer flutter rides on top, so nearby foliage moves together
- * while distant parts lag — gaps genuinely open and close.
+ * Large-scale gust displacement as a spatial field: waves traveling
+ * across the canopy with position-dependent phase, so foliage regions
+ * lead and lag each other. Leaf-level flutter is NOT done here — each
+ * leaf moves individually in the canopy texture raster.
  */
 vec2 windOffset(float t, vec2 world, float heightFrac) {
   float ph = dot(world, vec2(0.9, 0.6));   // gust wavefront, ~1 rad/m
@@ -67,13 +67,9 @@ vec2 windOffset(float t, vec2 world, float heightFrac) {
     sin(1.1 * t - 0.7 * ph) + 0.6 * sin(1.9 * t - 0.4 * ph + 1.3),
     0.7 * sin(0.9 * t - 0.55 * ph + 0.8) + 0.4 * sin(1.6 * t - 0.3 * ph + 2.1)
   );
-  vec2 flutter = 0.3 * vec2(
-    sin(5.3 * t - 2.2 * ph + world.y * 1.6),
-    sin(4.4 * t - 1.8 * ph + world.x * 1.3)
-  );
   float envelope = 0.6 + 0.4 * sin(0.31 * t - 0.25 * ph);
   float sway = pow(heightFrac, 1.5);
-  return u_windAmp * sway * envelope * (gust + flutter);
+  return u_windAmp * sway * envelope * gust;
 }
 
 float hash(vec2 p) {

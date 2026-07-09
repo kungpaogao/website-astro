@@ -13,6 +13,10 @@ export interface Leaf {
   layer: 0 | 1 | 2;
   /** minor/major axis ratio; defaults to the leaf shape (0.45) */
   aspect?: number;
+  /** individual sway phase (radians) — 0 for rigid sprites like strokes */
+  swayPhase?: number;
+  /** individual sway frequency (rad/s) */
+  swayFreq?: number;
 }
 
 /**
@@ -361,7 +365,15 @@ export function generateLeaves(
       Math.max(0, Math.floor(3 * (y + (layerJitter - 0.5) * 0.15))),
     ) as 0 | 1 | 2;
 
-    leaves[i] = { x, y: z, size, rot, layer };
+    leaves[i] = {
+      x,
+      y: z,
+      size,
+      rot,
+      layer,
+      swayPhase: rng() * Math.PI * 2,
+      swayFreq: 2 + 4 * rng(),
+    };
   }
 
   return leaves;

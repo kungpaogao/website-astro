@@ -92,9 +92,13 @@ const ShadowSim: Component = () => {
     let texture: WebGLTexture | null = null;
     let contextLost = false;
     let canopyDirty = true;
-    let cachedLeaves: Leaf[] = [];
+    let cachedSprites: Leaf[] = [];
     let cachedLeafKey = "";
     let rafId = 0;
+    let frameIndex = 0;
+    // leaf animation re-rasters the texture; weaker devices drop cadence
+    let rasterEvery = 1;
+    let lastSwayed = false;
 
     function compile(type: number, src: string): WebGLShader {
       const shader = gl!.createShader(type)!;
@@ -161,19 +165,30 @@ const ShadowSim: Component = () => {
       cachedLeafKey = ""; // force redraw of the texture canvas upload
     }
 
-    function regenCanopyIfDirty() {
-      if (!canopyDirty) return;
-      canopyDirty = false;
+    function updateCanopyTexture(timeS: number, uvPerMeter: number) {
       const count = sliderToLeafCount(leaves());
       const key = `${count}:${shape().toFixed(3)}`;
       if (key !== cachedLeafKey) {
         cachedLeafKey = key;
-        cachedLeaves = generateLeaves(SEED, count, shape());
-        drawCanopy(
-          texCtx,
-          cachedLeaves.concat(generateLimbStrokes(SEED, shape())),
+        cachedSprites = generateLeaves(SEED, count, shape()).concat(
+          generateLimbStrokes(SEED, shape()),
         );
+        canopyDirty = true;
       }
+
+      const windAmp = 0.5 * wind();
+      const swaying = windAmp > 0;
+      const animTick = swaying && frameIndex % rasterEvery === 0;
+      if (!canopyDirty && !animTick && lastSwayed === swaying) return;
+
+      const t0 = performance.now();
+      drawCanopy(
+        texCtx,
+        cachedSprites,
+        swaying
+          ? { time: timeS, ampPx: 0.3 * windAmp * uvPerMeter * TEX_SIZE }
+          : undefined,
+      );
       gl!.bindTexture(gl!.TEXTURE_2D, texture);
       gl!.texImage2D(
         gl!.TEXTURE_2D,
@@ -183,16 +198,24 @@ const ShadowSim: Component = () => {
         gl!.UNSIGNED_BYTE,
         texCanvas,
       );
+      canopyDirty = false;
+      lastSwayed = swaying;
+      // adapt: if rasterizing is slow on this device, animate leaves at a
+      // lower cadence while the shader's gust keeps full-rate motion
+      const ms = performance.now() - t0;
+      if (ms > 7 && rasterEvery < 3) rasterEvery++;
     }
 
     function render(timeS: number) {
       if (contextLost || !program) return;
-      regenCanopyIfDirty();
+      frameIndex++;
 
       const treeHeight = 3 + 27 * height();
       const [hLow, hMid, hHigh] = layerHeights(treeHeight);
       const elev = elevSliderToRad(sun());
       const canopyHalfW = (canopyAspect(shape()) * 0.6 * treeHeight) / 2;
+      const uvPerMeter = (0.5 - UV_MARGIN) / canopyHalfW;
+      updateCanopyTexture(timeS, uvPerMeter);
       const moodColors = MOODS[mood()];
       const light = moodColors.light ?? sunLightColor(elev);
 
@@ -242,7 +265,7 @@ const ShadowSim: Component = () => {
         Math.sin(SUN_AZIMUTH),
         Math.cos(SUN_AZIMUTH),
       );
-      gl!.uniform1f(uniforms.u_uvPerMeter, (0.5 - UV_MARGIN) / canopyHalfW);
+      gl!.uniform1f(uniforms.u_uvPerMeter, uvPerMeter);
       gl!.uniform1f(uniforms.u_windAmp, 0.5 * wind());
       gl!.uniform3f(uniforms.u_lightColor, ...light);
       gl!.uniform3f(uniforms.u_shadowColor, ...moodColors.shadow);
