@@ -40,6 +40,9 @@ const CLUMP_SIGMA = 0.05;
 const CLUMP_SIGMA_Y = 0.06;
 const CLUMP_SALT = 0x5f356495;
 const LIMB_SALT = 0x1b873593;
+const TWIG_SALT = 0x27d4eb2f;
+/** outlying twig clusters per clump */
+const TWIGS_PER_CLUMP = 5;
 /** ellipse segments per limb stroke, plus trunk segments */
 const STROKE_SEGMENTS = 20;
 const TRUNK_SEGMENTS = 6;
@@ -333,26 +336,46 @@ export function generateLeaves(
 
   for (let i = 0; i < count; i++) {
     const rng = mulberry32((seed ^ Math.imul(i + 1, 0x9e3779b9)) >>> 0);
-    const clump = clumps[Math.min(NUM_CLUMPS - 1, Math.floor(rng() * NUM_CLUMPS))];
+    const clumpIdx = Math.min(NUM_CLUMPS - 1, Math.floor(rng() * NUM_CLUMPS));
+    const clump = clumps[clumpIdx];
     const [gx, gz] = gaussianPair(rng(), rng());
-    // heavy-tailed size mix: mostly small leaves, occasional big foliage
-    // tufts — real dapple pools are clusters of blobs at many scales
     const u4 = rng();
-    const size = (3.5 + 8 * u4 * u4 * u4) / 512;
     const rot = rng() * Math.PI * 2;
     const layerJitter = rng();
     const [gy] = gaussianPair(rng(), rng());
-    // two-scale clustering: most leaves pack into a tight core, the rest
-    // form a sparse halo, so gaps cluster into big pools with satellites
-    const sigma = rng() < 0.65 ? 0.4 * sigmaUV : 1.3 * sigmaUV;
+    const isCore = rng() < 0.65;
+    const uTwig = rng();
+
+    let cx = clump.x;
+    let cz = clump.z;
+    let size: number;
+    if (isCore) {
+      // heavy-tailed size mix in the dense cores: mostly small leaves,
+      // occasional big foliage tufts — dapple pools are multi-scale
+      size = (3.5 + 8 * u4 * u4 * u4) / 512;
+      cx += gx * 0.4 * sigmaUV;
+      cz += gz * 0.4 * sigmaUV;
+    } else {
+      // outlying leaves gather on twig anchors instead of scattering as
+      // lone dots — canopy edges read as leaf clusters, not specks
+      const twigIdx = Math.min(
+        TWIGS_PER_CLUMP - 1,
+        Math.floor(uTwig * TWIGS_PER_CLUMP),
+      );
+      const twigRng = mulberry32(
+        (seed ^
+          TWIG_SALT ^
+          Math.imul(clumpIdx * TWIGS_PER_CLUMP + twigIdx + 1, 0x9e3779b9)) >>>
+          0,
+      );
+      const [tgx, tgz] = gaussianPair(twigRng(), twigRng());
+      size = (3 + 2.5 * u4 * u4) / 512; // edge leaves stay small
+      cx += tgx * 1.2 * sigmaUV + gx * 0.22 * sigmaUV;
+      cz += tgz * 1.2 * sigmaUV + gz * 0.22 * sigmaUV;
+    }
 
     let y = Math.min(1, Math.max(0, clump.y + gy * CLUMP_SIGMA_Y));
-    const [x, z] = softClampRadial(
-      clump.x + gx * sigma,
-      clump.z + gz * sigma,
-      shape,
-      y,
-    );
+    const [x, z] = softClampRadial(cx, cz, shape, y);
 
     // residual per-leaf droop (limb-path droop carries most of the weeping)
     const maxR = Math.max(canopyProfile(shape, y) * half, 1e-4);
