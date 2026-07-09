@@ -8,7 +8,6 @@ import {
 import {
   canopyAspect,
   generateLeaves,
-  generateLimbStrokes,
   sliderToLeafCount,
   UV_MARGIN,
   type Leaf,
@@ -167,14 +166,10 @@ const ShadowSim: Component = () => {
 
     function updateCanopyTexture(timeS: number, uvPerMeter: number) {
       const count = sliderToLeafCount(leaves());
-      // branch shadows only exist where there's foliage to shade them in
-      const strokeScale = Math.min(1, Math.max(0, (count - 800) / 3200));
       const key = `${count}:${shape().toFixed(3)}`;
       if (key !== cachedLeafKey) {
         cachedLeafKey = key;
-        cachedSprites = generateLeaves(SEED, count, shape()).concat(
-          generateLimbStrokes(SEED, shape(), strokeScale),
-        );
+        cachedSprites = generateLeaves(SEED, count, shape());
         canopyDirty = true;
       }
 

@@ -3,7 +3,6 @@ import {
   canopyAspect,
   canopyProfile,
   generateLeaves,
-  generateLimbStrokes,
   sliderToLeafCount,
   UV_MARGIN,
 } from "../shadow/canopy";
@@ -136,25 +135,5 @@ describe("generateLeaves", () => {
     const min = Math.min(...bins);
     const max = Math.max(...bins);
     expect(min / max).toBeLessThan(0.5); // wedge gaps between limb lobes
-  });
-});
-
-describe("generateLimbStrokes", () => {
-  it("is deterministic with a fixed sprite count", () => {
-    const a = generateLimbStrokes(1, 0.5);
-    const b = generateLimbStrokes(1, 0.5);
-    expect(a).toEqual(b);
-    expect(a.length).toBe(6 * 20 + 6); // limbs × segments + trunk
-  });
-
-  it("stays inside the UV margin and moves continuously with shape", () => {
-    const a = generateLimbStrokes(1, 0.5);
-    const b = generateLimbStrokes(1, 0.51);
-    for (let i = 0; i < a.length; i++) {
-      const r = Math.hypot(a[i].x - 0.5, a[i].y - 0.5);
-      expect(r).toBeLessThanOrEqual(0.5 - UV_MARGIN + 1e-9);
-      const d = Math.hypot(a[i].x - b[i].x, a[i].y - b[i].y);
-      expect(d).toBeLessThan(0.05);
-    }
   });
 });

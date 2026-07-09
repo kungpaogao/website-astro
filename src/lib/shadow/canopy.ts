@@ -43,9 +43,6 @@ const LIMB_SALT = 0x1b873593;
 const TWIG_SALT = 0x27d4eb2f;
 /** outlying twig clusters per clump */
 const TWIGS_PER_CLUMP = 5;
-/** ellipse segments per limb stroke, plus trunk segments */
-const STROKE_SEGMENTS = 20;
-const TRUNK_SEGMENTS = 6;
 
 interface ShapeParams {
   /** canopy width / canopy height */
@@ -125,8 +122,6 @@ interface Limb {
   /** normalized canopy heights of limb base and tip */
   yBase: number;
   yTip: number;
-  /** relative thickness of this limb's shadow stroke */
-  girth: number;
 }
 
 /**
@@ -144,7 +139,6 @@ function generateLimbs(seed: number, params: ShapeParams): Limb[] {
     const uAz = rng();
     const uCurl = rng();
     const uReach = rng();
-    const uGirth = rng();
     limbs[l] = {
       azimuth: ((l + 0.5 + 0.85 * (uAz - 0.5)) * 2 * Math.PI) / NUM_LIMBS,
       curl: 0.5 * (uCurl - 0.5),
@@ -153,7 +147,6 @@ function generateLimbs(seed: number, params: ShapeParams): Limb[] {
         (0.75 + 0.35 * uReach),
       yBase: params.centroid - (0.25 + 0.3 * v),
       yTip: params.centroid + (0.12 + 0.28 * v),
-      girth: 0.75 + 0.5 * uGirth,
     };
   }
   return limbs;
@@ -238,86 +231,6 @@ function generateClumps(seed: number, shape: number): Clump[] {
 function gaussianPair(u: number, v: number): [number, number] {
   const m = Math.sqrt(-2 * Math.log(1 - u));
   return [m * Math.cos(2 * Math.PI * v), m * Math.sin(2 * Math.PI * v)];
-}
-
-/**
- * Shadow strokes for the trunk and primary limbs: chains of overlapping
- * thin ellipses along each limb's plan path. Widths are wider than
- * botanical so the strokes survive the exaggerated penumbra blur as the
- * soft dark streaks real limb shadows leave in the bright gaps.
- * Fixed count, seed-only randoms — independent of the leaf count.
- *
- * `scale` thins the strokes toward zero: with sparse foliage there is no
- * canopy for branch shadows to belong to, and bare strokes read as a
- * geometric asterisk rather than a tree.
- */
-export function generateLimbStrokes(
-  seed: number,
-  shape: number,
-  scale = 1,
-): Leaf[] {
-  if (scale <= 0) return [];
-  const params = shapeParams(shape);
-  const limbs = generateLimbs(seed, params);
-  const half = 0.5 - UV_MARGIN;
-  const strokes: Leaf[] = [];
-
-  for (let l = 0; l < limbs.length; l++) {
-    const limb = limbs[l];
-    const segLen = (limb.reach * half) / STROKE_SEGMENTS;
-    for (let k = 0; k < STROKE_SEGMENTS; k++) {
-      const s = (k + 0.5) / STROKE_SEGMENTS;
-      const segRng = mulberry32(
-        (seed ^ Math.imul(l * STROKE_SEGMENTS + k + 1, 0x85ebca6b)) >>> 0,
-      );
-      const wobble = (segRng() - 0.5) * 0.008;
-      const theta = limb.azimuth + limb.curl * s;
-      const y = Math.min(
-        1,
-        Math.max(
-          0,
-          limb.yBase +
-            (limb.yTip - limb.yBase) * s -
-            0.3 * params.droop * s * s,
-        ),
-      );
-      const r = limb.reach * s * half;
-      const [x, z] = softClampRadial(
-        0.5 + r * Math.cos(theta) - wobble * Math.sin(theta),
-        0.5 + r * Math.sin(theta) + wobble * Math.cos(theta),
-        shape,
-        y,
-      );
-      // thick → thin along the limb; weeping trees hide their limbs under
-      // the hanging foliage, so strokes fade out with droop
-      const semiMinor =
-        (0.013 - 0.008 * s) * limb.girth * (1 - 0.9 * params.droop) * scale;
-      const semiMajor = Math.max(segLen * 0.7, semiMinor);
-      strokes.push({
-        x,
-        y: z,
-        size: semiMajor,
-        rot: theta, // local limb direction
-        layer: Math.min(2, Math.max(0, Math.floor(3 * y))) as 0 | 1 | 2,
-        aspect: semiMinor / semiMajor,
-      });
-    }
-  }
-
-  // trunk: a few stacked ellipses at the center, low layer
-  for (let k = 0; k < TRUNK_SEGMENTS; k++) {
-    const rng = mulberry32((seed ^ Math.imul(k + 101, 0x9e3779b9)) >>> 0);
-    strokes.push({
-      x: 0.5 + (rng() - 0.5) * 0.01,
-      y: 0.5 + (rng() - 0.5) * 0.01,
-      size: 0.025 * Math.sqrt(scale),
-      rot: rng() * Math.PI,
-      layer: 0,
-      aspect: 0.8,
-    });
-  }
-
-  return strokes;
 }
 
 /**
