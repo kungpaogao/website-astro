@@ -13,10 +13,12 @@ export interface Leaf {
   layer: 0 | 1 | 2;
   /** minor/major axis ratio; defaults to the leaf shape (0.45) */
   aspect?: number;
-  /** individual sway phase (radians) — 0 for rigid sprites like strokes */
+  /** individual sway phase (radians) */
   swayPhase?: number;
   /** individual sway frequency (rad/s) */
   swayFreq?: number;
+  /** shared phase of this leaf's clump — neighbors sway together */
+  groupPhase?: number;
 }
 
 /**
@@ -318,6 +320,7 @@ export function generateLeaves(
       layer,
       swayPhase: rng() * Math.PI * 2,
       swayFreq: 2 + 4 * rng(),
+      groupPhase: (clumpIdx * 2.39996323) % (Math.PI * 2),
     };
   }
 

@@ -39,6 +39,8 @@ export function drawCanopy(
   for (let layer = 0; layer < 3; layer++) {
     // higher foliage sways more
     const layerAmp = amp * (0.55 + 0.45 * (layer / 2));
+    const groupAmp = 0.75 * layerAmp;
+    const leafAmp = 0.3 * layerAmp;
     ctx.fillStyle = LAYER_COLORS[layer];
     ctx.beginPath();
     for (const leaf of leaves) {
@@ -48,8 +50,15 @@ export function drawCanopy(
       let rot = leaf.rot;
       if (amp > 0 && leaf.swayFreq) {
         const ph = leaf.swayPhase ?? 0;
-        cx += layerAmp * Math.sin(leaf.swayFreq * t + ph);
-        cy += 0.8 * layerAmp * Math.sin(0.83 * leaf.swayFreq * t + 1.7 * ph);
+        const gp = leaf.groupPhase ?? 0;
+        // branch-scale sway: the whole clump translates as a rigid unit,
+        // with a slow gust envelope
+        const env = 0.65 + 0.35 * Math.sin(0.31 * t + gp * 0.7);
+        cx += groupAmp * env * (Math.sin(1.0 * t + gp) + 0.5 * Math.sin(1.8 * t + 2.3 * gp));
+        cy += groupAmp * env * 0.8 * (Math.sin(0.85 * t + 1.6 * gp) + 0.5 * Math.sin(1.5 * t + 0.9 * gp));
+        // individual leaf flutter on top, small and quick
+        cx += leafAmp * Math.sin(leaf.swayFreq * t + ph);
+        cy += 0.8 * leafAmp * Math.sin(0.83 * leaf.swayFreq * t + 1.7 * ph);
         rot += 0.4 * Math.sin(0.9 * leaf.swayFreq * t + 2.1 * ph);
       }
       const a = leaf.size * size;

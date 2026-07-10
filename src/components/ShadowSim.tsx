@@ -135,7 +135,6 @@ const ShadowSim: Component = () => {
       for (const name of [
         "u_resolution",
         "u_metersPerPixel",
-        "u_time",
         "u_canopy",
         "u_layerHeights",
         "u_sinElev",
@@ -145,7 +144,6 @@ const ShadowSim: Component = () => {
         "u_spanPar",
         "u_azDir",
         "u_uvPerMeter",
-        "u_windAmp",
         "u_lightColor",
         "u_shadowColor",
       ]) {
@@ -183,7 +181,7 @@ const ShadowSim: Component = () => {
         texCtx,
         cachedSprites,
         swaying
-          ? { time: timeS, ampPx: 0.3 * windAmp * uvPerMeter * TEX_SIZE }
+          ? { time: timeS, ampPx: windAmp * uvPerMeter * TEX_SIZE }
           : undefined,
       );
       gl!.bindTexture(gl!.TEXTURE_2D, texture);
@@ -229,7 +227,6 @@ const ShadowSim: Component = () => {
         uniforms.u_metersPerPixel,
         windowM / Math.min(canvas.width, canvas.height),
       );
-      gl!.uniform1f(uniforms.u_time, timeS);
       gl!.uniform3f(uniforms.u_layerHeights, hLow, hMid, hHigh);
       gl!.uniform1f(uniforms.u_sinElev, Math.sin(elev));
       gl!.uniform1f(uniforms.u_cosElev, Math.cos(elev));
@@ -263,7 +260,6 @@ const ShadowSim: Component = () => {
         Math.cos(SUN_AZIMUTH),
       );
       gl!.uniform1f(uniforms.u_uvPerMeter, uvPerMeter);
-      gl!.uniform1f(uniforms.u_windAmp, 0.5 * wind());
       gl!.uniform3f(uniforms.u_lightColor, ...light);
       gl!.uniform3f(uniforms.u_shadowColor, ...moodColors.shadow);
 

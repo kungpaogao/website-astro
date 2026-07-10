@@ -41,7 +41,6 @@ const float GOLDEN = 2.39996323;
 
 uniform vec2 u_resolution;      // device pixels
 uniform float u_metersPerPixel;
-uniform float u_time;           // seconds
 uniform sampler2D u_canopy;     // R/G/B = low/mid/high layer opacity
 uniform vec3 u_layerHeights;    // meters
 uniform float u_sinElev;
@@ -51,26 +50,12 @@ uniform float u_penumbraBoost;  // height-driven softness (tall = softer)
 uniform float u_spanPar;        // plan-space smear of a layer's own height span
 uniform vec2 u_azDir;           // sun azimuth unit vector (ground plane)
 uniform float u_uvPerMeter;     // canopy texture UV units per world meter
-uniform float u_windAmp;        // meters of sway at the canopy top
 uniform vec3 u_lightColor;
 uniform vec3 u_shadowColor;
 
-/**
- * Large-scale gust displacement as a spatial field: waves traveling
- * across the canopy with position-dependent phase, so foliage regions
- * lead and lag each other. Leaf-level flutter is NOT done here — each
- * leaf moves individually in the canopy texture raster.
- */
-vec2 windOffset(float t, vec2 world, float heightFrac) {
-  float ph = dot(world, vec2(0.9, 0.6));   // gust wavefront, ~1 rad/m
-  vec2 gust = vec2(
-    sin(1.1 * t - 0.7 * ph) + 0.6 * sin(1.9 * t - 0.4 * ph + 1.3),
-    0.7 * sin(0.9 * t - 0.55 * ph + 0.8) + 0.4 * sin(1.6 * t - 0.3 * ph + 2.1)
-  );
-  float envelope = 0.6 + 0.4 * sin(0.31 * t - 0.25 * ph);
-  float sway = pow(heightFrac, 1.5);
-  return u_windAmp * sway * envelope * gust;
-}
+// NOTE: all wind motion lives in the canopy texture raster (rigid
+// per-leaf and per-clump sway). The shader deliberately does NOT warp
+// the sampled pattern — continuous warping reads as water, not leaves.
 
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
@@ -106,19 +91,12 @@ void main() {
     u_layerHeights * (TAN_SUN * u_penumbraBoost / max(u_sinElev, 0.15)),
     vec3(u_rhoMax)
   );
-  float hTop = u_layerHeights.z;
   float par0 = (u_layerHeights.x - u_layerHeights.y) * u_cosElev;
   float par2 = (u_layerHeights.z - u_layerHeights.y) * u_cosElev;
 
-  // wind: per layer (plan-space meters), phase-shifted so gaps open and
-  // close between layers
-  vec2 wind0 = windOffset(u_time, world, u_layerHeights.x / hTop);
-  vec2 wind1 = windOffset(u_time + 1.7, world, u_layerHeights.y / hTop);
-  vec2 wind2 = windOffset(u_time + 3.1, world, 1.0);
-
-  vec2 base0 = vec2(wPar + par0 + wind0.x, wPerp + wind0.y);
-  vec2 base1 = vec2(wPar + wind1.x, wPerp + wind1.y);
-  vec2 base2 = vec2(wPar + par2 + wind2.x, wPerp + wind2.y);
+  vec2 base0 = vec2(wPar + par0, wPerp);
+  vec2 base1 = vec2(wPar, wPerp);
+  vec2 base2 = vec2(wPar + par2, wPerp);
 
   // interleaved gradient noise: per-pixel rotation of the Vogel disk
   float ign = fract(52.9829189 *
