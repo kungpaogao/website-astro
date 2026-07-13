@@ -39,7 +39,7 @@ describe("leaves", () => {
     for (const leaf of few) {
       const arr = bySite.get(leaf.site)!;
       const match = arr.find(
-        (l) => l.t === leaf.t && l.rot === leaf.rot && l.size === leaf.size,
+        (l) => l.t === leaf.t && l.fan === leaf.fan && l.size === leaf.size,
       );
       expect(match).toBeTruthy();
     }

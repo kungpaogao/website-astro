@@ -13,14 +13,14 @@ const LEAF_SALT = 0x85ebca6b;
 export interface Leaf2 {
   /** node index of the anchoring twig/branchlet */
   site: number;
-  /** station along the twig, 0..1 (clusters toward the tip) */
+  /** station along the twig, 0..1 — the leaf's stem sits ON the twig */
   t: number;
-  /** local offset in the twig frame (UV units): along, across */
-  offAlong: number;
-  offAcross: number;
-  /** ellipse semi-major, UV units */
+  /** which side of the twig the blade fans to (±1) */
+  side: 1 | -1;
+  /** blade angle away from the twig direction (radians, unsigned) */
+  fan: number;
+  /** blade length, UV units */
   size: number;
-  rot: number;
   /** normalized height */
   h: number;
   layer: 0 | 1 | 2;
@@ -73,13 +73,15 @@ export function attachLeaves(
           0,
       );
       const u1 = rng();
-      const [g1, g2] = gaussianPair(rng(), rng());
+      const [, g2] = gaussianPair(rng(), rng());
       const u4 = rng();
       const u5 = rng();
       const u6 = rng();
       const u7 = rng();
 
-      const t = 0.4 + 0.6 * u1;
+      // stem sits on the twig; blades fan off alternating sides like a
+      // real branchlet
+      const t = 0.25 + 0.75 * u1;
       const h = Math.min(
         1,
         Math.max(0, node.baseH + node.rise * t + g2 * 0.04),
@@ -89,10 +91,9 @@ export function attachLeaves(
       leaves.push({
         site: s,
         t,
-        offAlong: g1 * 0.5 * node.length,
-        offAcross: g2 * 0.55 * node.length,
-        size: (3.5 + 8 * u4 * u4 * u4) / 512,
-        rot: u5 * Math.PI * 2,
+        side: u5 < 0.5 ? 1 : -1,
+        fan: 0.35 + 0.85 * u5 + 0.3 * (u6 - 0.5),
+        size: (6 + 8 * u4 * u4 * u4) / 512,
         h,
         layer: Math.min(
           2,

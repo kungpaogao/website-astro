@@ -47,7 +47,7 @@ const Shadow2Sim: Component = () => {
   const [tab, setTab] = createSignal<Tab>("canopy");
   // step 1
   const [branches, setBranches] = createSignal(0.7);
-  const [density, setDensity] = createSignal(0.65);
+  const [density, setDensity] = createSignal(0.85);
   const [wind, setWind] = createSignal(reducedMotion ? 0 : 0.5);
   const [seedIdx, setSeedIdx] = createSignal(0);
   // step 2

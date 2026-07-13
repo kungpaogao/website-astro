@@ -28,6 +28,54 @@ const LAYER_COLORS_OCC = (v: number) => [
   `rgb(0,0,${v})`,
 ];
 
+/** sprite canvas size; the leaf blade spans the full width */
+const SPRITE_W = 96;
+const SPRITE_H = 48;
+
+const spriteCache = new Map<string, HTMLCanvasElement>();
+
+/**
+ * Oak-leaf silhouette sprite: short stem at the left edge, lobed blade
+ * pointing +x. Anchor = (0, SPRITE_H/2), the stem base, so a leaf drawn
+ * at a twig point visually grows from the branch.
+ */
+function leafSprite(color: string): HTMLCanvasElement {
+  const cached = spriteCache.get(color);
+  if (cached) return cached;
+  const c = document.createElement("canvas");
+  c.width = SPRITE_W;
+  c.height = SPRITE_H;
+  const ctx = c.getContext("2d")!;
+  ctx.fillStyle = color;
+  const mid = SPRITE_H / 2;
+  // stem
+  ctx.fillRect(0, mid - 1.5, 16, 3);
+  // lobed blade: alternating lobe peaks and sinuses, mirrored
+  ctx.beginPath();
+  ctx.moveTo(14, mid);
+  const top: Array<[number, number, number, number]> = [
+    // [controlX, controlY, endX, endY] — lobe out, then sinus in
+    [20, mid - 16, 30, mid - 13],
+    [36, mid - 10, 38, mid - 8],
+    [42, mid - 22, 54, mid - 16],
+    [60, mid - 12, 62, mid - 9],
+    [68, mid - 20, 78, mid - 12],
+    [86, mid - 8, 95, mid],
+  ];
+  for (const [cx, cy, ex, ey] of top) ctx.quadraticCurveTo(cx, cy, ex, ey);
+  // mirrored return path from the tip back to the stem
+  for (let i = top.length - 1; i >= 0; i--) {
+    const [cx, cy] = top[i];
+    const endX = i > 0 ? top[i - 1][2] : 14;
+    const endY = i > 0 ? 2 * mid - top[i - 1][3] : mid;
+    ctx.quadraticCurveTo(cx, 2 * mid - cy, endX, endY);
+  }
+  ctx.closePath();
+  ctx.fill();
+  spriteCache.set(color, c);
+  return c;
+}
+
 /** canopy height band occupied by the tree (see leaves.ts) */
 function layerOf(h: number): 0 | 1 | 2 {
   const hNorm = Math.min(1, Math.max(0, (h - 0.35) / 0.65));
@@ -105,37 +153,35 @@ export function drawScene(
     ctx.stroke();
   }
 
-  // --- leaves: batched ellipse fills per layer -------------------------
-  const flutterAmp = params.wind * 0.004 * size; // UV 0.004 ≈ 2 px at 512
+  // --- leaves: oak-leaf sprites, stems anchored on their twig ----------
+  const flutterAmp = params.wind * 0.004; // UV; ≈ 2 px at 512
   for (let layer = 0; layer < 3; layer++) {
-    ctx.fillStyle = leafColors[layer];
-    if (paint === "canopy") ctx.globalAlpha = 0.9;
-    ctx.beginPath();
+    const sprite = leafSprite(leafColors[layer]);
+    if (paint === "canopy") ctx.globalAlpha = 0.92;
     for (const leaf of leaves) {
       if (leaf.layer !== layer) continue;
       const node = sk[leaf.site];
       const vis = nodeVisibility(node, params.branches);
       if (vis <= 0) continue;
       const g = leaf.site;
-      const len = node.length * vis;
-      const dx = pose.cos[g];
-      const dy = pose.sin[g];
-      let x = pose.baseX[g] + dx * (leaf.t * len + leaf.offAlong) - dy * leaf.offAcross;
-      let z = pose.baseZ[g] + dy * (leaf.t * len + leaf.offAlong) + dx * leaf.offAcross;
-      let rot = leaf.rot + pose.angle[g];
+      // stem anchor: a point ON the twig
+      let x = pose.baseX[g] + pose.cos[g] * (leaf.t * node.length * vis);
+      let z = pose.baseZ[g] + pose.sin[g] * (leaf.t * node.length * vis);
+      // blade fans off the twig's side
+      let rot = pose.angle[g] + leaf.side * leaf.fan;
       if (flutterAmp > 0) {
-        x += (flutterAmp / size) * Math.sin(leaf.flutterFreq * params.time + leaf.flutterPhase);
-        z += (0.8 * flutterAmp / size) * Math.sin(0.83 * leaf.flutterFreq * params.time + 1.7 * leaf.flutterPhase);
-        rot += 0.35 * Math.sin(0.9 * leaf.flutterFreq * params.time + 2.1 * leaf.flutterPhase) * params.wind;
+        x += flutterAmp * Math.sin(leaf.flutterFreq * params.time + leaf.flutterPhase);
+        z += 0.8 * flutterAmp * Math.sin(0.83 * leaf.flutterFreq * params.time + 1.7 * leaf.flutterPhase);
+        rot += 0.3 * Math.sin(0.9 * leaf.flutterFreq * params.time + 2.1 * leaf.flutterPhase) * params.wind;
       }
-      const a = leaf.size * vis * size;
-      const b = a * 0.45;
-      const cx = ox + x * size;
-      const cy = oy + z * size;
-      ctx.moveTo(cx + a * Math.cos(rot), cy + a * Math.sin(rot));
-      ctx.ellipse(cx, cy, a, b, rot, 0, Math.PI * 2);
+      const s = (leaf.size * vis * size) / SPRITE_W;
+      if (s <= 0) continue;
+      const cos = Math.cos(rot) * s;
+      const sin = Math.sin(rot) * s;
+      ctx.setTransform(cos, sin, -sin, cos, ox + x * size, oy + z * size);
+      ctx.drawImage(sprite, 0, -SPRITE_H / 2);
     }
-    ctx.fill();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     if (paint === "canopy") ctx.globalAlpha = 1;
   }
 }
