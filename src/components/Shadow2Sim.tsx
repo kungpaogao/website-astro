@@ -29,12 +29,13 @@ import { mulberry32 } from "../lib/shadow/prng";
 
 const TEX_SIZE = 512;
 const SUN_AZIMUTH = (35 * Math.PI) / 180;
-type Tab = "canopy" | "shadow" | "light";
+type Tab = "canopy" | "shadow" | "light" | "all";
 
 const TABS: Array<{ id: Tab; label: string }> = [
   { id: "canopy", label: "1 canopy" },
   { id: "shadow", label: "2 shadow" },
   { id: "light", label: "3 light" },
+  { id: "all", label: "4 all" },
 ];
 
 const SHAPES: ApertureShape[] = ["disk", "ellipse", "crescent"];
@@ -625,6 +626,111 @@ const Shadow2Sim: Component = () => {
                 invalidate();
               }}
             />
+          </Show>
+
+          <Show when={tab() === "all"}>
+            <Slider
+              label="branches"
+              value={branches}
+              display={`${visibleCount(skeleton(), branches())}`}
+              onInput={(v) => {
+                setBranches(v);
+                invalidate();
+              }}
+            />
+            <Slider
+              label="leaves"
+              value={density}
+              display={`${perSite()}/twig`}
+              onInput={(v) => {
+                setDensity(v);
+                invalidate();
+              }}
+            />
+            <Slider
+              label="wind"
+              value={wind}
+              display={`${Math.round(100 * wind())}%`}
+              onInput={(v) => {
+                setWind(v);
+                invalidate();
+              }}
+            />
+            <Slider
+              label="height"
+              value={height}
+              display={`${Math.round(3 + 27 * height())} m`}
+              onInput={(v) => {
+                setHeight(v);
+                invalidate();
+              }}
+            />
+            <Slider
+              label="sun"
+              value={sun}
+              display={`${Math.round(10 + 80 * sun() * sun())}°`}
+              onInput={(v) => {
+                setSun(v);
+                invalidate();
+              }}
+            />
+            <Slider
+              label="light size"
+              value={lightSize}
+              display={`${(0.6 + 2.4 * lightSize()).toFixed(1)}×`}
+              onInput={(v) => {
+                setLightSize(v);
+                invalidate();
+              }}
+            />
+            <div class="flex items-center gap-3">
+              <span class="w-18 shrink-0 text-stone-700">source</span>
+              <div
+                class="flex gap-1"
+                role="radiogroup"
+                aria-label="light source shape"
+              >
+                {SHAPES.map((s) => (
+                  <button
+                    type="button"
+                    role="radio"
+                    aria-checked={shape() === s}
+                    class={
+                      shape() === s
+                        ? "rounded-sm bg-stone-600 px-2 py-0.5 text-stone-100"
+                        : "rounded-sm px-2 py-0.5 text-stone-500 hover:bg-stone-200"
+                    }
+                    onClick={() => {
+                      setShape(s);
+                      apertureInvalidate();
+                    }}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <Show when={shape() !== "disk"}>
+              <Slider
+                label={shape() === "crescent" ? "eclipse" : "squash"}
+                value={shapeAmt}
+                display={`${Math.round(100 * shapeAmt())}%`}
+                onInput={(v) => {
+                  setShapeAmt(v);
+                  apertureInvalidate();
+                }}
+              />
+            </Show>
+            <button
+              type="button"
+              class="self-start rounded-sm px-2 py-0.5 text-stone-500 hover:bg-stone-200"
+              onClick={() => {
+                setSeedIdx(seedIdx() + 1);
+                invalidate();
+              }}
+            >
+              regrow ⟳
+            </button>
           </Show>
         </div>
       </Show>
