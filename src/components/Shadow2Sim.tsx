@@ -48,14 +48,14 @@ const Shadow2Sim: Component = () => {
   const [tab, setTab] = createSignal<Tab>("canopy");
   // step 1
   const [branches, setBranches] = createSignal(0.7);
-  const [density, setDensity] = createSignal(0.85);
+  const [density, setDensity] = createSignal(0.9);
   const [wind, setWind] = createSignal(reducedMotion ? 0 : 0.5);
   const [seedIdx, setSeedIdx] = createSignal(0);
   // step 2
   const [height, setHeight] = createSignal(13 / 27); // 16 m
   const [sun, setSun] = createSignal(0.75); // 55°
   // step 3
-  const [lightSize, setLightSize] = createSignal(0.375); // 0.6–3×, → 1.5×
+  const [lightSize, setLightSize] = createSignal(0.55); // 0.6–3×, → ≈1.9×
   const [shape, setShape] = createSignal<ApertureShape>("disk");
   const [shapeAmt, setShapeAmt] = createSignal(0.5);
 
@@ -91,9 +91,10 @@ const Shadow2Sim: Component = () => {
     }
 
     const coarse = window.matchMedia("(pointer: coarse)").matches;
-    let K = coarse ? 16 : 32;
+    // higher K = smoother penumbra edges (less jitter noise)
+    let K = coarse ? 16 : 48;
     const maxUniforms = gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS);
-    if (typeof maxUniforms === "number" && maxUniforms < 48) K = 16;
+    if (typeof maxUniforms === "number" && maxUniforms < 64) K = 16;
     const dprCap = coarse ? 1.5 : 2;
 
     const texCanvas = document.createElement("canvas");

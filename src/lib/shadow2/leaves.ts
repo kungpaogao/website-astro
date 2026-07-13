@@ -7,7 +7,7 @@ import type { Skeleton } from "./skeleton";
  * is inherited from the skeleton pose for free.
  */
 
-export const MAX_LEAVES_PER_SITE = 18;
+export const MAX_LEAVES_PER_SITE = 24;
 const LEAF_SALT = 0x85ebca6b;
 
 export interface Leaf2 {
@@ -93,7 +93,7 @@ export function attachLeaves(
         t,
         side: u5 < 0.5 ? 1 : -1,
         fan: 0.35 + 0.85 * u5 + 0.3 * (u6 - 0.5),
-        size: (6 + 8 * u4 * u4 * u4) / 512,
+        size: (5 + 7 * u4 * u4 * u4) / 512,
         h,
         layer: Math.min(
           2,

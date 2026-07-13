@@ -132,7 +132,7 @@ void main() {
   light = smoothstep(0.07, 0.72, pow(light, 0.58));
 
   vec3 color = mix(u_shadowColor, u_lightColor, light);
-  color += (hash(gl_FragCoord.xy) - 0.5) * 0.022;
+  color += (hash(gl_FragCoord.xy) - 0.5) * 0.014;
   gl_FragColor = vec4(color, 1.0);
 }
 `;
