@@ -7,18 +7,23 @@ import type { Skeleton } from "./skeleton";
  * is inherited from the skeleton pose for free.
  */
 
-export const MAX_LEAVES_PER_SITE = 24;
+export const MAX_LEAVES_PER_SITE = 32;
 const LEAF_SALT = 0x85ebca6b;
 
 export interface Leaf2 {
   /** node index of the anchoring twig/branchlet */
   site: number;
-  /** station along the twig, 0..1 — the leaf's stem sits ON the twig */
+  /** station along the twig, 0..1 — the leaf's stem sits near the twig */
   t: number;
   /** which side of the twig the blade fans to (±1) */
   side: 1 | -1;
   /** blade angle away from the twig direction (radians, unsigned) */
   fan: number;
+  /** small volumetric offsets in the twig frame (UV units) — the site is
+   * a leafy puff, not a line, which closes the canopy so light escapes
+   * only through small discrete holes (the prominent round dapples) */
+  offAlong: number;
+  offAcross: number;
   /** blade length, UV units */
   size: number;
   /** normalized height */
@@ -73,11 +78,12 @@ export function attachLeaves(
           0,
       );
       const u1 = rng();
-      const [, g2] = gaussianPair(rng(), rng());
+      const [g1, g2] = gaussianPair(rng(), rng());
       const u4 = rng();
       const u5 = rng();
       const u6 = rng();
       const u7 = rng();
+      const [g3] = gaussianPair(rng(), rng());
 
       // stem sits on the twig; blades fan off alternating sides like a
       // real branchlet
@@ -93,6 +99,8 @@ export function attachLeaves(
         t,
         side: u5 < 0.5 ? 1 : -1,
         fan: 0.35 + 0.85 * u5 + 0.3 * (u6 - 0.5),
+        offAlong: g1 * 0.2 * node.length,
+        offAcross: g3 * 0.35 * node.length,
         size: (5 + 7 * u4 * u4 * u4) / 512,
         h,
         layer: Math.min(

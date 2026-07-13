@@ -205,14 +205,19 @@ export function drawScene(
       const vis = nodeVisibility(node, params.branches);
       if (vis <= 0) continue;
       const g = leaf.site;
-      // stem anchor: a point ON the twig (plus its own height's parallax)
+      // stem anchor: near the twig, inside the site's leafy puff (plus
+      // the leaf's own height parallax)
+      const along = leaf.t * node.length * vis + leaf.offAlong * vis;
+      const across = leaf.offAcross * vis;
       let x =
         pose.baseX[g] +
-        pose.cos[g] * (leaf.t * node.length * vis) +
+        pose.cos[g] * along -
+        pose.sin[g] * across +
         shiftX(leaf.h);
       let z =
         pose.baseZ[g] +
-        pose.sin[g] * (leaf.t * node.length * vis) +
+        pose.sin[g] * along +
+        pose.cos[g] * across +
         shiftZ(leaf.h);
       // blade fans off the twig's side
       let rot = pose.angle[g] + leaf.side * leaf.fan;

@@ -128,8 +128,10 @@ void main() {
   }
   light = (light / K_F) * u_apertureGain;
 
-  // v1's photo-calibrated bimodal tone: pools blow out, floor stays deep
-  light = smoothstep(0.07, 0.72, pow(light, 0.58));
+  // bimodal tone with a hard lift for small pinholes: even a hole that
+  // passes a quarter of the sun's disk should read as a prominent bright
+  // circle, as in reference photos of overhead-sun dapple
+  light = smoothstep(0.05, 0.6, pow(light, 0.5));
 
   vec3 color = mix(u_shadowColor, u_lightColor, light);
   color += (hash(gl_FragCoord.xy) - 0.5) * 0.014;
