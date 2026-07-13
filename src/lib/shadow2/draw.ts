@@ -22,6 +22,25 @@ export interface SceneParams {
   branchStrength: number;
 }
 
+/**
+ * Sun projection applied at raster time (occlusion paint): every element
+ * shifts along the sun azimuth by its OWN height's plan-space parallax
+ * `h·treeH·cos(elev)`, so the shadow is a true continuous 3D projection —
+ * branches lean, the trunk shadow stretches along the ground — instead of
+ * discrete layer sheets. The mean shift is subtracted to keep the shadow
+ * anchored in the window.
+ */
+export interface Projection {
+  cosElev: number;
+  /** meters */
+  treeH: number;
+  /** texture UV units per world meter (elevation-aware fit) */
+  uvPerMeter: number;
+  /** sun azimuth unit vector in texture space */
+  azX: number;
+  azZ: number;
+}
+
 const LAYER_COLORS_OCC = (v: number) => [
   `rgb(${v},0,0)`,
   `rgb(0,${v},0)`,
@@ -89,12 +108,23 @@ export function drawScene(
   leaves: Leaf2[],
   params: SceneParams,
   paint: "occlusion" | "canopy",
+  projection?: Projection,
 ): void {
   const w = ctx.canvas.width;
   const h = ctx.canvas.height;
   const size = Math.min(w, h);
   const ox = (w - size) / 2;
   const oy = (h - size) / 2;
+
+  // per-height plan-space parallax in texture UV units, mean-centered
+  const parPerH = projection
+    ? projection.treeH * projection.cosElev * projection.uvPerMeter
+    : 0;
+  const parMean = 0.5 * parPerH;
+  const shiftX = (hn: number) =>
+    projection ? (hn * parPerH - parMean) * projection.azX : 0;
+  const shiftZ = (hn: number) =>
+    projection ? (hn * parPerH - parMean) * projection.azZ : 0;
 
   if (paint === "occlusion") {
     ctx.globalCompositeOperation = "source-over";
@@ -123,16 +153,27 @@ export function drawScene(
     const vis = nodeVisibility(node, params.branches);
     if (vis <= 0) continue;
     const len = node.length * vis * size;
-    const bx = ox + pose.baseX[g] * size;
-    const by = oy + pose.baseZ[g] * size;
+    const hBase = node.baseH;
+    const hMid = node.baseH + node.rise * vis * 0.5;
+    const hTip = node.baseH + node.rise * vis;
+    const bx = ox + (pose.baseX[g] + shiftX(hBase)) * size;
+    const by = oy + (pose.baseZ[g] + shiftZ(hBase)) * size;
     const dx = pose.cos[g];
     const dy = pose.sin[g];
     const px = -dy;
     const py = dx;
-    const mx = bx + dx * len * 0.5 + px * node.bend * len;
-    const my = by + dy * len * 0.5 + py * node.bend * len;
-    const tx = bx + dx * len;
-    const ty = by + dy * len;
+    const mx =
+      ox +
+      (pose.baseX[g] + shiftX(hMid)) * size +
+      dx * len * 0.5 +
+      px * node.bend * len;
+    const my =
+      oy +
+      (pose.baseZ[g] + shiftZ(hMid)) * size +
+      dy * len * 0.5 +
+      py * node.bend * len;
+    const tx = ox + (pose.baseX[g] + shiftX(hTip)) * size + dx * len;
+    const ty = oy + (pose.baseZ[g] + shiftZ(hTip)) * size + dy * len;
 
     const baseLayer = layerOf(node.baseH);
     const tipLayer = layerOf(node.baseH + node.rise);
@@ -164,9 +205,15 @@ export function drawScene(
       const vis = nodeVisibility(node, params.branches);
       if (vis <= 0) continue;
       const g = leaf.site;
-      // stem anchor: a point ON the twig
-      let x = pose.baseX[g] + pose.cos[g] * (leaf.t * node.length * vis);
-      let z = pose.baseZ[g] + pose.sin[g] * (leaf.t * node.length * vis);
+      // stem anchor: a point ON the twig (plus its own height's parallax)
+      let x =
+        pose.baseX[g] +
+        pose.cos[g] * (leaf.t * node.length * vis) +
+        shiftX(leaf.h);
+      let z =
+        pose.baseZ[g] +
+        pose.sin[g] * (leaf.t * node.length * vis) +
+        shiftZ(leaf.h);
       // blade fans off the twig's side
       let rot = pose.angle[g] + leaf.side * leaf.fan;
       if (flutterAmp > 0) {

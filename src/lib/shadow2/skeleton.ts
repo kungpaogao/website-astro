@@ -69,15 +69,16 @@ export const NODE_COUNT =
 export function generateSkeleton(seed: number): Skeleton {
   const nodes: BranchNode[] = [];
 
-  // trunk: from the canopy center, essentially a point in plan view
+  // trunk: rises from the ground to the canopy base (its shadow projects
+  // as a stretching stroke when the sun lowers)
   nodes.push({
     parent: -1,
     depth: 0,
     attachT: 0,
     restAngle: 0,
     length: MEAN_LEN[0],
-    rise: 0.1,
-    baseH: 0.3,
+    rise: 0.3,
+    baseH: 0.05,
     thickness: THICKNESS[0],
     bend: 0,
     visThreshold: 0,

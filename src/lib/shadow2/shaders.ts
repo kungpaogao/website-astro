@@ -68,13 +68,10 @@ vec2 toCanopy(vec2 plan) {
     return `${common}
 void main() {
   vec2 world = (gl_FragCoord.xy - 0.5 * u_resolution) * u_metersPerPixel;
-  float par0 = (u_layerHeights.x - u_layerHeights.y) * u_cosElev;
-  float par2 = (u_layerHeights.z - u_layerHeights.y) * u_cosElev;
-
-  float vis = 1.0;
-  vis *= 1.0 - texture2D(u_canopy, toCanopy(planeBase(world, par0))).r;
-  vis *= 1.0 - texture2D(u_canopy, toCanopy(planeBase(world, 0.0))).g;
-  vis *= 1.0 - texture2D(u_canopy, toCanopy(planeBase(world, par2))).b;
+  // the texture is already the 3D-projected scene: one lookup, three
+  // channels (they only encode height bins for the dappled stage)
+  vec4 texel = texture2D(u_canopy, toCanopy(planeBase(world, 0.0)));
+  float vis = (1.0 - texel.r) * (1.0 - texel.g) * (1.0 - texel.b);
 
   // near-binary: this view shows raw projective geometry
   float light = smoothstep(0.25, 0.55, vis);
@@ -93,26 +90,20 @@ uniform vec4 u_ap[${K2}];       // two unit-aperture samples per vec4
 uniform float u_tanSun;         // tan of the light's angular half-size
 uniform float u_apertureGain;   // relative irradiance (eclipse dimming)
 uniform float u_rhoMax;         // meters, caps low-sun penumbra blur
-uniform float u_spanPar;        // plan-space smear of a layer's height span
 
-float sampleRay(vec2 base0, vec2 base1, vec2 base2, vec2 s, vec3 rho, float hj) {
+float sampleRay(vec2 base, vec2 s, vec3 rho) {
   float vis = 1.0;
-  vec2 q0 = base0 + s * rho.x + vec2(hj, 0.0);
-  vis *= 1.0 - texture2D(u_canopy, toCanopy(q0)).r;
-  vec2 q1 = base1 + s * rho.y + vec2(hj, 0.0);
-  vis *= 1.0 - texture2D(u_canopy, toCanopy(q1)).g;
-  vec2 q2 = base2 + s * rho.z + vec2(hj, 0.0);
-  vis *= 1.0 - texture2D(u_canopy, toCanopy(q2)).b;
+  vis *= 1.0 - texture2D(u_canopy, toCanopy(base + s * rho.x)).r;
+  vis *= 1.0 - texture2D(u_canopy, toCanopy(base + s * rho.y)).g;
+  vis *= 1.0 - texture2D(u_canopy, toCanopy(base + s * rho.z)).b;
   return vis;
 }
 
 void main() {
   vec2 world = (gl_FragCoord.xy - 0.5 * u_resolution) * u_metersPerPixel;
-  float par0 = (u_layerHeights.x - u_layerHeights.y) * u_cosElev;
-  float par2 = (u_layerHeights.z - u_layerHeights.y) * u_cosElev;
-  vec2 base0 = planeBase(world, par0);
-  vec2 base1 = planeBase(world, 0.0);
-  vec2 base2 = planeBase(world, par2);
+  // the texture is already the 3D-projected scene; channels only pick
+  // the penumbra radius (higher occluders cast softer light)
+  vec2 base = planeBase(world, 0.0);
 
   vec3 rho = min(
     u_layerHeights * (u_tanSun / max(u_sinElev, 0.15)),
@@ -129,13 +120,11 @@ void main() {
     // aperture's shape — never rotate)
     float ja = fract(ign + fi * 0.618) * 6.2831853;
     float jb = fract(ign + (fi + 1.0) * 0.618) * 6.2831853;
-    float hja = (fract(fi * 0.61803399 + ign) - 0.5) * u_spanPar;
-    float hjb = (fract((fi + 1.0) * 0.61803399 + ign) - 0.5) * u_spanPar;
 
     vec2 sa = u_ap[i].xy + JR * vec2(cos(ja), sin(ja));
     vec2 sb = u_ap[i].zw + JR * vec2(cos(jb), sin(jb));
-    light += sampleRay(base0, base1, base2, sa, rho, hja);
-    light += sampleRay(base0, base1, base2, sb, rho, hjb);
+    light += sampleRay(base, sa, rho);
+    light += sampleRay(base, sb, rho);
   }
   light = (light / K_F) * u_apertureGain;
 

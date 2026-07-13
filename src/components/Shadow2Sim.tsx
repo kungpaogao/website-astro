@@ -141,7 +141,6 @@ const Shadow2Sim: Component = () => {
       "u_tanSun",
       "u_apertureGain",
       "u_rhoMax",
-      "u_spanPar",
     ];
 
     function link(frag: string): Prog {
@@ -190,6 +189,18 @@ const Shadow2Sim: Component = () => {
       lastRasterKey = "";
     }
 
+    // texture scale fits the plan-space projected extent: canopy footprint
+    // plus the height-driven parallax spread (bounded by tree height)
+    function texUvPerMeter() {
+      const treeHeight = 3 + 27 * height();
+      const elev = elevSliderToRad(sun());
+      const canopyHalfW = 0.32 * treeHeight;
+      return (
+        (0.5 - 0.07) /
+        (canopyHalfW + 0.5 * treeHeight * Math.cos(elev))
+      );
+    }
+
     function sceneParams(timeS: number) {
       return {
         branches: branches(),
@@ -205,13 +216,29 @@ const Shadow2Sim: Component = () => {
     function updateOcclusion(timeS: number) {
       const swaying = wind() > 0;
       const animTick = swaying && frameIndex % rasterEvery === 0;
-      const key = `${seed()}:${branches().toFixed(3)}:${perSite()}`;
+      const key = `${seed()}:${branches().toFixed(3)}:${perSite()}:${sun().toFixed(3)}:${height().toFixed(3)}`;
       if (key !== lastRasterKey) occlusionDirty = true;
       if (!occlusionDirty && !animTick && lastSwayed === swaying) return;
 
       const t0 = performance.now();
+      const treeHeight = 3 + 27 * height();
+      const elev = elevSliderToRad(sun());
       flattenPose(skeleton(), timeS, swaying ? wind() : 0, pose);
-      drawScene(texCtx, skeleton(), pose, leaves(), sceneParams(timeS), "occlusion");
+      drawScene(
+        texCtx,
+        skeleton(),
+        pose,
+        leaves(),
+        sceneParams(timeS),
+        "occlusion",
+        {
+          cosElev: Math.cos(elev),
+          treeH: treeHeight,
+          uvPerMeter: texUvPerMeter(),
+          azX: Math.sin(SUN_AZIMUTH),
+          azZ: Math.cos(SUN_AZIMUTH),
+        },
+      );
       gl!.bindTexture(gl!.TEXTURE_2D, texture);
       gl!.texImage2D(
         gl!.TEXTURE_2D,
@@ -235,7 +262,7 @@ const Shadow2Sim: Component = () => {
       const [hLow, hMid, hHigh] = layerHeights(treeHeight);
       const elev = elevSliderToRad(sun());
       const canopyHalfW = 0.32 * treeHeight;
-      const uvPerMeter = (0.5 - 0.07) / canopyHalfW;
+      const uvPerMeter = texUvPerMeter();
       const refWindow = Math.min(10, Math.max(4.5, 1.2 * 0.32 * 16));
       const light = sunLightColor(elev);
       const shadow: [number, number, number] = [0.44, 0.43, 0.51];
@@ -269,11 +296,6 @@ const Shadow2Sim: Component = () => {
         const tanSun = TAN_SUN_HALF_ANGLE * (0.6 + 2.4 * lightSize());
         gl!.uniform1f(prog.u.u_tanSun, tanSun);
         gl!.uniform1f(prog.u.u_rhoMax, Math.min(0.14 * canopyHalfW, 0.9));
-        const layerGap = 0.2 * treeHeight * Math.cos(elev);
-        gl!.uniform1f(
-          prog.u.u_spanPar,
-          1.4 * Math.max(0, layerGap - 0.55 * canopyHalfW),
-        );
       }
 
       gl!.drawArrays(gl!.TRIANGLES, 0, 3);
