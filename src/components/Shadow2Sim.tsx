@@ -56,6 +56,8 @@ const Shadow2Sim: Component = () => {
   const [sun, setSun] = createSignal(0.75); // 55°
   // step 3
   const [lightSize, setLightSize] = createSignal(0.55); // 0.6–3×, → ≈1.9×
+
+  const lightScale = () => 0.6 + 2.4 * lightSize();
   const [shape, setShape] = createSignal<ApertureShape>("disk");
   const [shapeAmt, setShapeAmt] = createSignal(0.5);
 
@@ -143,6 +145,7 @@ const Shadow2Sim: Component = () => {
       "u_tanSun",
       "u_apertureGain",
       "u_rhoMax",
+      "u_exposure",
     ];
 
     function link(frag: string): Prog {
@@ -295,9 +298,15 @@ const Shadow2Sim: Component = () => {
           gl!.uniform1f(prog.u.u_apertureGain, ap.gain);
           apertureDirty = false;
         }
-        const tanSun = TAN_SUN_HALF_ANGLE * (0.6 + 2.4 * lightSize());
+        const tanSun = TAN_SUN_HALF_ANGLE * lightScale();
         gl!.uniform1f(prog.u.u_tanSun, tanSun);
-        gl!.uniform1f(prog.u.u_rhoMax, Math.min(0.14 * canopyHalfW, 0.9));
+        gl!.uniform1f(prog.u.u_rhoMax, Math.min(0.18 * canopyHalfW, 1.1));
+        // exposure compensation: a bigger light source dims every pinhole
+        // (less of the disk fits through); lift so circles stay prominent
+        gl!.uniform1f(
+          prog.u.u_exposure,
+          Math.min(5, Math.max(1, Math.pow(lightScale() / 1.9, 1.5))),
+        );
       }
 
       gl!.drawArrays(gl!.TRIANGLES, 0, 3);
@@ -578,7 +587,7 @@ const Shadow2Sim: Component = () => {
             <Slider
               label="light size"
               value={lightSize}
-              display={`${(0.6 + 2.4 * lightSize()).toFixed(1)}×`}
+              display={`${lightScale().toFixed(1)}×`}
               onInput={(v) => {
                 setLightSize(v);
                 invalidate();
@@ -678,7 +687,7 @@ const Shadow2Sim: Component = () => {
             <Slider
               label="light size"
               value={lightSize}
-              display={`${(0.6 + 2.4 * lightSize()).toFixed(1)}×`}
+              display={`${lightScale().toFixed(1)}×`}
               onInput={(v) => {
                 setLightSize(v);
                 invalidate();

@@ -33,11 +33,16 @@ export interface Leaf2 {
   flutterPhase: number;
 }
 
-/** node indices that anchor foliage: all depth 3 and 4 nodes */
+/**
+ * Node indices that anchor foliage: twigs and branchlets carry the outer
+ * canopy; sub-branches (depth 2) carry a wider-spread understory that
+ * fills the gaps between branch groups, so large sky holes are rare —
+ * like a real, volumetrically deep crown.
+ */
 export function leafSites(sk: Skeleton): number[] {
   const sites: number[] = [];
   for (let g = 0; g < sk.length; g++) {
-    if (sk[g].depth >= 3) sites.push(g);
+    if (sk[g].depth >= 2) sites.push(g);
   }
   return sites;
 }
@@ -99,8 +104,9 @@ export function attachLeaves(
         t,
         side: u5 < 0.5 ? 1 : -1,
         fan: 0.35 + 0.85 * u5 + 0.3 * (u6 - 0.5),
-        offAlong: g1 * 0.2 * node.length,
-        offAcross: g3 * 0.35 * node.length,
+        // understory (depth-2) leaves spread wider to fill inter-group gaps
+        offAlong: g1 * (node.depth === 2 ? 0.4 : 0.2) * node.length,
+        offAcross: g3 * (node.depth === 2 ? 0.55 : 0.35) * node.length,
         size: (5 + 7 * u4 * u4 * u4) / 512,
         h,
         layer: Math.min(

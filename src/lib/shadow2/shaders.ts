@@ -89,6 +89,7 @@ const float JR = ${jitterR};
 uniform vec4 u_ap[${K2}];       // two unit-aperture samples per vec4
 uniform float u_tanSun;         // tan of the light's angular half-size
 uniform float u_apertureGain;   // relative irradiance (eclipse dimming)
+uniform float u_exposure;       // compensation for large light sources
 uniform float u_rhoMax;         // meters, caps low-sun penumbra blur
 
 float sampleRay(vec2 base, vec2 s, vec3 rho) {
@@ -126,7 +127,7 @@ void main() {
     light += sampleRay(base, sa, rho);
     light += sampleRay(base, sb, rho);
   }
-  light = (light / K_F) * u_apertureGain;
+  light = (light / K_F) * u_apertureGain * u_exposure;
 
   // bimodal tone with a hard lift for small pinholes: even a hole that
   // passes a quarter of the sun's disk should read as a prominent bright

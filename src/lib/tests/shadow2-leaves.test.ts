@@ -10,8 +10,8 @@ import {
 describe("leaves", () => {
   const sk = generateSkeleton(5);
 
-  it("anchors on all depth ≥ 3 nodes", () => {
-    expect(leafSites(sk).length).toBe(120 + 360);
+  it("anchors on all depth ≥ 2 nodes (understory + outer canopy)", () => {
+    expect(leafSites(sk).length).toBe(30 + 120 + 360);
   });
 
   it("maps the density slider to 2..18 leaves per site", () => {
