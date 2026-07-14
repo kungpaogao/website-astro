@@ -94,7 +94,7 @@ const Shadow2Sim: Component = () => {
 
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     // higher K = smoother penumbra edges (less jitter noise)
-    let K = coarse ? 16 : 48;
+    let K = coarse ? 16 : 64;
     const maxUniforms = gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS);
     if (typeof maxUniforms === "number" && maxUniforms < 64) K = 16;
     const dprCap = coarse ? 1.5 : 2;
@@ -305,7 +305,7 @@ const Shadow2Sim: Component = () => {
         // (less of the disk fits through); lift so circles stay prominent
         gl!.uniform1f(
           prog.u.u_exposure,
-          Math.min(5, Math.max(1, Math.pow(lightScale() / 1.9, 1.5))),
+          Math.min(5, Math.max(1, Math.pow(lightScale() / 1.9, 1.7))),
         );
       }
 

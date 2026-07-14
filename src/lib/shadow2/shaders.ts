@@ -27,7 +27,7 @@ export interface Frag2Options {
 export function buildFragSrc2({ mode, k = 32 }: Frag2Options): string {
   const K = Math.max(2, 2 * Math.round(k / 2));
   const K2 = K / 2;
-  const jitterR = (0.5 / Math.sqrt(K)).toFixed(5);
+  const jitterR = (0.25 / Math.sqrt(K)).toFixed(5);
 
   const common = `
 #ifdef GL_FRAGMENT_PRECISION_HIGH
@@ -135,7 +135,7 @@ void main() {
   light = smoothstep(0.05, 0.6, pow(light, 0.5));
 
   vec3 color = mix(u_shadowColor, u_lightColor, light);
-  color += (hash(gl_FragCoord.xy) - 0.5) * 0.014;
+  color += (hash(gl_FragCoord.xy) - 0.5) * 0.008;
   gl_FragColor = vec4(color, 1.0);
 }
 `;
