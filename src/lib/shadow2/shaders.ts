@@ -27,7 +27,7 @@ export interface Frag2Options {
 export function buildFragSrc2({ mode, k = 32 }: Frag2Options): string {
   const K = Math.max(2, 2 * Math.round(k / 2));
   const K2 = K / 2;
-  const jitterR = (0.25 / Math.sqrt(K)).toFixed(5);
+  const jitterR = (0.12 / Math.sqrt(K)).toFixed(5);
 
   const common = `
 #ifdef GL_FRAGMENT_PRECISION_HIGH
@@ -115,6 +115,7 @@ void main() {
     fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715))));
 
   float light = 0.0;
+  float wsum = 0.0;
   for (int i = 0; i < K2; i++) {
     float fi = float(2 * i);
     // per-sample positional jitter (decorrelates pixels, keeps the
@@ -122,12 +123,19 @@ void main() {
     float ja = fract(ign + fi * 0.618) * 6.2831853;
     float jb = fract(ign + (fi + 1.0) * 0.618) * 6.2831853;
 
+    // solar limb darkening: the sun's edge is ~40% dimmer than its
+    // center, which turns every projected ball of light into a smooth
+    // radial gradient instead of a hard noisy disk
+    float wa = 1.0 - 0.6 * (1.0 - sqrt(max(0.0, 1.0 - dot(u_ap[i].xy, u_ap[i].xy))));
+    float wb = 1.0 - 0.6 * (1.0 - sqrt(max(0.0, 1.0 - dot(u_ap[i].zw, u_ap[i].zw))));
+
     vec2 sa = u_ap[i].xy + JR * vec2(cos(ja), sin(ja));
     vec2 sb = u_ap[i].zw + JR * vec2(cos(jb), sin(jb));
-    light += sampleRay(base, sa, rho);
-    light += sampleRay(base, sb, rho);
+    light += wa * sampleRay(base, sa, rho);
+    light += wb * sampleRay(base, sb, rho);
+    wsum += wa + wb;
   }
-  light = (light / K_F) * u_apertureGain * u_exposure;
+  light = (light / wsum) * u_apertureGain * u_exposure;
 
   // bimodal tone with a hard lift for small pinholes: even a hole that
   // passes a quarter of the sun's disk should read as a prominent bright
