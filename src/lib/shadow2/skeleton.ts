@@ -25,10 +25,12 @@ export interface BranchNode {
   attachT: number;
   /** plan azimuth relative to the parent's direction (radians) */
   restAngle: number;
-  /** plan-projected length, UV units */
+  /** plan-projected length, UV units (= 3D length · cos(pitch)) */
   length: number;
-  /** height gained tip-over-base, normalized canopy height */
+  /** height gained tip-over-base, normalized (= 3D length · sin(pitch)) */
   rise: number;
+  /** elevation of the branch above horizontal, radians */
+  pitch: number;
   /** normalized height of the base */
   baseH: number;
   /** stroke radius at base, UV units */
@@ -46,8 +48,10 @@ export interface BranchNode {
 }
 
 const DEPTH_SALT = [0x1f83d9ab, 0x5be0cd19, 0x9b05688c, 0x510e527f, 0x6a09e667];
-/** mean plan length per depth, UV units */
-const MEAN_LEN = [0.05, 0.16, 0.1, 0.06, 0.035];
+/** mean 3D length per depth, UV units */
+const LEN3D = [0.05, 0.17, 0.11, 0.07, 0.045];
+/** normalized canopy height gained per UV unit of vertical run */
+const VERT_SCALE = 2.0;
 /** base thickness per depth (UV radius) */
 const THICKNESS = [0.011, 0.006, 0.0033, 0.0018, 0.001];
 /** relative angular spread of the child fan per parent depth */
@@ -76,8 +80,9 @@ export function generateSkeleton(seed: number): Skeleton {
     depth: 0,
     attachT: 0,
     restAngle: 0,
-    length: MEAN_LEN[0],
+    length: 0.02, // near-vertical: a stub in plan view
     rise: 0.3,
+    pitch: 1.45,
     baseH: 0.05,
     thickness: THICKNESS[0],
     bend: 0,
@@ -118,12 +123,29 @@ export function generateSkeleton(seed: number): Skeleton {
             : (c - (fan - 1) / 2) * SPREAD[d - 1] +
               0.35 * SPREAD[d - 1] * (u2 - 0.5) * 2;
 
-        const length = MEAN_LEN[d] * (0.7 + 0.6 * u3);
-        const rise =
-          d === 1 ? 0.1 + 0.25 * u4 : 0.03 + 0.07 * u4;
+        // true 3D growth: each branch has a pitch above horizontal.
+        // Limbs span steep-to-shallow (steep ones carry foliage over the
+        // crown's center — a ball, not a hollow ring); deeper branches
+        // inherit their parent's pitch and drift toward horizontal.
+        const pitch =
+          d === 1
+            ? Math.min(
+                1.45,
+                Math.max(
+                  0.05,
+                  0.12 + (1.25 * (c + 0.5)) / FANOUT[0] + 0.3 * (u4 - 0.5),
+                ),
+              )
+            : Math.min(
+                1.5,
+                Math.max(-0.5, parent.pitch + 0.55 * (u4 - 0.5) - 0.12),
+              );
+        const len3d = LEN3D[d] * (0.7 + 0.6 * u3);
+        const length = Math.max(0.008, len3d * Math.cos(pitch));
+        const rise = len3d * Math.sin(pitch) * VERT_SCALE;
         const baseH = Math.min(
           0.97,
-          parent.baseH + parent.rise * attachT,
+          Math.max(0.3, parent.baseH + parent.rise * attachT),
         );
 
         const visThreshold = Math.max(
@@ -139,6 +161,7 @@ export function generateSkeleton(seed: number): Skeleton {
           restAngle,
           length,
           rise,
+          pitch,
           baseH,
           thickness: THICKNESS[d],
           bend: 0.3 * (u6 - 0.5),

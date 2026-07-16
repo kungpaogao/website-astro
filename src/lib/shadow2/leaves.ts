@@ -90,9 +90,10 @@ export function attachLeaves(
       const u7 = rng();
       const [g3] = gaussianPair(rng(), rng());
 
-      // stem sits on the twig; blades fan off alternating sides like a
-      // real branchlet
-      const t = 0.25 + 0.75 * u1;
+      // leaves gather in distinct bunches at stations along the twig
+      // (real foliage grows in clusters, not evenly spaced)
+      const bunch = Math.min(2, Math.floor(u1 * 3));
+      const t = 0.35 + 0.25 * bunch + 0.1 * (u1 * 3 - bunch);
       const h = Math.min(
         1,
         Math.max(0, node.baseH + node.rise * t + g2 * 0.04),
@@ -104,9 +105,10 @@ export function attachLeaves(
         t,
         side: u5 < 0.5 ? 1 : -1,
         fan: 0.35 + 0.85 * u5 + 0.3 * (u6 - 0.5),
-        // understory (depth-2) leaves spread wider to fill inter-group gaps
-        offAlong: g1 * (node.depth === 2 ? 0.4 : 0.2) * node.length,
-        offAcross: g3 * (node.depth === 2 ? 0.55 : 0.35) * node.length,
+        // understory (depth-2) leaves spread wide to fill inter-group
+        // gaps; outer-canopy leaves hug their bunch tightly
+        offAlong: g1 * (node.depth === 2 ? 0.4 : 0.13) * node.length,
+        offAcross: g3 * (node.depth === 2 ? 0.55 : 0.24) * node.length,
         size: (5 + 7 * u4 * u4 * u4) / 512,
         h,
         layer: Math.min(
