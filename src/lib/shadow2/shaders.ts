@@ -111,8 +111,9 @@ void main() {
     vec3(u_rhoMax)
   );
 
-  float ign = fract(52.9829189 *
-    fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715))));
+  // white-noise phase for the sample jitter: unstructured grain. (IGN's
+  // diagonal lattice amplifies into a visible grid at low sample counts.)
+  float ign = hash(gl_FragCoord.xy);
 
   float light = 0.0;
   float wsum = 0.0;

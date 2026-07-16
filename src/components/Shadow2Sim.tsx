@@ -93,11 +93,12 @@ const Shadow2Sim: Component = () => {
     }
 
     const coarse = window.matchMedia("(pointer: coarse)").matches;
-    // higher K = smoother penumbra edges (less jitter noise)
-    let K = coarse ? 16 : 64;
+    // higher K = smoother penumbra edges (less jitter noise); modern
+    // phone GPUs handle K=32 at DPR 2 comfortably
+    let K = coarse ? 32 : 64;
     const maxUniforms = gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS);
-    if (typeof maxUniforms === "number" && maxUniforms < 64) K = 16;
-    const dprCap = coarse ? 1.5 : 2;
+    if (typeof maxUniforms === "number" && maxUniforms < 48) K = 16;
+    const dprCap = 2;
 
     const texCanvas = document.createElement("canvas");
     texCanvas.width = texCanvas.height = TEX_SIZE;
