@@ -44,6 +44,7 @@ This document provides comprehensive guidance for AI assistants working with thi
 - Pre-build content synchronization
 - SEO-optimized with sitemap generation
 - Custom MDX content collections
+- Playable contract bridge game with double dummy analysis (`/bridge`)
 
 ---
 
@@ -53,6 +54,7 @@ This document provides comprehensive guidance for AI assistants working with thi
 /home/user/website-astro/
 ├── src/
 │   ├── components/          # UI components (Astro, React, Solid.js)
+│   │   ├── bridge/         # Bridge table UI (Solid.js)
 │   │   ├── Navigation.astro # Header navigation (Notion-powered)
 │   │   ├── Navigation.tsx   # React/Solid.js navigation wrapper
 │   │   ├── Head.astro      # SEO meta tags component
@@ -66,6 +68,7 @@ This document provides comprehensive guidance for AI assistants working with thi
 │   ├── layouts/
 │   │   └── Layout.astro    # Main layout wrapper
 │   ├── lib/                # Core utilities and integrations
+│   │   ├── bridge/               # Bridge engine (rules, robots, analysis)
 │   │   ├── notion-client.ts      # Notion API client singleton
 │   │   ├── notion-cms.ts         # Database/block querying
 │   │   ├── notion-parse.ts       # Notion → Markdown converter
@@ -78,6 +81,7 @@ This document provides comprehensive guidance for AI assistants working with thi
 │   │   ├── index.astro     # Home page
 │   │   ├── blog/           # Blog listing and posts
 │   │   ├── projects/       # Projects listing and pages
+│   │   ├── bridge.astro    # Bridge game against three robots
 │   │   ├── read.astro      # Knowledge/reading log
 │   │   ├── places.astro    # Interactive places map
 │   │   ├── design.astro    # Design/style guide
@@ -391,6 +395,52 @@ import Map from '@components/Map';
 - Pins become dots when zoomed out
 
 **Code Reference:** `src/components/Map.tsx`
+
+---
+
+## Bridge Game
+
+`/bridge` is a self-contained contract bridge game: you sit South against three
+robots, and when the board is over a double dummy solver reviews your auction and
+your play. Everything runs in the browser — there is no server component.
+
+### Engine (`src/lib/bridge/`)
+
+| File | Responsibility |
+| --- | --- |
+| `cards.ts` | Card, suit, strain and seat primitives |
+| `deal.ts` | Dealing, PBN serialization, vulnerability |
+| `auction.ts` | Call legality, auction state, contract resolution |
+| `play.ts` | Trick play state machine, follow-suit rules, void inference |
+| `scoring.ts` | Duplicate scoring and IMPs |
+| `evaluation.ts` | Hand evaluation (HCP, shape, support points) |
+| `bidding.ts` | SAYC-style bidding engine; every call carries a reason |
+| `sampler.ts` | Constrained random layouts consistent with what a robot knows |
+| `bot-play.ts` | Card play robot: sample layouts, solve each, play the best average |
+| `dds-solver.ts` | Domain wrapper over the `bridge-dds` wasm solver |
+| `dds.worker.ts` | Web worker hosting the solver |
+| `engine-client.ts` | Main thread promise API over the worker |
+| `analysis.ts` | Post mortem: par, best contract, per-bid and per-card review |
+
+### Key invariants
+
+- **Robots cannot cheat.** `buildPlayRequest` copies only the cards a seat is
+  entitled to see into the worker message, so a hidden hand is not in the
+  payload at all.
+- **Solver conventions are pinned by tests.** `resTable[strain][declarer]`,
+  `SolveBoardPBN` scoring from the point of view of the side on lead, and
+  `AnalysePlayPBN` scoring for the declaring side are all verified in
+  `src/lib/tests/bridge-dds.test.ts`. Change them at your peril.
+- **`AnalysePlayPBN` stops early.** A complete 52 card trace returns 49 values,
+  because the last trick is forced.
+- **Bidding order is not suit order.** `Suit` values run spades..clubs to match
+  the solver; `strainOrdinal` in `auction.ts` maps them to auction order.
+
+### Tests
+
+`bridge-dds` (solver conventions), `bridge-bidding` (auction mechanics, openings,
+responses, 200 random auctions that must terminate), and `bridge-game` (a full
+board bid and played by robots, then reviewed).
 
 ---
 

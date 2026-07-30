@@ -1,0 +1,33 @@
+---
+import type { Props } from "../components/Head.astro";
+import Layout from "../layouts/Layout.astro";
+import BridgeGame from "../components/bridge/BridgeGame.tsx";
+
+const layoutProps: Props = {
+  title: "Bridge",
+  description:
+    "Play a hand of contract bridge against three robots, then get a double dummy review of your bidding and your play.",
+  path: "/bridge",
+};
+---
+
+<Layout {...layoutProps} className="mx-auto w-full max-w-5xl">
+  <header class="mb-6">
+    <h1 class="font-serif text-3xl text-stone-900">Bridge</h1>
+    <p class="mt-1 max-w-prose text-stone-600">
+      One board at a time against three robots. You sit South. When the hand is
+      over, the double dummy solver goes back through the auction and every card
+      you played and tells you what was actually there.
+    </p>
+  </header>
+
+  <BridgeGame client:only="solid-js" />
+
+  <noscript>
+    <p
+      class="mt-6 rounded-lg border border-stone-200 bg-white/80 p-4 text-stone-700"
+    >
+      This one needs JavaScript — the solver runs in your browser.
+    </p>
+  </noscript>
+</Layout>
