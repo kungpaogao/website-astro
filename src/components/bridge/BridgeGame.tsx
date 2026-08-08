@@ -28,6 +28,7 @@ import {
 } from "../../lib/bridge/auction";
 import { suggestCall } from "../../lib/bridge/bidding";
 import {
+  cardName,
   isSameSide,
   SEAT_NAMES,
   Seat,
@@ -93,6 +94,8 @@ const BridgeGame: Component = () => {
   const [displayTrick, setDisplayTrick] = createSignal<DisplayTrick>();
   /** True while a robot is thinking or a finished trick is being shown. */
   const [busy, setBusy] = createSignal(false);
+  /** Card armed by a first click, played by a second. */
+  const [selectedCard, setSelectedCard] = createSignal<Card>();
 
   let generation = 0;
   /**
@@ -168,6 +171,7 @@ const BridgeGame: Component = () => {
     setAnalysis(undefined);
     setDisplayTrick(undefined);
     setBusy(false);
+    setSelectedCard(undefined);
     setPhase("bidding");
     await runAuction(mine);
   }
@@ -298,6 +302,7 @@ const BridgeGame: Component = () => {
     };
     const after = playCard(before, card);
     setState(after);
+    setSelectedCard(undefined);
     // Update the prompt straight away: the play loop only gets to run after the
     // trick has been left on screen, and until then the old text would be wrong.
     setStatus(describeTurn(after));
@@ -312,6 +317,25 @@ const BridgeGame: Component = () => {
       if (generation !== mine) return;
       setDisplayTrick(undefined);
     }
+  }
+
+  /**
+   * Cards take two clicks: the first lifts the card out of the hand, the second
+   * plays it. It is easy to mis-tap a fanned hand, and a card once played cannot
+   * be taken back.
+   */
+  function clickCard(card: Card) {
+    const current = state();
+    if (!current || busy()) return;
+    const seat = seatToPlay(current);
+    if (!humanControls(seat)) return;
+    if (!legalPlays(current, seat).includes(card)) return;
+
+    if (selectedCard() === card) {
+      void submitPlay(card);
+      return;
+    }
+    setSelectedCard(card);
   }
 
   async function submitPlay(card: Card) {
@@ -445,7 +469,8 @@ const BridgeGame: Component = () => {
             dimUnplayable={
               yourTurnToPlay() && seatToPlay(state()!) === seatProps.seat
             }
-            onPlay={(card) => void submitPlay(card)}
+            selectedCard={selectedCard()}
+            onPlay={clickCard}
           />
         )}
       </Show>
@@ -510,7 +535,14 @@ const BridgeGame: Component = () => {
             <strong class="text-stone-900">{theirTricks()}</strong>
           </span>
         </Show>
-        <span class="ml-auto text-stone-500 italic">{status()}</span>
+        <span class="ml-auto text-stone-500 italic">
+          <Show
+            when={selectedCard() !== undefined && yourTurnToPlay()}
+            fallback={status()}
+          >
+            Click {cardName(selectedCard()!)} again to play it.
+          </Show>
+        </span>
       </div>
 
       <Show when={phase() === "review" && analysis() && board()}>
@@ -526,11 +558,16 @@ const BridgeGame: Component = () => {
         <div class="grid gap-4 lg:grid-cols-[1fr_20rem]">
           {/* The table */}
           <div class="max-w-full rounded-xl bg-[#2f5d50] p-3 shadow-inner sm:p-4">
-            <div class="grid grid-cols-[2.75rem_1fr_2.75rem] items-center justify-items-center gap-1 sm:grid-cols-[7rem_1fr_7rem] sm:gap-2">
-              <div />
-              <SeatHand seat={Seat.North} />
-              <div />
+            {/*
+              North and South both get the full width of the table. When you are
+              declarer, North is the dummy you have to play from, so its cards
+              need to be the same size and just as easy to hit as your own.
+            */}
+            <div class="mb-3 border-b border-white/10 pb-3">
+              <SeatHand seat={Seat.North} large />
+            </div>
 
+            <div class="grid grid-cols-[2.75rem_1fr_2.75rem] items-center justify-items-center gap-1 sm:grid-cols-[7rem_1fr_7rem] sm:gap-2">
               <SeatHand seat={Seat.West} vertical />
 
               <div class="flex min-h-40 items-center justify-center">

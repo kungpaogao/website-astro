@@ -36,10 +36,22 @@ export function suitColor(suit: number): string {
   return suit === 1 || suit === 2 ? "text-red-700" : "text-stone-900";
 }
 
+/**
+ * The same two colours, muted for cards you cannot play.
+ *
+ * A red suit has to stay red even when it is greyed back — the colour is how you
+ * read the hand, so desaturating it would turn hearts black.
+ */
+function mutedSuitColor(suit: number): string {
+  return suit === 1 || suit === 2 ? "text-red-400" : "text-stone-500";
+}
+
 export const CardFace: Component<{
   card: Card;
   playable?: boolean;
   dimmed?: boolean;
+  /** Armed by a first click, played by a second. */
+  selected?: boolean;
   onPlay?: (card: Card) => void;
   compact?: boolean;
 }> = (props) => {
@@ -52,19 +64,22 @@ export const CardFace: Component<{
       type="button"
       disabled={!props.playable}
       aria-label={label()}
+      aria-pressed={props.playable ? props.selected === true : undefined}
       onClick={() => props.onPlay?.(props.card)}
       class={clsx(
         "relative flex flex-col items-center rounded-md border bg-white leading-none shadow-sm transition",
         props.compact
           ? "h-11 w-8 px-1 pt-1 text-xs"
           : "h-16 w-11 px-1 pt-1 text-sm sm:h-22 sm:w-16 sm:px-1.5 sm:pt-1.5",
-        suitColor(suit()),
+        props.dimmed ? mutedSuitColor(suit()) : suitColor(suit()),
         props.playable
-          ? "cursor-pointer border-stone-300 hover:-translate-y-2 hover:shadow-lg focus-visible:-translate-y-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-800"
+          ? "cursor-pointer border-stone-300 hover:z-10 hover:-translate-y-2 hover:shadow-lg focus-visible:z-10 focus-visible:-translate-y-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-800"
           : "cursor-default border-stone-200",
-        // Recede unplayable cards with colour rather than opacity, so the felt
-        // never shows through and the hand stays legible.
-        props.dimmed && "border-stone-300 bg-stone-200 opacity-80 grayscale",
+        // Recede unplayable cards with colour rather than a filter, so the felt
+        // never shows through and red suits stay red.
+        props.dimmed && "border-stone-300 bg-stone-100",
+        // A selected card lifts out of the hand until it is played.
+        props.selected && "z-10 -translate-y-3 shadow-xl ring-2 ring-white",
       )}
     >
       {/* The index sits in the corner so a fanned hand stays readable. */}
@@ -108,6 +123,8 @@ export const HandView: Component<{
   compact?: boolean;
   /** Fade the cards you may not play. Only meaningful while it is your turn. */
   dimUnplayable?: boolean;
+  /** The card armed for playing, if it is in this hand. */
+  selectedCard?: Card;
 }> = (props) => (
   <div class="flex flex-wrap items-end justify-center gap-x-3 gap-y-2">
     <For each={SUITS}>
@@ -123,8 +140,10 @@ export const HandView: Component<{
                 {(card, index) => (
                   <div
                     class={clsx(
+                      // Keep the overlap smaller than half a card so every card
+                      // has a comfortable strip of its own to click on.
                       index() > 0 &&
-                        (props.compact ? "-ml-4" : "-ml-6 sm:-ml-8"),
+                        (props.compact ? "-ml-4" : "-ml-4 sm:-ml-5"),
                     )}
                   >
                     <CardFace
@@ -135,6 +154,7 @@ export const HandView: Component<{
                         props.dimUnplayable === true &&
                         !(props.playable?.(card) ?? false)
                       }
+                      selected={props.selectedCard === card}
                       onPlay={props.onPlay}
                     />
                   </div>
@@ -210,7 +230,7 @@ export const TrickView: Component<{
   );
 
   return (
-    <div class="relative h-44 w-44 sm:h-52 sm:w-60">
+    <div class="relative h-48 w-44 sm:h-52 sm:w-60">
       {slot(0, "left-1/2 top-0 -translate-x-1/2")}
       {slot(1, "right-1 top-1/2 -translate-y-1/2")}
       {slot(2, "bottom-0 left-1/2 -translate-x-1/2")}
