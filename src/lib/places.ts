@@ -3,37 +3,33 @@ import chromium from "@sparticuz/chromium";
 import fs from "fs/promises";
 import notion from "./notion-client";
 import { getDataSourceId, queryNotionDatabase } from "./notion-cms";
+import { evaluateOnPage, isBrowserRunConfigured } from "./browser-run";
+import { extractPlaces } from "./places-extract";
+import type { Place } from "./places-extract";
 import type { CreatePageResponse } from "@notionhq/client/build/src/api-endpoints";
 
 const PLACES_SAVE_PATH = "public/places.json";
 
-export interface Place {
-  name: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-  notes: string;
-  timestampMs: number;
-  graphId: string;
+const PLACE_ID = "hie8OZlTQ5613oEw5K-wWg";
+export const PLACES_URL = `https://www.google.com/maps/place/data=!3m1!4b1!4m3!11m2!2s${PLACE_ID}!3e3`;
+
+export type { Place };
+
+/** Reads the places list in a Cloudflare-hosted browser — no local Chromium. */
+async function getPlacesViaBrowserRun(): Promise<Place[]> {
+  console.log("getData:", "Using Cloudflare Browser Run for", PLACES_URL);
+  // extractPlaces is passed in as an argument rather than referenced directly:
+  // this arrow is stringified and shipped to the browser, where module imports
+  // do not exist.
+  return await evaluateOnPage<Place[], [typeof extractPlaces]>(
+    PLACES_URL,
+    (extract) => extract(window.APP_INITIALIZATION_STATE),
+    { dependencies: [extractPlaces] },
+  );
 }
 
-// Function to parse the array into a JSON object
-function parseArrayToJson(data: any[]): Place {
-  return {
-    name: data[2],
-    address: data[1][4],
-    latitude: data[1][5][2],
-    longitude: data[1][5][3],
-    notes: data[3],
-    timestampMs: data[9][0] * 1000,
-    graphId: data[1][7],
-  };
-}
-
-async function getData() {
-  const placeId = "hie8OZlTQ5613oEw5K-wWg";
-  const url = `https://www.google.com/maps/place/data=!3m1!4b1!4m3!11m2!2s${placeId}!3e3`;
-
+/** Reads the places list in a locally launched headless Chromium. */
+async function getPlacesViaLocalChromium(): Promise<Place[]> {
   const browser = await puppeteer.launch({
     executablePath: await chromium.executablePath(),
     headless: true,
@@ -44,8 +40,8 @@ async function getData() {
   try {
     const page = await browser.newPage();
 
-    console.log("getData:", "Navigating to", url);
-    await page.goto(url, {
+    console.log("getData:", "Navigating to", PLACES_URL);
+    await page.goto(PLACES_URL, {
       waitUntil: "networkidle0",
       timeout: 30000,
     });
@@ -56,44 +52,27 @@ async function getData() {
 
     // Get the page content
     const appInitializationState = await page.evaluate(() => {
-      return (window as any).APP_INITIALIZATION_STATE;
+      return window.APP_INITIALIZATION_STATE;
     });
 
     console.log("getData:", "Parsing response");
-    const reduceLongest = (longest: any, current: any) => {
-      // find longest non-null array
-      if (current && current.length > longest.length) {
-        return current;
-      }
-      return longest;
-    };
-
-    const rawJsonString = appInitializationState
-      .reduce(reduceLongest, [])
-      .reduce(reduceLongest, "");
-
-    const cleanJsonString = rawJsonString
-      // remove the security stuff
-      .slice(rawJsonString.indexOf("\n") + 1)
-      // replace escaped quotes
-      .replace(/\\"/g, "'");
-
-    const rawData = JSON.parse(cleanJsonString)[0].reduce(reduceLongest, []);
-    const parsedData: Place[] = rawData.map((arr: any) =>
-      parseArrayToJson(arr),
-    );
-
-    // Save parsed data
-    await fs.writeFile(PLACES_SAVE_PATH, JSON.stringify(parsedData, null, 2));
-  } catch (error) {
-    console.error("getData:", "Error:", error);
+    return extractPlaces(appInitializationState);
   } finally {
     await browser.close();
   }
 }
 
+async function getData() {
+  const places = isBrowserRunConfigured()
+    ? await getPlacesViaBrowserRun()
+    : await getPlacesViaLocalChromium();
+
+  console.log("getData:", "Found", places.length, "places");
+  await fs.writeFile(PLACES_SAVE_PATH, JSON.stringify(places, null, 2));
+}
+
 async function getExistingPages(): Promise<Map<string, string>> {
-  const placesDbId = import.meta.env.NOTION_DB_ID_PLACES;
+  const placesDbId = process.env.NOTION_DB_ID_PLACES;
   // call helper so that we can handle paginated results
   const response = await queryNotionDatabase(placesDbId);
   // create map
@@ -110,7 +89,7 @@ async function getExistingPages(): Promise<Map<string, string>> {
 }
 
 async function createPlacePage(place: Place): Promise<CreatePageResponse> {
-  const placesDbId = import.meta.env.NOTION_DB_ID_PLACES;
+  const placesDbId = process.env.NOTION_DB_ID_PLACES;
   // Resolve the data_source_id from the database_id
   const dataSourceId = await getDataSourceId(placesDbId);
 
@@ -197,5 +176,6 @@ async function writeToNotion() {
   console.log("writeToNotion:", "Skipped pages", skippedPages.length);
 }
 
-getData();
-writeToNotion();
+// writeToNotion reads the file getData writes, so these have to be sequenced.
+await getData();
+await writeToNotion();

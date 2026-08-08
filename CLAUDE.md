@@ -170,6 +170,13 @@ NOTION_DB_ID_KNOWLEDGE_2025 # 2025 knowledge entries
 NOTION_DB_ID_KNOWLEDGE_2026 # 2026 knowledge entries
 ```
 
+Optional, for the places script (see [Places sync](#places-sync)):
+
+```env
+CLOUDFLARE_ACCOUNT_ID     # Cloudflare account ID
+CLOUDFLARE_API_TOKEN      # token with "Browser Rendering - Edit"
+```
+
 #### Database Schema
 
 Both blog and projects databases use this schema (defined in `src/content.config.ts`):
@@ -618,6 +625,44 @@ const { title, class: className } = Astro.props;
 ]}>
 ```
 
+### Places sync
+
+`src/lib/places.ts` scrapes a Google Maps saved list and mirrors it into the
+Notion places database. Google Maps ships the list on `window.APP_INITIALIZATION_STATE`,
+so a real browser is required — plain `fetch` is not enough.
+
+Two backends, picked automatically:
+
+- **Cloudflare Browser Run** when `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`
+  are set. No local Chromium, so this works in CI and other slim environments.
+- **Local headless Chromium** (`puppeteer` + `@sparticuz/chromium`) otherwise.
+
+```bash
+pnpm places                    # sync places.json, then write new rows to Notion
+pnpm places:probe              # live curl check that the window var is readable
+```
+
+Browser Run's REST API has no `page.evaluate()`. `evaluateOnPage` in
+`src/lib/browser-run.ts` emulates it through the `/content` endpoint's
+`addScriptTag` hook: the injected script reads `window`, then collapses the
+document to a single base64 blob that gets decoded back on the Node side.
+
+Functions handed to `evaluateOnPage` are shipped via `Function.prototype.toString()`,
+so they **must be self-contained** — no imports, no module scope. Anything they
+need goes through `dependencies` and arrives as an argument:
+
+```ts
+evaluateOnPage<Place[], [typeof extractPlaces]>(
+  url,
+  (extract) => extract(window.APP_INITIALIZATION_STATE),
+  { dependencies: [extractPlaces] },
+);
+```
+
+Referencing an import directly looks fine locally but breaks in the page, because
+the bundler rewrites it to a module-namespace lookup. `buildPayloadScript` detects
+that and throws rather than letting it fail in a remote browser.
+
 ### Adding Tests
 
 Create test file in `src/lib/tests/`:
@@ -665,6 +710,10 @@ NOTION_DB_ID_PLACES=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 NOTION_DB_ID_KNOWLEDGE_2024=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 NOTION_DB_ID_KNOWLEDGE_2025=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 NOTION_DB_ID_KNOWLEDGE_2026=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Cloudflare Browser Run (optional — places script falls back to local Chromium)
+CLOUDFLARE_ACCOUNT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+CLOUDFLARE_API_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 **How to get Notion IDs:**

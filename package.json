@@ -10,6 +10,8 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "places": "jiti src/lib/places.ts",
+    "places:probe": "./scripts/browser-run-window-state.sh",
     "test": "vitest",
     "coverage": "vitest run --coverage"
   },
