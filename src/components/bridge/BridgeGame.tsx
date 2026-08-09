@@ -32,7 +32,6 @@ import {
   isSameSide,
   SEAT_NAMES,
   Seat,
-  STRAIN_SYMBOLS,
   type Card,
   type Seat as SeatType,
 } from "../../lib/bridge/cards";
@@ -157,6 +156,12 @@ const BridgeGame: Component = () => {
       humanControls(seatToPlay(current))
     );
   };
+
+  /**
+   * The bidding box is the only panel beside the table, so once the auction is
+   * over the table takes the full width.
+   */
+  const sidePanel = () => phase() === "bidding";
 
   const yourTurnToBid = () => {
     const current = auction();
@@ -649,114 +654,85 @@ const BridgeGame: Component = () => {
       </Show>
 
       <Show when={phase() !== "review"}>
-        <div class="grid gap-4 lg:grid-cols-[1fr_20rem]">
+        <div
+          class={clsx("grid gap-4", sidePanel() && "lg:grid-cols-[1fr_20rem]")}
+        >
           {/* The table */}
           <div class="max-w-full rounded-xl bg-[#2f5d50] p-3 shadow-inner sm:p-4">
             {/*
-              North and South both get the full width of the table. When you are
-              declarer, North is the dummy you have to play from, so its cards
-              need to be the same size and just as easy to hit as your own.
+              The felt spans the page, but the seats stay within a comfortable
+              width and centred, so widening the table does not just open up a
+              gap between the players.
             */}
-            <div class="mb-3 border-b border-white/10 pb-3">
-              <SeatHand seat={Seat.North} large />
-            </div>
-
-            <div class="grid grid-cols-[2.75rem_1fr_2.75rem] items-center justify-items-center gap-1 sm:grid-cols-[7rem_1fr_7rem] sm:gap-2">
-              <SeatHand seat={Seat.West} vertical />
-
-              <div class="flex min-h-40 items-center justify-center">
-                <Show
-                  when={phase() === "play" && trickCards()}
-                  fallback={
-                    <div class="w-full max-w-xs rounded-lg bg-white/90 p-3">
-                      <Show
-                        when={auction()}
-                        fallback={<p class="text-sm">Dealing…</p>}
-                      >
-                        {(current) => (
-                          <AuctionTable
-                            auction={current()}
-                            highlightSeat={
-                              isAuctionComplete(current())
-                                ? undefined
-                                : seatToCall(current())
-                            }
-                          />
-                        )}
-                      </Show>
-                    </div>
-                  }
-                >
-                  {(trick) => (
-                    <TrickView
-                      leader={trick().leader}
-                      cards={trick().cards}
-                      winner={trick().winner}
-                    />
-                  )}
-                </Show>
+            <div class="mx-auto w-full max-w-3xl">
+              {/*
+                North and South both get the full width of the table. When you
+                are declarer, North is the dummy you have to play from, so its
+                cards need to be the same size and just as easy to hit as your
+                own.
+              */}
+              <div class="mb-3 border-b border-white/10 pb-3">
+                <SeatHand seat={Seat.North} large />
               </div>
 
-              <SeatHand seat={Seat.East} vertical />
-            </div>
+              <div class="grid grid-cols-[2.75rem_1fr_2.75rem] items-center justify-items-center gap-1 sm:grid-cols-[7rem_1fr_7rem] sm:gap-2">
+                <SeatHand seat={Seat.West} vertical />
 
-            {/* Your hand gets the full width of the table so thirteen cards fit. */}
-            <div class="mt-4 border-t border-white/10 pt-3">
-              <SeatHand seat={Seat.South} large />
-            </div>
-          </div>
-
-          {/* Side panel */}
-          <div class="flex flex-col gap-4">
-            <Show when={phase() === "bidding" && auction()}>
-              {(current) => (
-                <Panel title="Bidding box">
-                  <BiddingBox
-                    auction={current()}
-                    disabled={!yourTurnToBid()}
-                    onCall={submitCall}
-                  />
-                </Panel>
-              )}
-            </Show>
-
-            <Show when={phase() === "play" && auction()}>
-              {(current) => (
-                <Panel title="Auction">
-                  <AuctionTable auction={current()} />
-                  <Show when={contract()}>
-                    {(final) => (
-                      <p class="mt-2 text-sm text-stone-600">
-                        <span class={clsx(suitColor(final().strain))}>
-                          {final().level}
-                          {STRAIN_SYMBOLS[final().strain]}
-                        </span>{" "}
-                        by {SEAT_NAMES[final().declarer]}
-                        {final().doubled !== "none" && ", doubled"}
-                      </p>
+                <div class="flex min-h-40 items-center justify-center">
+                  <Show
+                    when={phase() === "play" && trickCards()}
+                    fallback={
+                      <div class="w-full max-w-xs rounded-lg bg-white/90 p-3">
+                        <Show
+                          when={auction()}
+                          fallback={<p class="text-sm">Dealing…</p>}
+                        >
+                          {(current) => (
+                            <AuctionTable
+                              auction={current()}
+                              highlightSeat={
+                                isAuctionComplete(current())
+                                  ? undefined
+                                  : seatToCall(current())
+                              }
+                            />
+                          )}
+                        </Show>
+                      </div>
+                    }
+                  >
+                    {(trick) => (
+                      <TrickView
+                        leader={trick().leader}
+                        cards={trick().cards}
+                        winner={trick().winner}
+                      />
                     )}
                   </Show>
-                </Panel>
-              )}
-            </Show>
+                </div>
 
-            <Show when={phase() === "loading" || phase() === "analysing"}>
-              <Panel>
-                <p class="text-sm text-stone-600">{status()}</p>
-              </Panel>
-            </Show>
+                <SeatHand seat={Seat.East} vertical />
+              </div>
 
-            <Panel title="How this works">
-              <p class="text-sm leading-relaxed text-stone-600">
-                You are South. The other three seats are robots that bid with a
-                standard American system and choose cards by imagining deals
-                consistent with what they have seen, solving each one exactly,
-                and playing what wins the most tricks on average. They cannot
-                see your hand. When the board is over you get a full double
-                dummy review of the auction and the play.
-              </p>
-            </Panel>
+              {/* Your hand gets the full width so thirteen cards fit. */}
+              <div class="mt-4 border-t border-white/10 pt-3">
+                <SeatHand seat={Seat.South} large />
+              </div>
+            </div>
           </div>
+
+          {/* The bidding box, which is the only thing that needs a side panel. */}
+          <Show when={sidePanel() && auction()}>
+            {(current) => (
+              <Panel title="Bidding box" class="self-start">
+                <BiddingBox
+                  auction={current()}
+                  disabled={!yourTurnToBid()}
+                  onCall={submitCall}
+                />
+              </Panel>
+            )}
+          </Show>
         </div>
       </Show>
 
