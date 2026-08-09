@@ -578,14 +578,14 @@ const BridgeGame: Component = () => {
     <div class="flex flex-col gap-4">
       <Show when={error()}>
         {(message) => (
-          <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+          <div class="border border-red-200 bg-red-50 p-4 text-sm text-red-800">
             The bridge engine could not start: {message()}
           </div>
         )}
       </Show>
 
       {/* Scoreboard */}
-      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-lg border border-stone-200 bg-white/80 px-4 py-3 text-sm">
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border border-stone-200 bg-white/80 px-4 py-3 text-sm">
         <span class="text-stone-500">
           Board <strong class="text-stone-900">{boardNumber()}</strong>
         </span>
@@ -658,7 +658,7 @@ const BridgeGame: Component = () => {
           class={clsx("grid gap-4", sidePanel() && "lg:grid-cols-[1fr_20rem]")}
         >
           {/* The table */}
-          <div class="max-w-full rounded-xl bg-[#2f5d50] p-3 shadow-inner sm:p-4">
+          <div class="max-w-full bg-[#2f5d50] p-3 shadow-inner sm:p-4">
             {/*
               The felt spans the page, but the seats stay within a comfortable
               width and centred, so widening the table does not just open up a
@@ -682,7 +682,7 @@ const BridgeGame: Component = () => {
                   <Show
                     when={phase() === "play" && trickCards()}
                     fallback={
-                      <div class="w-full max-w-xs rounded-lg bg-white/90 p-3">
+                      <div class="w-full max-w-xs bg-white/90 p-3">
                         <Show
                           when={auction()}
                           fallback={<p class="text-sm">Dealing…</p>}
@@ -741,7 +741,7 @@ const BridgeGame: Component = () => {
           <button
             type="button"
             onClick={() => void startBoard(boardNumber() + 1)}
-            class="rounded-md border border-stone-300 bg-white px-3 py-1.5 text-sm text-stone-700 transition hover:border-stone-800"
+            class="border border-stone-300 bg-white px-3 py-1.5 text-sm text-stone-700 transition hover:border-stone-800"
           >
             Skip to a new board
           </button>
