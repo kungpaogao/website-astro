@@ -50,6 +50,7 @@
     "@astrojs/react": "^5.0.0",
     "@astrojs/sitemap": "^3.7.1",
     "@tailwindcss/vite": "^4.1.18",
+    "bridge-dds": "^1.4.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "leaflet": "^1.9.4",
