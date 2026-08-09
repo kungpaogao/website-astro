@@ -17,10 +17,13 @@ import {
 } from "solid-js";
 import {
   auctionResult,
+  callToString,
   contractToString,
   createAuction,
   isAuctionComplete,
+  isLegalCall,
   makeCall,
+  sameCall,
   seatToCall,
   type Auction,
   type Call,
@@ -101,6 +104,8 @@ const BridgeGame: Component = () => {
   const [busy, setBusy] = createSignal(false);
   /** Card armed by a first click, played by a second. */
   const [selectedCard, setSelectedCard] = createSignal<Card>();
+  /** Call armed by a first click, made by a second. */
+  const [selectedCall, setSelectedCall] = createSignal<Call>();
   /** Link to the board under review, once there is something to share. */
   const [shareUrl, setShareUrl] = createSignal<string>();
   /** True when this board arrived from a link rather than being dealt here. */
@@ -172,6 +177,17 @@ const BridgeGame: Component = () => {
     );
   };
 
+  /** What an armed card or call is waiting for, shown in place of the status. */
+  const confirmPrompt = (): string | undefined => {
+    const card = selectedCard();
+    if (card !== undefined && yourTurnToPlay())
+      return `Click ${cardName(card)} again to play it.`;
+    const call = selectedCall();
+    if (call !== undefined && yourTurnToBid())
+      return `Click ${callToString(call)} again to bid it.`;
+    return undefined;
+  };
+
   // ------------------------------------------------------------------
   // Board lifecycle
   // ------------------------------------------------------------------
@@ -189,6 +205,7 @@ const BridgeGame: Component = () => {
     setDisplayTrick(undefined);
     setBusy(false);
     setSelectedCard(undefined);
+    setSelectedCall(undefined);
     setShareUrl(undefined);
     setShared(false);
     // A dealt board is not the shared one any more, so stop advertising it.
@@ -235,9 +252,28 @@ const BridgeGame: Component = () => {
     }
   }
 
+  /**
+   * Calls take two clicks for the same reason cards do: the bidding box is a
+   * dense grid, and a call once made cannot be taken back.
+   */
+  function clickCall(call: Call) {
+    const current = auction();
+    if (!current || !yourTurnToBid()) return;
+    if (!isLegalCall(current, call)) return;
+
+    const armed = selectedCall();
+    if (armed && sameCall(armed, call)) {
+      submitCall(call);
+      return;
+    }
+    setSelectedCall(call);
+  }
+
   function submitCall(call: Call) {
     const current = auction();
     if (!current || seatToCall(current) !== HUMAN) return;
+    if (!isLegalCall(current, call)) return;
+    setSelectedCall(undefined);
     setAuction(makeCall(current, call));
     void runAuction(generation);
   }
@@ -633,12 +669,7 @@ const BridgeGame: Component = () => {
           </span>
         </Show>
         <span class="ml-auto text-stone-500 italic">
-          <Show
-            when={selectedCard() !== undefined && yourTurnToPlay()}
-            fallback={status()}
-          >
-            Click {cardName(selectedCard()!)} again to play it.
-          </Show>
+          {confirmPrompt() ?? status()}
         </span>
       </div>
 
@@ -728,7 +759,8 @@ const BridgeGame: Component = () => {
                 <BiddingBox
                   auction={current()}
                   disabled={!yourTurnToBid()}
-                  onCall={submitCall}
+                  selectedCall={selectedCall()}
+                  onCall={clickCall}
                 />
               </Panel>
             )}

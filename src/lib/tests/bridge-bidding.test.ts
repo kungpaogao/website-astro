@@ -4,9 +4,13 @@ import {
   bidRank,
   callToString,
   createAuction,
+  DOUBLE,
   isAuctionComplete,
   isLegalCall,
   makeCall,
+  PASS,
+  REDOUBLE,
+  sameCall,
   seatToCall,
   type Auction,
 } from "../bridge/auction";
@@ -64,6 +68,27 @@ describe("auction mechanics", () => {
     ).toBeGreaterThan(
       bidRank({ kind: "bid", level: 1, strain: Strain.NoTrump }),
     );
+  });
+
+  // The bidding box arms a call on the first click and makes it on the second,
+  // and the two clicks hand it separate objects, so the match has to be on value.
+  it("matches calls by value rather than by identity", () => {
+    const threeHearts = {
+      kind: "bid",
+      level: 3,
+      strain: Strain.Hearts,
+    } as const;
+    expect(sameCall(threeHearts, { ...threeHearts })).toBe(true);
+    expect(
+      sameCall(threeHearts, { kind: "bid", level: 4, strain: Strain.Hearts }),
+    ).toBe(false);
+    expect(
+      sameCall(threeHearts, { kind: "bid", level: 3, strain: Strain.Spades }),
+    ).toBe(false);
+    expect(sameCall(PASS, { kind: "pass" })).toBe(true);
+    expect(sameCall(PASS, DOUBLE)).toBe(false);
+    expect(sameCall(DOUBLE, REDOUBLE)).toBe(false);
+    expect(sameCall(PASS, threeHearts)).toBe(false);
   });
 
   it("only allows a bid that is higher than the last one", () => {

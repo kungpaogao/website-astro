@@ -27,6 +27,7 @@ import {
   isLegalCall,
   PASS,
   REDOUBLE,
+  sameCall,
   type Auction,
   type Call,
 } from "../../lib/bridge/auction";
@@ -316,14 +317,25 @@ export const CallChip: Component<{ call: Call }> = (props) => {
   );
 };
 
-/** The bidding box. Illegal calls are shown but disabled, as at a real table. */
+/**
+ * The bidding box. Illegal calls are shown but disabled, as at a real table.
+ *
+ * Like the cards, a call takes two clicks: the first arms it, the second makes
+ * it. A bid cannot be taken back either, and the bids sit in a dense grid where
+ * a mis-tap is easy.
+ */
 export const BiddingBox: Component<{
   auction: Auction;
   onCall: (call: Call) => void;
   disabled?: boolean;
+  /** The call armed by a first click, if any. */
+  selectedCall?: Call;
 }> = (props) => {
   const allowed = (call: Call) =>
     !props.disabled && isLegalCall(props.auction, call);
+
+  const armed = (call: Call) =>
+    props.selectedCall !== undefined && sameCall(props.selectedCall, call);
 
   return (
     <div class="flex flex-col gap-2">
@@ -333,12 +345,15 @@ export const BiddingBox: Component<{
             <button
               type="button"
               disabled={!allowed(call)}
+              aria-pressed={allowed(call) ? armed(call) : undefined}
               onClick={() => props.onCall(call)}
               class={clsx(
                 "flex-1 border px-3 py-2 text-sm font-medium transition",
                 allowed(call)
                   ? "border-stone-300 bg-white text-stone-800 hover:border-stone-800 hover:bg-stone-50"
                   : "border-stone-200 bg-stone-100 text-stone-300",
+                armed(call) &&
+                  "border-stone-900 bg-stone-100 ring-2 ring-stone-900",
               )}
             >
               {callToString(call)}
@@ -353,6 +368,7 @@ export const BiddingBox: Component<{
             <button
               type="button"
               disabled={!allowed(call)}
+              aria-pressed={allowed(call) ? armed(call) : undefined}
               onClick={() => props.onCall(call)}
               class={clsx(
                 "border py-1.5 text-sm transition",
@@ -360,6 +376,8 @@ export const BiddingBox: Component<{
                   ? "cursor-pointer border-stone-300 bg-white hover:border-stone-800 hover:bg-stone-50"
                   : "border-stone-200 bg-stone-100 opacity-40",
                 suitColor(call.strain as number),
+                armed(call) &&
+                  "border-stone-900 bg-stone-100 ring-2 ring-stone-900",
               )}
             >
               <span class="text-stone-900">{call.level}</span>
