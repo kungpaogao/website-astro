@@ -29,9 +29,9 @@ import {
   STRAIN_SYMBOLS,
   Strain,
   STRAINS,
+  Seat,
   SUIT_SYMBOLS,
   type Card,
-  type Seat,
   type Suit,
 } from "./cards";
 import {
@@ -101,10 +101,24 @@ export interface PlayReview {
 
 export interface BoardAnalysis {
   table: DoubleDummyTable;
+  /** Par as the solver reports it: score is from North-South's point of view. */
   par: { score: number; contracts: string[] };
   contract?: Contract;
   declarerTricks: number;
+  /** What you actually scored, positive when it went your way. */
   score: number;
+  /**
+   * The best score available to you had both sides bid and played perfectly.
+   *
+   * This is par, not the value of your best contract: par is an equilibrium
+   * between two perfect sides, so it already accounts for the opponents bidding
+   * on or sacrificing over anything you might have reached. It can therefore be
+   * negative — on some deals the cards belong to them and the best you can do is
+   * hold the damage down.
+   */
+  parScore: number;
+  /** How far the result sat from par, in IMPs. Zero means you matched par. */
+  impsVsPar: number;
   makeable: number;
   bidding: BiddingReview;
   play: PlayReview;
@@ -512,12 +526,16 @@ export function analyseBoard(
     score = isSameSide(contract.declarer, seat) ? raw.score : -raw.score;
   }
 
+  const parScore = isSameSide(seat, Seat.North) ? par.score : -par.score;
+
   return {
     table,
     par,
     contract,
     declarerTricks,
     score,
+    parScore,
+    impsVsPar: imps(score - parScore),
     makeable,
     bidding,
     play,

@@ -3,7 +3,7 @@
  */
 
 import clsx from "clsx";
-import { For, Show, type Component } from "solid-js";
+import { createSignal, For, Show, type Component } from "solid-js";
 import {
   cardName,
   cardSuit,
@@ -95,17 +95,45 @@ export const Review: Component<{
   analysis: BoardAnalysis;
   hands: Hands;
   seat: Seat;
+  /** Link that reopens this exact board, deal, auction and play included. */
+  shareUrl?: string;
+  /** True when this board arrived from someone else's link. */
+  shared?: boolean;
   onNextBoard: () => void;
 }> = (props) => {
   const bidding = () => props.analysis.bidding;
   const play = () => props.analysis.play;
+  const [copyState, setCopyState] = createSignal<"idle" | "copied" | "failed">(
+    "idle",
+  );
+
+  async function copyLink() {
+    const url = props.shareUrl;
+    if (!url) return;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopyState("copied");
+    } catch {
+      // Browsers can refuse clipboard access. The link is in the field next to
+      // the button either way, so there is always something to copy by hand.
+      setCopyState("failed");
+    }
+    setTimeout(() => setCopyState("idle"), 2500);
+  }
 
   return (
     <div class="flex flex-col gap-4">
+      <Show when={props.shared}>
+        <p class="rounded-lg border border-stone-200 bg-white/80 px-4 py-2 text-sm text-stone-600">
+          This board came from a link. The review below is the whole hand as it
+          was played.
+        </p>
+      </Show>
+
       <Panel>
         <h2 class="mb-1 font-serif text-xl text-stone-900">Result</h2>
         <p class="text-stone-700">{props.analysis.headline}</p>
-        <div class="mt-3 flex flex-wrap gap-4 text-sm text-stone-600">
+        <div class="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-stone-600">
           <span>
             Your score:{" "}
             <strong
@@ -118,15 +146,56 @@ export const Review: Component<{
               {props.analysis.score}
             </strong>
           </span>
+          <span>
+            Best available:{" "}
+            <strong class="text-stone-900 tabular-nums">
+              {props.analysis.parScore >= 0 ? "+" : ""}
+              {props.analysis.parScore}
+            </strong>
+          </span>
+          <span>
+            <Show
+              when={props.analysis.impsVsPar !== 0}
+              fallback={
+                <strong class="text-emerald-700">You matched par</strong>
+              }
+            >
+              <strong
+                class={clsx(
+                  "tabular-nums",
+                  props.analysis.impsVsPar > 0
+                    ? "text-emerald-700"
+                    : "text-amber-700",
+                )}
+              >
+                {props.analysis.impsVsPar > 0 ? "+" : ""}
+                {props.analysis.impsVsPar} IMPs
+              </strong>{" "}
+              {props.analysis.impsVsPar > 0 ? "better than" : "off"} par
+            </Show>
+          </span>
           <Show when={props.analysis.contract}>
             {(contract) => (
               <span>
-                Double dummy: {contractToString(contract())} takes{" "}
-                {props.analysis.makeable} tricks
+                {contractToString(contract())} is worth{" "}
+                {props.analysis.makeable} tricks double dummy
               </span>
             )}
           </Show>
         </div>
+
+        <p class="mt-3 border-t border-stone-100 pt-2 text-xs text-stone-500">
+          <strong class="text-stone-600">Best available</strong> is the par
+          score — what you would have scored if every player at the table, you
+          included, had bid and played perfectly with all four hands face up. It
+          is an equilibrium between two perfect sides rather than a ceiling on
+          your own result, so it can be negative when the cards belong to the
+          opponents, and you can beat it when a robot errs.
+          <Show when={props.analysis.par.contracts.length > 0}>
+            {" "}
+            Par here is {props.analysis.par.contracts.join(" or ")}.
+          </Show>
+        </p>
       </Panel>
 
       <Panel title="The auction">
@@ -221,13 +290,48 @@ export const Review: Component<{
         </p>
       </Panel>
 
-      <button
-        type="button"
-        onClick={props.onNextBoard}
-        class="self-start rounded-md bg-stone-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-700"
-      >
-        Next board
-      </button>
+      <Show when={props.shareUrl}>
+        {(url) => (
+          <Panel title="Share this board">
+            <p class="mb-2 text-sm text-stone-600">
+              The whole board — the deal, the auction and all fifty two cards —
+              packs into this link, so anyone who opens it sees exactly this
+              review.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <input
+                type="text"
+                readonly
+                value={url()}
+                aria-label="Link to this board"
+                onFocus={(event) => event.currentTarget.select()}
+                class="min-w-0 flex-1 rounded-md border border-stone-300 bg-stone-50 px-3 py-2 font-mono text-xs text-stone-700"
+              />
+              <button
+                type="button"
+                onClick={() => void copyLink()}
+                class="rounded-md border border-stone-300 bg-white px-4 py-2 text-sm text-stone-700 transition hover:border-stone-800"
+              >
+                {copyState() === "copied"
+                  ? "Copied"
+                  : copyState() === "failed"
+                    ? "Select and copy"
+                    : "Copy link"}
+              </button>
+            </div>
+          </Panel>
+        )}
+      </Show>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={props.onNextBoard}
+          class="rounded-md bg-stone-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-700"
+        >
+          {props.shared ? "Play a board" : "Next board"}
+        </button>
+      </div>
     </div>
   );
 };

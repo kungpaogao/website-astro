@@ -58,6 +58,12 @@ import {
   type PlayState,
 } from "../../lib/bridge/play";
 import type { BoardAnalysis } from "../../lib/bridge/analysis";
+import {
+  decodeBoard,
+  encodeBoard,
+  replayRecord,
+  type BoardRecord,
+} from "../../lib/bridge/share";
 import { Review } from "./Review";
 import {
   AuctionTable,
@@ -96,6 +102,10 @@ const BridgeGame: Component = () => {
   const [busy, setBusy] = createSignal(false);
   /** Card armed by a first click, played by a second. */
   const [selectedCard, setSelectedCard] = createSignal<Card>();
+  /** Link to the board under review, once there is something to share. */
+  const [shareUrl, setShareUrl] = createSignal<string>();
+  /** True when this board arrived from a link rather than being dealt here. */
+  const [shared, setShared] = createSignal(false);
 
   let generation = 0;
   /**
@@ -110,9 +120,11 @@ const BridgeGame: Component = () => {
   onMount(() => {
     const created = new BridgeEngine();
     setEngine(created);
+
+    const code = new URLSearchParams(window.location.search).get("b");
     created
       .warmup()
-      .then(() => startBoard(1))
+      .then(() => (code ? openSharedBoard(code) : startBoard(1)))
       .catch((cause: Error) => setError(cause.message));
     onCleanup(() => created.dispose());
   });
@@ -172,6 +184,12 @@ const BridgeGame: Component = () => {
     setDisplayTrick(undefined);
     setBusy(false);
     setSelectedCard(undefined);
+    setShareUrl(undefined);
+    setShared(false);
+    // A dealt board is not the shared one any more, so stop advertising it.
+    if (new URLSearchParams(window.location.search).has("b")) {
+      window.history.replaceState(null, "", window.location.pathname);
+    }
     setPhase("bidding");
     await runAuction(mine);
   }
@@ -361,11 +379,13 @@ const BridgeGame: Component = () => {
     setBusy(false);
     setStatus("Working out what the cards were worth…");
 
+    const trace = finished ? playedCards(finished) : [];
+
     try {
       const result = await engine()!.analyse({
         hands: currentBoard.hands,
         auction: currentAuction,
-        trace: finished ? playedCards(finished) : [],
+        trace,
         dealer: currentBoard.dealer,
         vulnerability: currentBoard.vulnerability,
         seat: HUMAN,
@@ -373,6 +393,78 @@ const BridgeGame: Component = () => {
       });
       if (generation !== mine) return;
       setAnalysis(result);
+      publishShareUrl({
+        boardNumber: boardNumber(),
+        dealer: currentBoard.dealer,
+        vulnerability: currentBoard.vulnerability,
+        hands: currentBoard.hands,
+        auction: currentAuction,
+        trace,
+      });
+      setPhase("review");
+      setStatus("");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : String(cause));
+    }
+  }
+
+  /** Builds the link for the board just reviewed. */
+  function publishShareUrl(record: BoardRecord) {
+    try {
+      const code = encodeBoard(record);
+      const { origin, pathname } = window.location;
+      setShareUrl(`${origin}${pathname}?b=${code}`);
+    } catch {
+      // A board that will not encode simply cannot be shared; the review is
+      // still perfectly usable, so there is nothing to report.
+      setShareUrl(undefined);
+    }
+  }
+
+  /** Opens a board someone sent you, straight into its review. */
+  async function openSharedBoard(code: string) {
+    generation += 1;
+    const mine = generation;
+
+    let record: BoardRecord;
+    try {
+      record = decodeBoard(code);
+    } catch {
+      setStatus("That link did not describe a board, so here is a fresh one.");
+      window.history.replaceState(null, "", window.location.pathname);
+      await startBoard(1);
+      return;
+    }
+
+    setShared(true);
+    setBoardNumber(record.boardNumber);
+    setBoard({
+      number: record.boardNumber,
+      dealer: record.dealer,
+      vulnerability: record.vulnerability,
+      hands: record.hands,
+    });
+    setAuction(record.auction);
+    // Replaying the trace gives the scoreboard its contract and trick count, so
+    // a shared review reads exactly like one you played yourself.
+    const finished = replayRecord(record);
+    setState(finished);
+    setPhase("analysing");
+    setStatus("Working out what the cards were worth…");
+
+    try {
+      const result = await engine()!.analyse({
+        hands: record.hands,
+        auction: record.auction,
+        trace: record.trace,
+        dealer: record.dealer,
+        vulnerability: record.vulnerability,
+        seat: HUMAN,
+        declarerTricks: finished ? finished.declarerTricks : 0,
+      });
+      if (generation !== mine) return;
+      setAnalysis(result);
+      setShareUrl(window.location.href);
       setPhase("review");
       setStatus("");
     } catch (cause) {
@@ -550,7 +642,9 @@ const BridgeGame: Component = () => {
           analysis={analysis()!}
           hands={board()!.hands}
           seat={HUMAN}
-          onNextBoard={() => void startBoard(boardNumber() + 1)}
+          shareUrl={shareUrl()}
+          shared={shared()}
+          onNextBoard={() => void startBoard(shared() ? 1 : boardNumber() + 1)}
         />
       </Show>
 

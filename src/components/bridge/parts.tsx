@@ -79,7 +79,7 @@ export const CardFace: Component<{
         // never shows through and red suits stay red.
         props.dimmed && "border-stone-300 bg-stone-100",
         // A selected card lifts out of the hand until it is played.
-        props.selected && "z-10 -translate-y-3 shadow-xl ring-2 ring-white",
+        props.selected && "z-10 -translate-y-3 shadow-xl ring-2 ring-stone-900",
       )}
     >
       {/* The index sits in the corner so a fanned hand stays readable. */}

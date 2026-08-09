@@ -421,6 +421,7 @@ your play. Everything runs in the browser — there is no server component.
 | `dds.worker.ts` | Web worker hosting the solver |
 | `engine-client.ts` | Main thread promise API over the worker |
 | `analysis.ts` | Post mortem: par, best contract, per-bid and per-card review |
+| `share.ts` | Packs a finished board into a ~50 character URL code |
 
 ### Key invariants
 
@@ -435,12 +436,21 @@ your play. Everything runs in the browser — there is no server component.
   because the last trick is forced.
 - **Bidding order is not suit order.** `Suit` values run spades..clubs to match
   the solver; `strainOrdinal` in `auction.ts` maps them to auction order.
+- **Par is not "your best score".** `parScore` on the analysis is the double
+  dummy equilibrium between two perfect sides, so it can be negative, and a
+  robot's error can leave you ahead of it. The best contract *your* side could
+  buy undisturbed is the separate `bidding.best`.
+- **Board codes are versioned.** `share.ts` writes a version nibble and indexes
+  cards by their position in the legal move list, so any change to `legalPlays`
+  ordering or to the field layout must bump `VERSION` or old links will decode
+  to the wrong board.
 
 ### Tests
 
 `bridge-dds` (solver conventions), `bridge-bidding` (auction mechanics, openings,
-responses, 200 random auctions that must terminate), and `bridge-game` (a full
-board bid and played by robots, then reviewed).
+responses, 200 random auctions that must terminate), `bridge-game` (a full board
+bid and played by robots, then reviewed), and `bridge-share` (board code round
+trips, including passed out and redoubled boards).
 
 ---
 
