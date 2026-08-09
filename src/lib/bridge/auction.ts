@@ -54,6 +54,13 @@ export function bidRank(call: Call): number {
   return (call.level! - 1) * 5 + strainOrdinal(call.strain!);
 }
 
+/** Two calls are the same call when they would appear the same in the auction. */
+export function sameCall(a: Call, b: Call): boolean {
+  if (a.kind !== b.kind) return false;
+  if (a.kind !== "bid") return true;
+  return a.level === b.level && a.strain === b.strain;
+}
+
 export function callToString(call: Call): string {
   switch (call.kind) {
     case "pass":
