@@ -124,7 +124,7 @@ export const Review: Component<{
   return (
     <div class="flex flex-col gap-4">
       <Show when={props.shared}>
-        <p class="rounded-lg border border-stone-200 bg-white/80 px-4 py-2 text-sm text-stone-600">
+        <p class="border border-stone-200 bg-white/80 px-4 py-2 text-sm text-stone-600">
           This board came from a link. The review below is the whole hand as it
           was played.
         </p>
@@ -218,7 +218,7 @@ export const Review: Component<{
           <ul class="mt-3 flex flex-col gap-2">
             <For each={bidding().notes}>
               {(note) => (
-                <li class="rounded border border-stone-100 bg-stone-50 p-2 text-sm">
+                <li class="border border-stone-100 bg-stone-50 p-2 text-sm">
                   <div class="flex items-baseline gap-2">
                     <span class="font-medium text-stone-900">
                       You bid {callToString(note.call)}
@@ -248,7 +248,7 @@ export const Review: Component<{
           <ul class="mt-3 flex flex-col gap-2">
             <For each={play().notes}>
               {(note) => (
-                <li class="rounded border border-stone-100 bg-stone-50 p-2 text-sm">
+                <li class="border border-stone-100 bg-stone-50 p-2 text-sm">
                   <div class="flex items-baseline gap-2">
                     <span class="text-xs tracking-wide text-stone-500 uppercase">
                       Trick {note.trick}
@@ -305,12 +305,12 @@ export const Review: Component<{
                 value={url()}
                 aria-label="Link to this board"
                 onFocus={(event) => event.currentTarget.select()}
-                class="min-w-0 flex-1 rounded-md border border-stone-300 bg-stone-50 px-3 py-2 font-mono text-xs text-stone-700"
+                class="min-w-0 flex-1 border border-stone-300 bg-stone-50 px-3 py-2 font-mono text-xs text-stone-700"
               />
               <button
                 type="button"
                 onClick={() => void copyLink()}
-                class="rounded-md border border-stone-300 bg-white px-4 py-2 text-sm text-stone-700 transition hover:border-stone-800"
+                class="border border-stone-300 bg-white px-4 py-2 text-sm text-stone-700 transition hover:border-stone-800"
               >
                 {copyState() === "copied"
                   ? "Copied"
@@ -327,7 +327,7 @@ export const Review: Component<{
         <button
           type="button"
           onClick={props.onNextBoard}
-          class="rounded-md bg-stone-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-700"
+          class="bg-stone-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-700"
         >
           {props.shared ? "Play a board" : "Next board"}
         </button>

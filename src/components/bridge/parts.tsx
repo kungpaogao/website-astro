@@ -67,7 +67,7 @@ export const CardFace: Component<{
       aria-pressed={props.playable ? props.selected === true : undefined}
       onClick={() => props.onPlay?.(props.card)}
       class={clsx(
-        "relative flex flex-col items-center rounded-md border bg-white leading-none shadow-sm transition",
+        "relative flex flex-col items-center rounded-sm border bg-white leading-none shadow-sm transition",
         props.compact
           ? "h-11 w-8 px-1 pt-1 text-xs"
           : "h-16 w-11 px-1 pt-1 text-sm sm:h-22 sm:w-16 sm:px-1.5 sm:pt-1.5",
@@ -105,7 +105,7 @@ export const CardBack: Component<{ compact?: boolean }> = (props) => (
   <div
     aria-hidden="true"
     class={clsx(
-      "rounded-md border border-stone-400 bg-stone-300 shadow-sm",
+      "rounded-sm border border-stone-400 bg-stone-300 shadow-sm",
       props.compact ? "h-10 w-7" : "h-16 w-11 sm:h-20 sm:w-14",
     )}
     style={{
@@ -219,7 +219,7 @@ export const TrickView: Component<{
             class={clsx(
               "transition",
               props.winner === seat &&
-                "rounded-md ring-2 ring-amber-400 ring-offset-2 ring-offset-transparent",
+                "rounded-sm ring-2 ring-amber-400 ring-offset-2 ring-offset-transparent",
             )}
           >
             <CardFace card={card()} />
@@ -335,7 +335,7 @@ export const BiddingBox: Component<{
               disabled={!allowed(call)}
               onClick={() => props.onCall(call)}
               class={clsx(
-                "flex-1 rounded-md border px-3 py-2 text-sm font-medium transition",
+                "flex-1 border px-3 py-2 text-sm font-medium transition",
                 allowed(call)
                   ? "border-stone-300 bg-white text-stone-800 hover:border-stone-800 hover:bg-stone-50"
                   : "border-stone-200 bg-stone-100 text-stone-300",
@@ -355,7 +355,7 @@ export const BiddingBox: Component<{
               disabled={!allowed(call)}
               onClick={() => props.onCall(call)}
               class={clsx(
-                "rounded border py-1.5 text-sm transition",
+                "border py-1.5 text-sm transition",
                 allowed(call)
                   ? "cursor-pointer border-stone-300 bg-white hover:border-stone-800 hover:bg-stone-50"
                   : "border-stone-200 bg-stone-100 opacity-40",
@@ -379,12 +379,7 @@ export const Panel: Component<{
   children: JSX.Element;
   class?: string;
 }> = (props) => (
-  <section
-    class={clsx(
-      "rounded-lg border border-stone-200 bg-white/80 p-4",
-      props.class,
-    )}
-  >
+  <section class={clsx("border border-stone-200 bg-white/80 p-4", props.class)}>
     <Show when={props.title}>
       <h2 class="mb-2 text-xs font-medium tracking-wider text-stone-500 uppercase">
         {props.title}
