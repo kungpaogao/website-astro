@@ -12,9 +12,16 @@ const layoutProps: Props = {
 ---
 
 <Layout {...layoutProps} className="mx-auto w-full max-w-5xl">
-  <header class="mb-6">
-    <h1 class="font-serif text-3xl text-stone-900">Bridge</h1>
-    <p class="mt-1 max-w-prose text-stone-600">
+  {
+    /*
+    `prose` is scoped to the header rather than the page: it gives the title and
+    the standfirst the same type and spacing as Blog and Reading, without its
+    table and list rules reaching the game below.
+  */
+  }
+  <header class="prose mb-6">
+    <h1>Bridge</h1>
+    <p>
       You are South. The other three seats are robots that bid with a standard
       American system and choose cards by imagining deals consistent with what
       they have seen, solving each one exactly, and playing what wins the most

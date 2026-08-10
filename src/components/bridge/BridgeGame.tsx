@@ -621,7 +621,7 @@ const BridgeGame: Component = () => {
       </Show>
 
       {/* Scoreboard */}
-      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border border-stone-200 bg-white/80 px-4 py-3 text-sm">
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-stone-200 py-2 text-sm">
         <span class="text-stone-500">
           Board <strong class="text-stone-900">{boardNumber()}</strong>
         </span>
@@ -689,7 +689,13 @@ const BridgeGame: Component = () => {
           class={clsx("grid gap-4", sidePanel() && "lg:grid-cols-[1fr_20rem]")}
         >
           {/* The table */}
-          <div class="max-w-full bg-[#2f5d50] p-3 shadow-inner sm:p-4">
+          {/*
+            The felt breaks out of the page's mobile gutter — on a phone every
+            pixel of width is a wider card, and the table reads better as a
+            band across the screen than as a green rectangle with a margin.
+            The gutter is only there below md, so the breakout stops there too.
+          */}
+          <div class="-mx-5 bg-[#2f5d50] p-3 shadow-inner sm:p-4 md:mx-0 md:max-w-full">
             {/*
               The felt spans the page, but the seats stay within a comfortable
               width and centred, so widening the table does not just open up a
