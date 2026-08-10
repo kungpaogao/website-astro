@@ -26,13 +26,17 @@ import { HandText, suitColor } from "./parts";
  * A block of the post mortem. The review is a long read, so it runs flush with
  * the page rather than sitting in boxes — headings and spacing do the dividing,
  * and the text keeps the full width instead of losing it to panel padding.
+ *
+ * The heading matches an h2 in `prose.css`, so the review reads like a blog
+ * post. It is spelled out here rather than inherited from `.prose`, whose list
+ * and table rules would take over the notes and the double dummy grid.
  */
 const Section: Component<{ title?: string; children: JSX.Element }> = (
   props,
 ) => (
   <section>
     <Show when={props.title}>
-      <h2 class="mb-2 text-xs font-medium tracking-wider text-stone-500 uppercase">
+      <h2 class="mb-1 font-serif text-2xl leading-tight font-medium text-stone-900">
         {props.title}
       </h2>
     </Show>
@@ -150,8 +154,7 @@ export const Review: Component<{
         </p>
       </Show>
 
-      <Section>
-        <h2 class="mb-1 font-serif text-xl text-stone-900">Result</h2>
+      <Section title="Result">
         <p class="text-stone-700">{props.analysis.headline}</p>
         <div class="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-stone-600">
           <span>
