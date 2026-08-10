@@ -3,7 +3,7 @@
  */
 
 import clsx from "clsx";
-import { createSignal, For, Show, type Component } from "solid-js";
+import { createSignal, For, Show, type Component, type JSX } from "solid-js";
 import {
   cardName,
   cardSuit,
@@ -20,11 +20,31 @@ import {
 } from "../../lib/bridge/auction";
 import type { BoardAnalysis } from "../../lib/bridge/analysis";
 import type { Hands } from "../../lib/bridge/deal";
-import { HandText, Panel, suitColor } from "./parts";
+import { HandText, suitColor } from "./parts";
+
+/**
+ * A block of the post mortem. The review is a long read, so it runs flush with
+ * the page rather than sitting in boxes — headings and spacing do the dividing,
+ * and the text keeps the full width instead of losing it to panel padding.
+ */
+const Section: Component<{ title?: string; children: JSX.Element }> = (
+  props,
+) => (
+  <section>
+    <Show when={props.title}>
+      <h2 class="mb-2 text-xs font-medium tracking-wider text-stone-500 uppercase">
+        {props.title}
+      </h2>
+    </Show>
+    {props.children}
+  </section>
+);
 
 const DoubleDummyTable: Component<{ analysis: BoardAnalysis }> = (props) => (
   <div class="overflow-x-auto">
-    <table class="w-full min-w-[18rem] text-center text-sm">
+    {/* Five narrow columns of digits: left to itself the table would stretch
+        across the page and leave the strains stranded from their declarer. */}
+    <table class="w-full max-w-md min-w-[18rem] text-center text-sm">
       <caption class="mb-2 text-left text-xs text-stone-500">
         Tricks each declarer can take with perfect play by everybody. Seven
         tricks is a contract at the one level.
@@ -122,15 +142,15 @@ export const Review: Component<{
   }
 
   return (
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-6">
       <Show when={props.shared}>
-        <p class="border border-stone-200 bg-white/80 px-4 py-2 text-sm text-stone-600">
+        <p class="text-sm text-stone-600">
           This board came from a link. The review below is the whole hand as it
           was played.
         </p>
       </Show>
 
-      <Panel>
+      <Section>
         <h2 class="mb-1 font-serif text-xl text-stone-900">Result</h2>
         <p class="text-stone-700">{props.analysis.headline}</p>
         <div class="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-stone-600">
@@ -196,9 +216,9 @@ export const Review: Component<{
             Par here is {props.analysis.par.contracts.join(" or ")}.
           </Show>
         </p>
-      </Panel>
+      </Section>
 
-      <Panel title="The auction">
+      <Section title="The auction">
         <p class="text-stone-700">{bidding().summary}</p>
 
         <Show when={bidding().best}>
@@ -215,10 +235,10 @@ export const Review: Component<{
         </Show>
 
         <Show when={bidding().notes.length > 0}>
-          <ul class="mt-3 flex flex-col gap-2">
+          <ul class="mt-3 flex flex-col gap-3">
             <For each={bidding().notes}>
               {(note) => (
-                <li class="border border-stone-100 bg-stone-50 p-2 text-sm">
+                <li class="text-sm">
                   <div class="flex items-baseline gap-2">
                     <span class="font-medium text-stone-900">
                       You bid {callToString(note.call)}
@@ -240,15 +260,15 @@ export const Review: Component<{
             </For>
           </ul>
         </Show>
-      </Panel>
+      </Section>
 
-      <Panel title="The play">
+      <Section title="The play">
         <p class="text-stone-700">{play().summary}</p>
         <Show when={play().notes.length > 0}>
-          <ul class="mt-3 flex flex-col gap-2">
+          <ul class="mt-3 flex flex-col gap-3">
             <For each={play().notes}>
               {(note) => (
-                <li class="border border-stone-100 bg-stone-50 p-2 text-sm">
+                <li class="text-sm">
                   <div class="flex items-baseline gap-2">
                     <span class="text-xs tracking-wide text-stone-500 uppercase">
                       Trick {note.trick}
@@ -274,13 +294,13 @@ export const Review: Component<{
             </For>
           </ul>
         </Show>
-      </Panel>
+      </Section>
 
-      <Panel title="Makeable contracts">
+      <Section title="Makeable contracts">
         <DoubleDummyTable analysis={props.analysis} />
-      </Panel>
+      </Section>
 
-      <Panel title="All four hands">
+      <Section title="All four hands">
         <AllHands
           hands={props.hands}
           declarer={props.analysis.contract?.declarer}
@@ -288,11 +308,11 @@ export const Review: Component<{
         <p class="mt-3 text-xs text-stone-500">
           You sat {SEAT_NAMES[props.seat]} ({SEAT_LETTERS[props.seat]}).
         </p>
-      </Panel>
+      </Section>
 
       <Show when={props.shareUrl}>
         {(url) => (
-          <Panel title="Share this board">
+          <Section title="Share this board">
             <p class="mb-2 text-sm text-stone-600">
               The whole board — the deal, the auction and all fifty two cards —
               packs into this link, so anyone who opens it sees exactly this
@@ -319,7 +339,7 @@ export const Review: Component<{
                     : "Copy link"}
               </button>
             </div>
-          </Panel>
+          </Section>
         )}
       </Show>
 

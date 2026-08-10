@@ -621,7 +621,7 @@ const BridgeGame: Component = () => {
       </Show>
 
       {/* Scoreboard */}
-      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border border-stone-200 bg-white/80 px-4 py-3 text-sm">
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-stone-200 py-2 text-sm">
         <span class="text-stone-500">
           Board <strong class="text-stone-900">{boardNumber()}</strong>
         </span>
