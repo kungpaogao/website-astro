@@ -32,6 +32,13 @@ import {
   type Call,
 } from "../../lib/bridge/auction";
 
+/**
+ * The measure `.prose` gives Blog and Reading. The table wants every pixel the
+ * page allows, but the post mortem is prose and reads badly at that width, so
+ * it borrows the blog column instead.
+ */
+export const READING_WIDTH = "max-w-[65ch]";
+
 /** Hearts and diamonds are red; the other two follow the page's ink colour. */
 export function suitColor(suit: number): string {
   return suit === 1 || suit === 2 ? "text-red-700" : "text-stone-900";

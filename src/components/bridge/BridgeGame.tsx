@@ -73,6 +73,7 @@ import {
   HandView,
   HiddenHand,
   Panel,
+  READING_WIDTH,
   TrickView,
   suitColor,
 } from "./parts";
@@ -620,57 +621,66 @@ const BridgeGame: Component = () => {
         )}
       </Show>
 
-      {/* Scoreboard */}
-      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-stone-200 py-2 text-sm">
-        <span class="text-stone-500">
-          Board <strong class="text-stone-900">{boardNumber()}</strong>
-        </span>
-        <Show when={board()}>
-          {(current) => (
-            <>
-              <span class="text-stone-500">
-                Dealer{" "}
-                <strong class="text-stone-900">
-                  {SEAT_NAMES[current().dealer]}
-                </strong>
-              </span>
-              <span class="text-stone-500">
-                Vulnerable{" "}
-                <strong
-                  class={clsx(
-                    isVulnerable(HUMAN, current().vulnerability)
-                      ? "text-red-700"
-                      : "text-stone-900",
-                  )}
-                >
-                  {VULNERABILITY_NAMES[current().vulnerability]}
-                </strong>
-              </span>
-            </>
-          )}
-        </Show>
-        <Show when={contract()}>
-          {(current) => (
-            <span class="text-stone-500">
-              Contract{" "}
-              <strong
-                class={clsx("text-stone-900", suitColor(current().strain))}
-              >
-                {contractToString(current())}
-              </strong>{" "}
-              by {SEAT_NAMES[current().declarer]}
-            </span>
-          )}
-        </Show>
-        <Show when={phase() === "play"}>
-          <span class="text-stone-500 tabular-nums">
-            Tricks <strong class="text-stone-900">{ourTricks()}</strong> —{" "}
-            <strong class="text-stone-900">{theirTricks()}</strong>
+      {/*
+        Scoreboard. It spans the felt while the board is live, but in the
+        review it is the heading of a column of prose, so it narrows to the
+        same measure instead of ruling off the whole page above it. The width
+        goes on the wrapper rather than the bar itself: `ch` is relative to the
+        element's own font size, and the bar sets `text-sm`, so measuring it
+        there would stop the rule short of the review below.
+      */}
+      <div class={clsx(phase() === "review" && READING_WIDTH)}>
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-stone-200 py-2 text-sm">
+          <span class="text-stone-500">
+            Board <strong class="text-stone-900">{boardNumber()}</strong>
           </span>
-        </Show>
-        <span class="ml-auto text-stone-500 italic">
-          {confirmPrompt() ?? status()}
-        </span>
+          <Show when={board()}>
+            {(current) => (
+              <>
+                <span class="text-stone-500">
+                  Dealer{" "}
+                  <strong class="text-stone-900">
+                    {SEAT_NAMES[current().dealer]}
+                  </strong>
+                </span>
+                <span class="text-stone-500">
+                  Vulnerable{" "}
+                  <strong
+                    class={clsx(
+                      isVulnerable(HUMAN, current().vulnerability)
+                        ? "text-red-700"
+                        : "text-stone-900",
+                    )}
+                  >
+                    {VULNERABILITY_NAMES[current().vulnerability]}
+                  </strong>
+                </span>
+              </>
+            )}
+          </Show>
+          <Show when={contract()}>
+            {(current) => (
+              <span class="text-stone-500">
+                Contract{" "}
+                <strong
+                  class={clsx("text-stone-900", suitColor(current().strain))}
+                >
+                  {contractToString(current())}
+                </strong>{" "}
+                by {SEAT_NAMES[current().declarer]}
+              </span>
+            )}
+          </Show>
+          <Show when={phase() === "play"}>
+            <span class="text-stone-500 tabular-nums">
+              Tricks <strong class="text-stone-900">{ourTricks()}</strong> —{" "}
+              <strong class="text-stone-900">{theirTricks()}</strong>
+            </span>
+          </Show>
+          <span class="ml-auto text-stone-500 italic">
+            {confirmPrompt() ?? status()}
+          </span>
+        </div>
       </div>
 
       <Show when={phase() === "review" && analysis() && board()}>
