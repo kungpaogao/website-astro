@@ -1,0 +1,20 @@
+---
+import type { Props } from "../components/Head.astro";
+import Shadow2Sim from "../components/Shadow2Sim.tsx";
+import Layout from "../layouts/Layout.astro";
+
+const layoutProps: Props = {
+  title: "Shadow II",
+  description:
+    "A dappled tree shadow simulator, decomposed: canopy → shadow → light.",
+  path: "/shadow2",
+};
+---
+
+<Layout
+  {...layoutProps}
+  bodyClassName="h-full"
+  mainClassName="flex flex-col h-full"
+>
+  <Shadow2Sim client:only="solid-js" slot="main-p-0" />
+</Layout>
