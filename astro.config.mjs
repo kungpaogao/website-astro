@@ -10,9 +10,25 @@ import ogImages from "./src/integrations/og-images";
 
 import tailwindcss from "@tailwindcss/vite";
 
+/**
+ * The origin this build will be served from, which every absolute URL on the
+ * site is resolved against: canonical links, `og:url`, the sitemap, and the
+ * social preview images.
+ *
+ * Vercel serves preview deployments from a generated domain, so a preview built
+ * against the production origin advertises a card that lives on
+ * www.andrewgao.org — production's image for a page that already exists, and a
+ * 404 for one that does not exist there yet. `VERCEL_URL` is the deployment's
+ * own domain, and is set for us during the build.
+ */
+const site =
+  process.env.VERCEL_ENV === "preview" && process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}/`
+    : "https://www.andrewgao.org/";
+
 // https://astro.build/config
 export default defineConfig({
-  site: "https://www.andrewgao.org/",
+  site,
 
   fonts: [
     {
