@@ -25,12 +25,9 @@ const {
 const canonicalURL = new URL(path, Astro.site);
 const fullTitle = composeTitle(title, path);
 
-/**
- * Unless the page brought its own image, the preview is the one the `og-images`
- * integration renders for this route after the build. It is keyed off the URL
- * being rendered rather than the `path` prop, because collection entries take
- * `path` from Notion and it does not always match where they are served.
- */
+// Keyed off the URL being rendered rather than the `path` prop, because
+// collection entries take `path` from Notion and it does not always match
+// where they are served.
 const isGeneratedImage = imageUrl === undefined;
 const socialImageUrl =
   imageUrl ?? new URL(ogImagePath(Astro.url.pathname), Astro.site).href;

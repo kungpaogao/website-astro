@@ -1,13 +1,3 @@
-/**
- * Reads the `<meta>` tags back out of a rendered page.
- *
- * The preview images are generated after the build, from the HTML the build
- * produced. Going through the markup rather than re-reading Notion keeps a
- * single source for every page's title and description — the one page component
- * that already computed them — so a new page gets a preview image without being
- * registered anywhere.
- */
-
 const META_TAG = /<meta\b[^>]*>/gi;
 const ATTRIBUTE = /([\w:.-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/g;
 
@@ -17,10 +7,9 @@ const NAMED_ENTITIES: Record<string, string> = {
   gt: ">",
   quot: '"',
   apos: "'",
-  nbsp: " ",
+  nbsp: " ",
 };
 
-/** Undoes the escaping the templating applied to attribute values. */
 export function decodeEntities(text: string): string {
   return text.replace(/&(#\d+|#[xX][\da-fA-F]+|\w+);/g, (match, entity) => {
     if (entity.startsWith("#")) {
@@ -34,10 +23,7 @@ export function decodeEntities(text: string): string {
   });
 }
 
-/**
- * Every `<meta>` tag in the document, keyed by its `property` or `name`. Later
- * tags win, which does not matter for the ones we read — they are written once.
- */
+/** Every `<meta>` tag in a document, keyed by its `property` or `name`. */
 export function readMetaTags(html: string): Map<string, string> {
   const tags = new Map<string, string>();
 

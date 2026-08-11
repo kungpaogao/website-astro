@@ -28,11 +28,10 @@ async function readPage(dir: URL, pathname: string): Promise<string | null> {
 }
 
 /**
- * Renders a social preview image for every page of the build.
- *
  * Runs after the pages are written so it can take each page's title and
- * description straight from its own `og:` meta tags. A page that was given an
- * explicit `imageUrl` points its `og:image` somewhere else and is left alone.
+ * description straight from its own `og:` meta tags, rather than re-deriving
+ * them from Notion. A page given an explicit `imageUrl` points its `og:image`
+ * somewhere else, and is left alone.
  */
 export default function ogImages(): AstroIntegration {
   let config: AstroConfig;

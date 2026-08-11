@@ -1,15 +1,15 @@
 import satori from "satori";
+// Must stay a static import: rendering happens in `astro:build:done`, by which
+// point Vite's module runner is closed and cannot resolve a dynamic one.
 import sharp from "sharp";
 import { loadSatoriFonts } from "./satori-fonts";
 import { OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH, SITE_NAME } from "./og";
 
 export interface OgImageContent {
-  /** The page's own title, without the site name. */
   title: string;
   description: string;
 }
 
-/** The site's palette, as flat hex so nothing depends on the Tailwind runtime. */
 const BLACK = "#000000";
 const STONE_100 = "#f5f5f4";
 const STONE_600 = "#57534e";
@@ -32,7 +32,6 @@ function el(
   return { type, props: { style, children } };
 }
 
-/** Trims to a whole word where it can, so titles do not end mid-syllable. */
 function truncate(text: string, limit: number): string {
   const collapsed = text.replace(/\s+/g, " ").trim();
   if (collapsed.length <= limit) return collapsed;
@@ -42,17 +41,13 @@ function truncate(text: string, limit: number): string {
   return `${(lastSpace > limit / 2 ? clipped.slice(0, lastSpace) : clipped).trimEnd()}…`;
 }
 
-/** Long titles step down so three lines still clear the description. */
 function titleFontSize(title: string): number {
   if (title.length <= 24) return 76;
   if (title.length <= 44) return 60;
   return 48;
 }
 
-/**
- * The preview card: a black banner in the shape of the site's navigation, then
- * the page's title and description on the site's usual stone background.
- */
+/** A black banner in the shape of the site's navigation, then the page's text. */
 function card({ title, description }: OgImageContent): Node {
   const heading = truncate(title || SITE_NAME, MAX_TITLE_LENGTH);
   const standfirst = truncate(description ?? "", MAX_DESCRIPTION_LENGTH);
@@ -104,7 +99,6 @@ function card({ title, description }: OgImageContent): Node {
           el(
             "div",
             {
-              // The serif the page's own `h1` is set in; see `prose.css`.
               fontFamily: "Newsreader",
               fontSize: titleFontSize(heading),
               lineHeight: 1.3,
@@ -132,7 +126,6 @@ function card({ title, description }: OgImageContent): Node {
   );
 }
 
-/** Renders the preview card as SVG. Useful on its own for previewing in dev. */
 export async function renderOgSvg(content: OgImageContent): Promise<string> {
   return satori(card(content) as never, {
     width: OG_IMAGE_WIDTH,
@@ -141,14 +134,8 @@ export async function renderOgSvg(content: OgImageContent): Promise<string> {
   });
 }
 
-/**
- * Renders the preview card as PNG, which is what the social crawlers want —
- * neither X nor Facebook will fetch an SVG `og:image`.
- */
+/** PNG because neither X nor Facebook will fetch an SVG `og:image`. */
 export async function renderOgPng(content: OgImageContent): Promise<Buffer> {
-  // sharp is imported eagerly rather than on demand: this runs from the
-  // `astro:build:done` hook, by which point Vite's module runner is closed and
-  // a dynamic import can no longer be resolved.
   return sharp(Buffer.from(await renderOgSvg(content)))
     .png()
     .toBuffer();

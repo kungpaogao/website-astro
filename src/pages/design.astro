@@ -14,8 +14,7 @@ const layoutProps: Props = {
 const img = await generateImage("高 is my last name");
 const gao = await generateImage("高", 24, 24);
 
-// The social preview card this page would be shared with, so it can be worked
-// on in `astro dev`. The build renders the same card, as a PNG, for every page.
+// Only the build writes the PNGs, so this is the way to work on the card in dev.
 const socialPreview = await renderOgSvg({
   title: layoutProps.title,
   description: layoutProps.description,
