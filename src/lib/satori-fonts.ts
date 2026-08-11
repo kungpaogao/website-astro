@@ -6,6 +6,10 @@ import type { SatoriOptions } from "satori";
  * Fonts for build-time image rendering.
  *
  * - `Inter-Medium.woff` — the site's sans, already here for `satori.tsx`.
+ * - `Newsreader-Medium.woff` — the serif `prose.css` sets headings in, so a
+ *   card's title matches the `h1` of the page it previews. Not a new typeface:
+ *   `src/assets/fonts/Newsreader-Variable-Latin.woff2` pinned to `wght` 500 and
+ *   `opsz` 36 with fontTools' instancer, because Satori cannot read `woff2`.
  * - `NotoSansSC-Medium-Subset.ttf` — 1.5 kB holding one glyph, 高. In a browser
  *   the site sets that character in Arial and lets the reader's OS supply a CJK
  *   fallback; Satori has no OS to fall back to, and neither Inter nor Newsreader
@@ -18,6 +22,7 @@ import type { SatoriOptions } from "satori";
  */
 const FONT_FILES = [
   { name: "Inter", file: "Inter-Medium.woff" },
+  { name: "Newsreader", file: "Newsreader-Medium.woff" },
   { name: "Noto Sans SC", file: "NotoSansSC-Medium-Subset.ttf" },
 ];
 

@@ -104,6 +104,8 @@ function card({ title, description }: OgImageContent): Node {
           el(
             "div",
             {
+              // The serif the page's own `h1` is set in; see `prose.css`.
+              fontFamily: "Newsreader",
               fontSize: titleFontSize(heading),
               lineHeight: 1.3,
               color: STONE_900,

@@ -388,12 +388,13 @@ without being registered anywhere.
   they are served. `/blog/boba` → `dist/og/blog/boba.png`; home → `og/index.png`.
 - Passing `imageUrl` to `Layout` opts a page out. The integration notices that
   its `og:image` points elsewhere and skips it.
-- The card is set in the `Inter-Medium.woff` that was already in `public/fonts/`,
-  plus a 1.5 kB one-glyph Noto Sans SC subset for the banner's 高: the site
-  itself sets that character in Arial and leans on the reader's OS for a CJK
-  fallback, which Satori has no equivalent of. Resist adding more — Satori reads
-  `ttf`, `otf` and `woff` but not the variable `woff2` the site serves, so every
-  family needs its own converted copy checked in.
+- Titles are set in Newsreader and everything else in Inter, matching the page
+  being previewed, plus a 1.5 kB one-glyph Noto Sans SC subset for the banner's
+  高: the site itself sets that character in Arial and leans on the reader's OS
+  for a CJK fallback, which Satori has no equivalent of. Satori reads `ttf`,
+  `otf` and `woff` but not the variable `woff2` the site serves, so each of
+  these is a separate converted copy in `public/fonts/`; see `satori-fonts.ts`
+  for how they were made, and add a fourth only if it earns its keep.
 - Only the build writes the PNGs, so `og:image` URLs 404 under `astro dev`.
   To iterate on the design, `/design` renders the card inline as SVG.
 
