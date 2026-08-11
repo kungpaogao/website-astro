@@ -5,19 +5,19 @@ import type { SatoriOptions } from "satori";
 /**
  * Fonts for build-time image rendering.
  *
- * Satori reads `ttf`, `otf` and `woff` only, so these are separate files from
- * the variable `woff2` fonts the site itself serves:
+ * - `Inter-Medium.woff` — the site's sans, already here for `satori.tsx`.
+ * - `NotoSansSC-Medium-Subset.ttf` — 1.5 kB holding one glyph, 高. In a browser
+ *   the site sets that character in Arial and lets the reader's OS supply a CJK
+ *   fallback; Satori has no OS to fall back to, and neither Inter nor Newsreader
+ *   carries CJK, so the banner would render as an empty black bar without it.
+ *   From Google Fonts' Noto Sans SC; see `NotoSansSC-OFL.txt`.
  *
- * - `Inter-Medium.woff` — the sans the site uses for body copy and chrome.
- * - `Newsreader-Medium.woff` — the serif the site uses for headings, pinned to
- *   `wght` 500 / `opsz` 36 out of `src/assets/fonts/Newsreader-Variable-Latin.woff2`.
- * - `NotoSansSC-Medium-Subset.ttf` — Latin fonts carry no CJK, and the banner is
- *   a 高. Subset to the three characters the site actually sets (高崧柏), from
- *   Google Fonts' Noto Sans SC; see `NotoSansSC-OFL.txt`.
+ * Adding more here is a real cost, and rarely the answer: Satori reads `ttf`,
+ * `otf` and `woff` but not the variable `woff2` the site serves, so every family
+ * needs its own converted copy.
  */
 const FONT_FILES = [
   { name: "Inter", file: "Inter-Medium.woff" },
-  { name: "Newsreader", file: "Newsreader-Medium.woff" },
   { name: "Noto Sans SC", file: "NotoSansSC-Medium-Subset.ttf" },
 ];
 

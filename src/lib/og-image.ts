@@ -104,7 +104,6 @@ function card({ title, description }: OgImageContent): Node {
           el(
             "div",
             {
-              fontFamily: "Newsreader",
               fontSize: titleFontSize(heading),
               lineHeight: 1.3,
               color: STONE_900,
