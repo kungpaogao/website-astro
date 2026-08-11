@@ -1,5 +1,12 @@
 ---
 import { Font } from "astro:assets";
+import {
+  OG_IMAGE_HEIGHT,
+  OG_IMAGE_WIDTH,
+  SITE_NAME,
+  composeTitle,
+  ogImagePath,
+} from "../lib/og";
 
 export interface Props {
   title: string;
@@ -9,14 +16,21 @@ export interface Props {
 }
 
 const {
-  title = "Andrew Gao",
-  description = "This is the website of Andrew Gao",
+  title = SITE_NAME,
+  description = `This is the website of ${SITE_NAME}`,
   path = "/",
-  imageUrl = new URL("/background.jpg", Astro.site),
+  imageUrl,
 } = Astro.props as Props;
 
 const canonicalURL = new URL(path, Astro.site);
-const fullTitle = path === "/" ? "Andrew Gao" : `${title} | Andrew Gao`;
+const fullTitle = composeTitle(title, path);
+
+// Keyed off the URL being rendered rather than the `path` prop, because
+// collection entries take `path` from Notion and it does not always match
+// where they are served.
+const isGeneratedImage = imageUrl === undefined;
+const socialImageUrl =
+  imageUrl ?? new URL(ogImagePath(Astro.url.pathname), Astro.site).href;
 ---
 
 <meta charset="UTF-8" />
@@ -41,13 +55,22 @@ const fullTitle = path === "/" ? "Andrew Gao" : `${title} | Andrew Gao`;
 <!-- og -->
 <meta property="og:locale" content="en_US" />
 <meta property="og:type" content="website" />
-<meta property="og:site_name" content={fullTitle} />
+<meta property="og:site_name" content={SITE_NAME} />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={imageUrl} />
-<meta property="og:image:secure_url" content={imageUrl} />
+<meta property="og:image" content={socialImageUrl} />
+<meta property="og:image:secure_url" content={socialImageUrl} />
 <meta property="og:image:alt" content={fullTitle} />
+{
+  isGeneratedImage && (
+    <Fragment>
+      <meta property="og:image:type" content="image/png" />
+      <meta property="og:image:width" content={String(OG_IMAGE_WIDTH)} />
+      <meta property="og:image:height" content={String(OG_IMAGE_HEIGHT)} />
+    </Fragment>
+  )
+}
 
 <!-- twitter -->
 <meta property="twitter:card" content="summary_large_image" />
@@ -56,7 +79,7 @@ const fullTitle = path === "/" ? "Andrew Gao" : `${title} | Andrew Gao`;
 <meta property="twitter:creator" content="@ndrewgao" />
 <meta property="twitter:title" content={fullTitle} />
 <meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={imageUrl} />
+<meta property="twitter:image" content={socialImageUrl} />
 <meta property="twitter:image:alt" content={fullTitle} />
 
 <!-- styles and fonts -->

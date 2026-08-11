@@ -44,6 +44,7 @@ This document provides comprehensive guidance for AI assistants working with thi
 - Pre-build content synchronization
 - SEO-optimized with sitemap generation
 - Custom MDX content collections
+- Per-page social preview images generated at build time with Satori
 - Playable contract bridge game with double dummy analysis (`/bridge`)
 
 ---
@@ -76,7 +77,13 @@ This document provides comprehensive guidance for AI assistants working with thi
 │   │   ├── notion-cms-asset.ts   # Media file downloads
 │   │   ├── notion-download.ts    # Pre-build sync script
 │   │   ├── breakpoints.ts        # Responsive breakpoint values
+│   │   ├── og.ts                 # Social preview paths and titles
+│   │   ├── og-image.ts           # Social preview card (Satori)
+│   │   ├── og-meta.ts            # Meta tag reader for rendered pages
+│   │   ├── satori-fonts.ts       # Fonts for build-time rendering
 │   │   └── tests/               # Vitest test files
+│   ├── integrations/       # Astro build integrations
+│   │   └── og-images.ts    # Writes dist/og/**.png after the build
 │   ├── pages/              # File-based routing
 │   │   ├── index.astro     # Home page
 │   │   ├── blog/           # Blog listing and posts
@@ -316,7 +323,7 @@ interface Props {
   title: string;            // Page title (appears in <title> and OG tags)
   description: string;      // Meta description for SEO
   path: string;            // Current page path (for canonical URL)
-  imageUrl?: string;       // Open Graph image URL
+  imageUrl?: string;       // Overrides the generated social preview image
   className?: string;      // Additional classes for <html>
   bodyClassName?: string;  // Additional classes for <body>
   mainClassName?: string;  // Additional classes for <main>
@@ -335,7 +342,6 @@ import Layout from '@layouts/Layout.astro';
   title="Page Title"
   description="Page description for SEO"
   path="/page-slug"
-  imageUrl="https://example.com/og-image.png"
 >
   <Fragment slot="content">
     <!-- Page content here -->
@@ -354,6 +360,43 @@ Automatically generates:
 - Viewport meta tag
 
 **Exported by Layout.astro**, so use Layout instead of calling directly.
+
+### Social Preview Images
+
+Every page gets its own `og:image`: a 1200×630 card carrying the page's title
+and description under a black banner shaped like the site's navigation. Satori
+renders it, sharp rasterizes it, and it all happens at build time.
+
+| File | Responsibility |
+| --- | --- |
+| `src/lib/og.ts` | Site name, image size, and the route → image path mapping shared by the page and the build |
+| `src/lib/og-image.ts` | The card itself: `renderOgSvg` for previewing, `renderOgPng` for the build |
+| `src/lib/og-meta.ts` | Reads `<meta>` tags back out of rendered HTML |
+| `src/lib/satori-fonts.ts` | The `ttf`/`woff` fonts Satori can read (see `public/fonts/`) |
+| `src/integrations/og-images.ts` | `astro:build:done` hook that writes `dist/og/**.png` |
+
+**How a page's text reaches its image.** The integration runs after the pages
+are written and takes each page's title and description from its own `og:`
+meta tags, rather than re-querying Notion. The page component that already
+computed them stays the only source, and a new page picks up a preview image
+without being registered anywhere.
+
+**Things to know:**
+
+- The image path comes from the *rendered route*, not the `path` prop —
+  collection entries take `path` from Notion and it does not always match where
+  they are served. `/blog/boba` → `dist/og/blog/boba.png`; home → `og/index.png`.
+- Passing `imageUrl` to `Layout` opts a page out. The integration notices that
+  its `og:image` points elsewhere and skips it.
+- Titles are set in Newsreader and everything else in Inter, matching the page
+  being previewed, plus a 1.5 kB one-glyph Noto Sans SC subset for the banner's
+  高: the site itself sets that character in Arial and leans on the reader's OS
+  for a CJK fallback, which Satori has no equivalent of. Satori reads `ttf`,
+  `otf` and `woff` but not the variable `woff2` the site serves, so each of
+  these is a separate converted copy in `public/fonts/`; see `satori-fonts.ts`
+  for how they were made, and add a fourth only if it earns its keep.
+- Only the build writes the PNGs, so `og:image` URLs 404 under `astro dev`.
+  To iterate on the design, `/design` renders the card inline as SVG.
 
 ### Navigation Component
 
