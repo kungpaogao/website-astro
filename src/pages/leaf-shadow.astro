@@ -1,0 +1,40 @@
+---
+import type { Props } from "../components/Head.astro";
+import Layout from "../layouts/Layout.astro";
+import LeafShadowSimulator from "../components/LeafShadowSimulator.tsx";
+
+const layoutProps: Props = {
+  title: "Leaf Shadows",
+  description:
+    "An interactive simulation of dappled sunlight under a tree — and why the spots of light are round.",
+  path: "/leaf-shadow",
+};
+---
+
+<Layout {...layoutProps} className="prose prose-stone mx-auto max-w-2xl">
+  <h1>Leaf shadows</h1>
+  <p>
+    On a sunny day, the light under a tree isn't shaped like leaves — it's
+    scattered with little <em>round</em> spots. Each gap between the leaves is
+    small enough to act like a pinhole camera, projecting an upside-down image
+    of the sun onto the ground. Since the sun is a disc, the spots are circles.
+  </p>
+
+  <LeafShadowSimulator client:only="solid-js" />
+
+  <p>
+    The simulation convolves a procedural canopy with the shape of the sun:
+    tiny gaps reproduce the sun's disc exactly (the circular spots), while wide
+    openings just let through soft-edged patches. Drag <strong>Eclipse</strong>
+    to shrink the sun into a crescent — during a partial solar eclipse the
+    ground fills with crescents instead of circles, the same camera-obscura
+    effect at work.
+  </p>
+  <p class="text-sm text-stone-500">
+    Tip: raise <strong>Sun-spot size</strong> to lift the canopy higher (bigger,
+    softer spots), and lower <strong>Gap size</strong> for a denser canopy with
+    sharper pinholes. <strong>Skew</strong> leans the shadow as if the sun were
+    low in the sky, and <strong>Color temperature</strong> shifts the light from
+    warm golden hour to cool midday.
+  </p>
+</Layout>
