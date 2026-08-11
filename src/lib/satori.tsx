@@ -1,14 +1,6 @@
 /** @jsxImportSource react */
 import satori from "satori";
-import fs from "fs/promises";
-import { join } from "path";
-
-async function loadFont(filename: string) {
-  const fontPath = join(process.cwd(), "public", "fonts", filename);
-  return fs.readFile(fontPath);
-}
-
-const interMedium = await loadFont("Inter-Medium.woff");
+import { loadSatoriFonts } from "./satori-fonts";
 
 export async function generateImage(text: string, width = 200, height = 200) {
   const svg = await satori(
@@ -28,18 +20,9 @@ export async function generateImage(text: string, width = 200, height = 200) {
       },
     },
     {
-      // width: 1200,
-      // height: 630,
       width: width,
       height: height,
-      fonts: [
-        {
-          name: "Inter",
-          data: interMedium,
-          style: "normal",
-          weight: 500,
-        },
-      ],
+      fonts: await loadSatoriFonts(),
     },
   );
 

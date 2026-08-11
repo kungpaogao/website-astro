@@ -3,6 +3,7 @@ import type { Props } from "../components/Head.astro";
 import { BottomNavigation } from "../components/BottomNavigation";
 import Layout from "../layouts/Layout.astro";
 import { generateImage } from "../lib/satori";
+import { renderOgSvg } from "../lib/og-image";
 
 const layoutProps: Props = {
   title: "Design",
@@ -12,11 +13,22 @@ const layoutProps: Props = {
 
 const img = await generateImage("高 is my last name");
 const gao = await generateImage("高", 24, 24);
+
+// The social preview card this page would be shared with, so it can be worked
+// on in `astro dev`. The build renders the same card, as a PNG, for every page.
+const socialPreview = await renderOgSvg({
+  title: layoutProps.title,
+  description: layoutProps.description,
+});
 ---
 
 <Layout {...layoutProps}>
   <p>a nice place to test out designs :)</p>
   <Fragment set:html={img} />
   <Fragment set:html={gao} />
+  <p class="mt-4">social preview:</p>
+  <div class="mt-2 max-w-2xl [&>svg]:h-auto [&>svg]:w-full">
+    <Fragment set:html={socialPreview} />
+  </div>
   <BottomNavigation className="absolute bottom-0 left-0 right-0" />
 </Layout>

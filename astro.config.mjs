@@ -6,6 +6,7 @@ import mdx from "@astrojs/mdx";
 
 import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
 import { accessibleListItem } from "./src/lib/remark-rehype-accessible-list-item";
+import ogImages from "./src/integrations/og-images";
 
 import tailwindcss from "@tailwindcss/vite";
 
@@ -55,6 +56,7 @@ export default defineConfig({
       filter: (page) => !page.includes(".json"),
     }),
     mdx(),
+    ogImages(),
   ],
 
   markdown: {
