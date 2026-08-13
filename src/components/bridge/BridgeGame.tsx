@@ -621,14 +621,7 @@ const BridgeGame: Component = () => {
         )}
       </Show>
 
-      {/*
-        Scoreboard. It spans the felt while the board is live, but in the
-        review it is the heading of a column of prose, so it narrows to the
-        same measure instead of ruling off the whole page above it. The width
-        goes on the wrapper rather than the bar itself: `ch` is relative to the
-        element's own font size, and the bar sets `text-sm`, so measuring it
-        there would stop the rule short of the review below.
-      */}
+      {/* Scoreboard */}
       <div class={clsx(phase() === "review" && READING_WIDTH)}>
         <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-stone-200 py-2 text-sm">
           <span class="text-stone-500">
