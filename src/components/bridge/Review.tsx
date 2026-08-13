@@ -20,7 +20,7 @@ import {
 } from "../../lib/bridge/auction";
 import type { BoardAnalysis } from "../../lib/bridge/analysis";
 import type { Hands } from "../../lib/bridge/deal";
-import { HandText, READING_WIDTH, suitColor } from "./parts";
+import { HandText, suitColor } from "./parts";
 
 /**
  * A block of the post mortem. The review is a long read, so it runs flush with
@@ -146,12 +146,7 @@ export const Review: Component<{
   }
 
   return (
-    /*
-      The review is read rather than played, so it keeps a blog column rather
-      than the page's full table width. It sits flush left so it lines up with
-      the page's title and standfirst, which are prose too.
-    */
-    <div class={clsx("flex flex-col gap-6", READING_WIDTH)}>
+    <div class="flex max-w-prose flex-col gap-6">
       <Show when={props.shared}>
         <p class="text-sm text-stone-600">
           This board came from a link. The review below is the whole hand as it

@@ -73,7 +73,6 @@ import {
   HandView,
   HiddenHand,
   Panel,
-  READING_WIDTH,
   TrickView,
   suitColor,
 } from "./parts";
@@ -622,7 +621,7 @@ const BridgeGame: Component = () => {
       </Show>
 
       {/* Scoreboard */}
-      <div class={clsx(phase() === "review" && READING_WIDTH)}>
+      <div class={clsx(phase() === "review" && "max-w-prose")}>
         <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-stone-200 py-2 text-sm">
           <span class="text-stone-500">
             Board <strong class="text-stone-900">{boardNumber()}</strong>
@@ -701,7 +700,7 @@ const BridgeGame: Component = () => {
           <div class="-mx-5 bg-[#2f5d50] p-3 shadow-inner sm:p-4 md:mx-0 md:max-w-full">
             {/*
               The felt spans the page, but the seats stay within a comfortable
-              width and centred, so widening the table does not just open up a
+              width and centered, so widening the table does not just open up a
               gap between the players.
             */}
             <div class="mx-auto w-full max-w-3xl">
