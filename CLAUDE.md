@@ -483,6 +483,14 @@ your play. Everything runs in the browser — there is no server component.
   dummy equilibrium between two perfect sides, so it can be negative, and a
   robot's error can leave you ahead of it. The best contract *your* side could
   buy undisturbed is the separate `bidding.best`.
+- **The bidding review grades two different things, and must not conflate
+  them.** `bidding.notes` compares each of *your* calls against the reference
+  bidder in `bidding.ts`; `bidding.best` is read off the double dummy table with
+  all 52 cards face up. They disagree routinely — a textbook auction stops in
+  game on 26 HCP while the solver reports a cold slam — so `biddingSummary`
+  branches on whether every note agreed before it will call a better contract
+  "the better spot". When they all agree it reports `closing` (the last bid your
+  side made, usually partner's) and `combinedHcp` instead of implying a mistake.
 - **Board codes are versioned.** `share.ts` writes a version nibble and indexes
   cards by their position in the legal move list, so any change to `legalPlays`
   ordering or to the field layout must bump `VERSION` or old links will decode

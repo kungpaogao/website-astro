@@ -21,6 +21,7 @@ import {
   cardName,
   cardRank,
   cardSuit,
+  highCardPoints,
   isSameSide,
   nextSeat,
   partnerOf,
@@ -76,6 +77,16 @@ export interface BiddingReview {
   par: { score: number; contracts: string[] };
   /** Score difference between the best available contract and the one reached. */
   costImps: number;
+  /** High card points your side held between the two hands. */
+  combinedHcp: number;
+  /**
+   * The last bid your side made — the call that settled where you played.
+   *
+   * Often it is partner's rather than yours, and that is the whole story of an
+   * auction that stopped short: your own calls can each be textbook while the
+   * bid that closed the door was made from the other side of the table.
+   */
+  closing?: { seat: Seat; call: Call };
   summary: string;
 }
 
@@ -232,10 +243,29 @@ function reviewBidding(
     };
   }
 
-  const summary = biddingSummary(best, actual, contract, seat, par);
+  const combinedHcp =
+    highCardPoints(hands[seat]) + highCardPoints(hands[partnerOf(seat)]);
+
+  let closing: { seat: Seat; call: Call } | undefined;
+  for (const entry of auction.entries) {
+    if (entry.call.kind === "bid" && isSameSide(entry.seat, seat)) {
+      closing = { seat: entry.seat, call: entry.call };
+    }
+  }
+
+  const summary = biddingSummary(
+    best,
+    actual,
+    contract,
+    seat,
+    par,
+    notes,
+    combinedHcp,
+    closing,
+  );
   const costImps = best && actual ? imps(best.score - actual.score) : 0;
 
-  return { notes, best, actual, par, costImps, summary };
+  return { notes, best, actual, par, costImps, combinedHcp, closing, summary };
 }
 
 function biddingSummary(
@@ -244,6 +274,9 @@ function biddingSummary(
   contract: Contract | undefined,
   seat: Seat,
   par: { score: number; contracts: string[] },
+  notes: BiddingNote[],
+  combinedHcp: number,
+  closing: { seat: Seat; call: Call } | undefined,
 ): string {
   const parText = par.contracts.length
     ? `Par on this board is ${par.contracts.join(" or ")} for ${par.score >= 0 ? "+" : ""}${par.score} to North-South.`
@@ -276,7 +309,22 @@ function biddingSummary(
   if (gap <= 0) {
     return `You played ${reached} and did at least as well as the ${target} the cards were worth. ${parText}`;
   }
-  return `You played ${reached}; ${target} was the better spot, worth ${gap} more points (${imps(gap)} IMPs). ${parText}`;
+
+  const worth = `worth ${gap} more points (${imps(gap)} IMPs)`;
+
+  // Every one of your calls matching the reference bidder while the auction
+  // still stopped short is not a contradiction, and calling the better contract
+  // "the better spot" would imply a mistake that the notes below then deny.
+  // Name what actually closed the auction instead — usually partner — and let
+  // the combined point count explain the rest.
+  if (notes.length > 0 && notes.every((note) => note.agreed)) {
+    const closedBy = closing
+      ? `${closing.seat === seat ? "your own" : "partner's"} ${callToString(closing.call)} ended the auction`
+      : `the auction ended`;
+    return `You played ${reached}, and every call of yours was standard. ${target} is cold with all four hands face up — ${worth} — but ${closedBy} with ${combinedHcp} HCP between the two of you. ${parText}`;
+  }
+
+  return `You played ${reached}; ${target} was the better spot, ${worth}. ${parText}`;
 }
 
 // --------------------------------------------------------------------------

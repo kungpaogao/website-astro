@@ -4,12 +4,18 @@ import {
   createAuction,
   isAuctionComplete,
   makeCall,
+  contractToString,
   seatToCall,
   type Auction,
 } from "../bridge/auction";
 import { suggestCall } from "../bridge/bidding";
-import { cardSuit, Seat, type Card } from "../bridge/cards";
-import { createBoard, isVulnerable } from "../bridge/deal";
+import { cardSuit, Seat, Strain, type Card } from "../bridge/cards";
+import {
+  createBoard,
+  handsFromStrings,
+  isVulnerable,
+  Vulnerability,
+} from "../bridge/deal";
 import { buildPlayRequest, chooseCard } from "../bridge/bot-play";
 import { getSolver } from "../bridge/dds-solver";
 import {
@@ -152,6 +158,93 @@ describe("full board played by robots", () => {
       }
     }
   }, 180_000);
+});
+
+describe("bidding review", () => {
+  /**
+   * A board where the reference bidder agrees with every call the human made
+   * and the auction still stopped two levels short of what the cards were
+   * worth: North's 15 support points send it straight to 4♥, and South cannot
+   * count 33 opposite that, so 6♥ is never in the picture.
+   *
+   * The point of the review here is not to invent a mistake. It has to say
+   * whose call closed the auction and how little the two hands held, or the
+   * "6♥ was available" line reads as a contradiction of the notes below it.
+   */
+  it("does not blame you for a slam your standard auction could not reach", async () => {
+    const dds = await getSolver();
+    const hands = handsFromStrings(
+      "K9874.KT75.98.AK",
+      "QT5.Q94.6432.643",
+      "3.AJ632.AKJ.T952",
+      "AJ62.8.QT75.QJ87",
+    );
+    const auction = runAuction(hands, Seat.East);
+    expect(contractToString(auctionResult(auction)!)).toBe("4♥");
+
+    const analysis = analyseBoard(dds, {
+      hands,
+      auction,
+      trace: [],
+      dealer: Seat.East,
+      vulnerability: Vulnerability.NorthSouth,
+      seat: Seat.South,
+      declarerTricks: 11,
+    });
+    const { bidding } = analysis;
+
+    // The gap is real, and so is the fact that South did nothing wrong.
+    expect(contractToString(bidding.best!.contract)).toBe("6♥");
+    expect(bidding.notes.every((note) => note.agreed)).toBe(true);
+    expect(bidding.combinedHcp).toBe(26);
+    expect(bidding.closing).toEqual({
+      seat: Seat.North,
+      call: { kind: "bid", level: 4, strain: Strain.Hearts },
+    });
+
+    expect(bidding.summary).toContain("every call of yours was standard");
+    expect(bidding.summary).toContain("partner's 4♥ ended the auction");
+    expect(bidding.summary).toContain("26 HCP");
+    // The wording that implies an error belongs to the other branch.
+    expect(bidding.summary).not.toContain("the better spot");
+  }, 30000);
+
+  it("still calls out a better spot when one of your calls was not standard", async () => {
+    const dds = await getSolver();
+    const hands = handsFromStrings(
+      "K9874.KT75.98.AK",
+      "QT5.Q94.6432.643",
+      "3.AJ632.AKJ.T952",
+      "AJ62.8.QT75.QJ87",
+    );
+    // South opens 1♣ instead of the 1♥ the reference bidder wants, so the
+    // review has a genuine disagreement to report.
+    let auction = createAuction(Seat.East);
+    auction = makeCall(auction, { kind: "pass" });
+    auction = makeCall(auction, {
+      kind: "bid",
+      level: 1,
+      strain: Strain.Clubs,
+    });
+    while (!isAuctionComplete(auction)) {
+      const seat = seatToCall(auction);
+      auction = makeCall(auction, suggestCall(hands[seat], auction, seat).call);
+    }
+
+    const { bidding } = analyseBoard(dds, {
+      hands,
+      auction,
+      trace: [],
+      dealer: Seat.East,
+      vulnerability: Vulnerability.NorthSouth,
+      seat: Seat.South,
+      declarerTricks: 11,
+    });
+
+    expect(bidding.notes.some((note) => !note.agreed)).toBe(true);
+    expect(bidding.summary).toContain("the better spot");
+    expect(bidding.summary).not.toContain("every call of yours was standard");
+  }, 30000);
 });
 
 describe("scoring", () => {

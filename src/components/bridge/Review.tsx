@@ -226,14 +226,25 @@ export const Review: Component<{
 
         <Show when={bidding().best}>
           {(best) => (
-            <p class="mt-2 text-sm text-stone-600">
-              Best contract for your side:{" "}
-              <strong class="text-stone-900">
-                {contractToString(best().contract)} by{" "}
-                {SEAT_NAMES[best().contract.declarer]}
-              </strong>{" "}
-              — {best().tricks} tricks, worth {best().score}.
-            </p>
+            <>
+              <p class="mt-2 text-sm text-stone-600">
+                Best contract double dummy:{" "}
+                <strong class="text-stone-900">
+                  {contractToString(best().contract)} by{" "}
+                  {SEAT_NAMES[best().contract.declarer]}
+                </strong>{" "}
+                — {best().tricks} tricks, worth {best().score}. Your side held{" "}
+                {bidding().combinedHcp} HCP between the two hands.
+              </p>
+              <p class="mt-2 text-xs text-stone-500">
+                That is the most the cards are worth with all four hands face
+                up, not a contract the bidding was meant to find. Game is
+                normally bid on about 25 combined points and a small slam on
+                about 33, so a double dummy contract well above what your side
+                held is a fact about how the cards lie rather than a bid you
+                missed.
+              </p>
+            </>
           )}
         </Show>
 
