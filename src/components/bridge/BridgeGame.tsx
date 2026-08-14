@@ -611,7 +611,18 @@ const BridgeGame: Component = () => {
   );
 
   return (
-    <div class="flex flex-col gap-4">
+    /*
+      The page is a blog column so the review reads like a post. The table needs
+      more than that, so while a board is live the game breaks out of the column
+      and centers itself on the viewport instead.
+    */
+    <div
+      class={clsx(
+        "flex flex-col gap-4",
+        phase() !== "review" &&
+          "relative left-1/2 w-[min(64rem,100vw-2.5rem)] -translate-x-1/2",
+      )}
+    >
       <Show when={error()}>
         {(message) => (
           <div class="border border-red-200 bg-red-50 p-4 text-sm text-red-800">
@@ -621,58 +632,56 @@ const BridgeGame: Component = () => {
       </Show>
 
       {/* Scoreboard */}
-      <div class={clsx(phase() === "review" && "max-w-prose")}>
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-stone-200 py-2 text-sm">
-          <span class="text-stone-500">
-            Board <strong class="text-stone-900">{boardNumber()}</strong>
-          </span>
-          <Show when={board()}>
-            {(current) => (
-              <>
-                <span class="text-stone-500">
-                  Dealer{" "}
-                  <strong class="text-stone-900">
-                    {SEAT_NAMES[current().dealer]}
-                  </strong>
-                </span>
-                <span class="text-stone-500">
-                  Vulnerable{" "}
-                  <strong
-                    class={clsx(
-                      isVulnerable(HUMAN, current().vulnerability)
-                        ? "text-red-700"
-                        : "text-stone-900",
-                    )}
-                  >
-                    {VULNERABILITY_NAMES[current().vulnerability]}
-                  </strong>
-                </span>
-              </>
-            )}
-          </Show>
-          <Show when={contract()}>
-            {(current) => (
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-stone-200 py-2 text-sm">
+        <span class="text-stone-500">
+          Board <strong class="text-stone-900">{boardNumber()}</strong>
+        </span>
+        <Show when={board()}>
+          {(current) => (
+            <>
               <span class="text-stone-500">
-                Contract{" "}
-                <strong
-                  class={clsx("text-stone-900", suitColor(current().strain))}
-                >
-                  {contractToString(current())}
-                </strong>{" "}
-                by {SEAT_NAMES[current().declarer]}
+                Dealer{" "}
+                <strong class="text-stone-900">
+                  {SEAT_NAMES[current().dealer]}
+                </strong>
               </span>
-            )}
-          </Show>
-          <Show when={phase() === "play"}>
-            <span class="text-stone-500 tabular-nums">
-              Tricks <strong class="text-stone-900">{ourTricks()}</strong> —{" "}
-              <strong class="text-stone-900">{theirTricks()}</strong>
+              <span class="text-stone-500">
+                Vulnerable{" "}
+                <strong
+                  class={clsx(
+                    isVulnerable(HUMAN, current().vulnerability)
+                      ? "text-red-700"
+                      : "text-stone-900",
+                  )}
+                >
+                  {VULNERABILITY_NAMES[current().vulnerability]}
+                </strong>
+              </span>
+            </>
+          )}
+        </Show>
+        <Show when={contract()}>
+          {(current) => (
+            <span class="text-stone-500">
+              Contract{" "}
+              <strong
+                class={clsx("text-stone-900", suitColor(current().strain))}
+              >
+                {contractToString(current())}
+              </strong>{" "}
+              by {SEAT_NAMES[current().declarer]}
             </span>
-          </Show>
-          <span class="ml-auto text-stone-500 italic">
-            {confirmPrompt() ?? status()}
+          )}
+        </Show>
+        <Show when={phase() === "play"}>
+          <span class="text-stone-500 tabular-nums">
+            Tricks <strong class="text-stone-900">{ourTricks()}</strong> —{" "}
+            <strong class="text-stone-900">{theirTricks()}</strong>
           </span>
-        </div>
+        </Show>
+        <span class="ml-auto text-stone-500 italic">
+          {confirmPrompt() ?? status()}
+        </span>
       </div>
 
       <Show when={phase() === "review" && analysis() && board()}>
