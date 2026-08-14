@@ -7,6 +7,7 @@ import {
   contractToString,
   seatToCall,
   type Auction,
+  type Contract,
 } from "../bridge/auction";
 import { suggestCall } from "../bridge/bidding";
 import { cardSuit, Seat, Strain, type Card } from "../bridge/cards";
@@ -19,6 +20,7 @@ import {
 import { buildPlayRequest, chooseCard } from "../bridge/bot-play";
 import { getSolver } from "../bridge/dds-solver";
 import {
+  controlledSeats,
   createPlayState,
   isPlayComplete,
   legalPlays,
@@ -158,6 +160,89 @@ describe("full board played by robots", () => {
       }
     }
   }, 180_000);
+});
+
+describe("playing from partner's seat when you are dummy", () => {
+  const contractBy = (declarer: Seat): Contract => ({
+    level: 4,
+    strain: Strain.Hearts,
+    declarer,
+    doubled: "none",
+  });
+
+  it("hands you both seats whenever your side is declaring", () => {
+    // Declarer plays dummy, and dummy plays declarer: either way your side's
+    // two hands are yours, and defending you only ever play your own.
+    expect(controlledSeats(contractBy(Seat.South), Seat.South)).toEqual([
+      Seat.South,
+      Seat.North,
+    ]);
+    expect(controlledSeats(contractBy(Seat.North), Seat.South)).toEqual([
+      Seat.North,
+      Seat.South,
+    ]);
+    expect(controlledSeats(contractBy(Seat.East), Seat.South)).toEqual([
+      Seat.South,
+    ]);
+    expect(controlledSeats(contractBy(Seat.West), Seat.South)).toEqual([
+      Seat.South,
+    ]);
+  });
+
+  it("reviews the cards you played from declarer's seat", async () => {
+    const dds = await getSolver();
+    const hands = handsFromStrings(
+      "K9874.KT75.98.AK",
+      "QT5.Q94.6432.643",
+      "3.AJ632.AKJ.T952",
+      "AJ62.8.QT75.QJ87",
+    );
+
+    // North declares, which makes South — you — the dummy.
+    let auction = createAuction(Seat.North);
+    auction = makeCall(auction, {
+      kind: "bid",
+      level: 4,
+      strain: Strain.Hearts,
+    });
+    for (let i = 0; i < 3; i += 1)
+      auction = makeCall(auction, { kind: "pass" });
+    const contract = auctionResult(auction)!;
+    expect(contract.declarer).toBe(Seat.North);
+
+    // Deliberately artless play — always the first legal card — so the trace is
+    // deterministic and there is plenty for the review to find fault with.
+    let state = createPlayState(contract, hands);
+    while (!isPlayComplete(state)) {
+      state = playCard(state, legalPlays(state)[0]);
+    }
+
+    const { play } = analyseBoard(dds, {
+      hands,
+      auction,
+      trace: playedCards(state),
+      dealer: Seat.North,
+      vulnerability: Vulnerability.None,
+      seat: Seat.South,
+      declarerTricks: state.declarerTricks,
+    });
+
+    // Both of your side's hands are reviewed and neither opponent's is.
+    expect(play.notes.length).toBeGreaterThan(0);
+    expect(
+      play.notes.every(
+        (note) => note.seat === Seat.North || note.seat === Seat.South,
+      ),
+    ).toBe(true);
+    expect(play.notes.some((note) => note.seat === Seat.North)).toBe(true);
+
+    // Only the hand on the table is described as dummy's, whichever seat it is.
+    for (const note of play.notes) {
+      if (note.seat === Seat.South)
+        expect(note.explanation).toContain("You, from dummy,");
+      else expect(note.explanation).toMatch(/^You played/);
+    }
+  }, 60000);
 });
 
 describe("bidding review", () => {
