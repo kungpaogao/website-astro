@@ -183,7 +183,7 @@ describe("hand evaluation", () => {
     expect(evaluation.balanced).toBe(true);
   });
 
-  it("recognises unbalanced hands", () => {
+  it("recognizes unbalanced hands", () => {
     const hands = handsFromStrings("AKQJ98.K32.5.876", "...", "...", "...");
     expect(evaluateHand(hands[Seat.North]).balanced).toBe(false);
   });

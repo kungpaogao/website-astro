@@ -379,14 +379,14 @@ function explainCard(
       if (sameSuit.length > 0) {
         const higher = cardRank(sameSuit[0]) > cardRank(card);
         return higher
-          ? `From this holding the right card to lead is the ${cardName(sameSuit[0])} — leading low lets the defence win a trick cheaply.`
+          ? `From this holding the right card to lead is the ${cardName(sameSuit[0])} — leading low lets the defense win a trick cheaply.`
           : `Leading the ${cardName(sameSuit[0])} keeps the suit under control; the ${played} burns a high card that was worth a trick on its own.`;
       }
       const suit = cardSuit(best[0]);
       if (trump !== undefined && suit === trump) {
-        return `A trump lead was the winner here — it cuts down the ruffs ${declaring ? "the defence" : "declarer"} was relying on.`;
+        return `A trump lead was the winner here — it cuts down the ruffs ${declaring ? "the defense" : "declarer"} was relying on.`;
       }
-      return `${SUIT_SYMBOLS[suit]} was the suit to attack; switching there sets up the tricks before ${declaring ? "the defence" : "declarer"} can get organised.`;
+      return `${SUIT_SYMBOLS[suit]} was the suit to attack; switching there sets up the tricks before ${declaring ? "the defense" : "declarer"} can get organized.`;
     }
 
     if (where === "second") {
@@ -623,7 +623,7 @@ function headlineFor(
       ? "which is exactly what the cards were worth"
       : makeable > declarerTricks
         ? `though ${makeable} tricks were available`
-        : `${declarerTricks - makeable} more than double dummy defence would allow`;
+        : `${declarerTricks - makeable} more than double dummy defense would allow`;
 
   void ours;
   return `${contractToString(contract)} by ${SEAT_NAMES[contract.declarer]} ${outcome} (${perfect}). Your side scored ${score >= 0 ? "+" : ""}${score}, vulnerability ${VULNERABILITY_NAMES[vulnerability]}.`;

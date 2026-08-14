@@ -32,15 +32,15 @@ import {
   type Call,
 } from "../../lib/bridge/auction";
 
-/** Hearts and diamonds are red; the other two follow the page's ink colour. */
+/** Hearts and diamonds are red; the other two follow the page's ink color. */
 export function suitColor(suit: number): string {
   return suit === 1 || suit === 2 ? "text-red-700" : "text-stone-900";
 }
 
 /**
- * The same two colours, muted for cards you cannot play.
+ * The same two colors, muted for cards you cannot play.
  *
- * A red suit has to stay red even when it is greyed back — the colour is how you
+ * A red suit has to stay red even when it is grayed back — the color is how you
  * read the hand, so desaturating it would turn hearts black.
  */
 function mutedSuitColor(suit: number): string {
@@ -76,7 +76,7 @@ export const CardFace: Component<{
         props.playable
           ? "cursor-pointer border-stone-300 hover:z-10 hover:-translate-y-2 hover:shadow-lg focus-visible:z-10 focus-visible:-translate-y-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-800"
           : "cursor-default border-stone-200",
-        // Recede unplayable cards with colour rather than a filter, so the felt
+        // Recede unplayable cards with color rather than a filter, so the felt
         // never shows through and red suits stay red.
         props.dimmed && "border-stone-300 bg-stone-100",
         // A selected card lifts out of the hand until it is played.

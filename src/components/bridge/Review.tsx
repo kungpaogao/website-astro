@@ -146,7 +146,7 @@ export const Review: Component<{
   }
 
   return (
-    <div class="flex flex-col gap-6">
+    <div class="flex max-w-prose flex-col gap-6">
       <Show when={props.shared}>
         <p class="text-sm text-stone-600">
           This board came from a link. The review below is the whole hand as it
