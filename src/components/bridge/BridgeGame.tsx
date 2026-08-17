@@ -9,6 +9,7 @@
 
 import clsx from "clsx";
 import {
+  batch,
   createSignal,
   onCleanup,
   onMount,
@@ -66,6 +67,12 @@ import {
   replayRecord,
   type BoardRecord,
 } from "../../lib/bridge/share";
+import {
+  clearHistory,
+  loadHistory,
+  saveBoard,
+  type HistoryEntry,
+} from "../../lib/bridge/history";
 import { Review } from "./Review";
 import {
   AuctionTable,
@@ -81,6 +88,9 @@ const HUMAN: SeatType = Seat.South;
 
 type Phase = "loading" | "bidding" | "play" | "analysing" | "review";
 
+/** Where the board under review came from, which is all the review says about it. */
+type Origin = "dealt" | "link" | "history";
+
 interface DisplayTrick {
   leader: SeatType;
   cards: Card[];
@@ -88,6 +98,15 @@ interface DisplayTrick {
 }
 
 const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/** How a board reads on a scoresheet: `4♠ by South =`, `3NT by West −2`. */
+function contractLabel(analysis: BoardAnalysis): string {
+  const played = analysis.contract;
+  if (!played) return "Passed out";
+  const over = analysis.declarerTricks - (played.level + 6);
+  const result = over === 0 ? "=" : over > 0 ? `+${over}` : `−${-over}`;
+  return `${contractToString(played)} by ${SEAT_NAMES[played.declarer]} ${result}`;
+}
 
 const BridgeGame: Component = () => {
   const [engine, setEngine] = createSignal<BridgeEngine>();
@@ -108,8 +127,14 @@ const BridgeGame: Component = () => {
   const [selectedCall, setSelectedCall] = createSignal<Call>();
   /** Link to the board under review, once there is something to share. */
   const [shareUrl, setShareUrl] = createSignal<string>();
-  /** True when this board arrived from a link rather than being dealt here. */
-  const [shared, setShared] = createSignal(false);
+  /** The board under review, packed, which is also its identity in the history. */
+  const [code, setCode] = createSignal<string>();
+  /** The whole board, which is what the replay in the review walks through. */
+  const [record, setRecord] = createSignal<BoardRecord>();
+  /** How the board under review got here. */
+  const [origin, setOrigin] = createSignal<Origin>("dealt");
+  /** Boards finished in this browser, most recent first. */
+  const [history, setHistory] = createSignal<HistoryEntry[]>([]);
 
   let generation = 0;
   /**
@@ -124,11 +149,12 @@ const BridgeGame: Component = () => {
   onMount(() => {
     const created = new BridgeEngine();
     setEngine(created);
+    setHistory(loadHistory());
 
-    const code = new URLSearchParams(window.location.search).get("b");
+    const shared = new URLSearchParams(window.location.search).get("b");
     created
       .warmup()
-      .then(() => (code ? openSharedBoard(code) : startBoard(1)))
+      .then(() => (shared ? openBoardCode(shared) : startBoard(1)))
       .catch((cause: Error) => setError(cause.message));
     onCleanup(() => created.dispose());
   });
@@ -197,22 +223,29 @@ const BridgeGame: Component = () => {
     const mine = generation;
 
     const created = createBoard(number);
-    setBoardNumber(number);
-    setBoard(created);
-    setAuction(createAuction(created.dealer));
-    setState(undefined);
-    setAnalysis(undefined);
-    setDisplayTrick(undefined);
-    setBusy(false);
-    setSelectedCard(undefined);
-    setSelectedCall(undefined);
-    setShareUrl(undefined);
-    setShared(false);
+    // Batched, so the review never renders half of one board and half of the
+    // next: the analysis on screen belongs to the deal it was made from, and a
+    // replay handed one board's cards and another's contract cannot be played.
+    batch(() => {
+      setBoardNumber(number);
+      setBoard(created);
+      setAuction(createAuction(created.dealer));
+      setState(undefined);
+      setAnalysis(undefined);
+      setDisplayTrick(undefined);
+      setBusy(false);
+      setSelectedCard(undefined);
+      setSelectedCall(undefined);
+      setShareUrl(undefined);
+      setCode(undefined);
+      setRecord(undefined);
+      setOrigin("dealt");
+      setPhase("bidding");
+    });
     // A dealt board is not the shared one any more, so stop advertising it.
     if (new URLSearchParams(window.location.search).has("b")) {
       window.history.replaceState(null, "", window.location.pathname);
     }
-    setPhase("bidding");
     await runAuction(mine);
   }
 
@@ -433,43 +466,65 @@ const BridgeGame: Component = () => {
         declarerTricks: finished ? finished.declarerTricks : 0,
       });
       if (generation !== mine) return;
-      setAnalysis(result);
-      publishShareUrl({
+      const played: BoardRecord = {
         boardNumber: boardNumber(),
         dealer: currentBoard.dealer,
         vulnerability: currentBoard.vulnerability,
         hands: currentBoard.hands,
         auction: currentAuction,
         trace,
+      };
+      batch(() => {
+        setAnalysis(result);
+        setRecord(played);
+        const packed = publishShareUrl(played);
+        if (packed) {
+          setHistory(
+            saveBoard({
+              code: packed,
+              boardNumber: played.boardNumber,
+              contract: contractLabel(result),
+              score: result.score,
+              playedAt: Date.now(),
+            }),
+          );
+        }
+        setPhase("review");
+        setStatus("");
       });
-      setPhase("review");
-      setStatus("");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : String(cause));
     }
   }
 
-  /** Builds the link for the board just reviewed. */
-  function publishShareUrl(record: BoardRecord) {
+  /** Builds the link for the board just reviewed, and returns its code. */
+  function publishShareUrl(played: BoardRecord): string | undefined {
     try {
-      const code = encodeBoard(record);
-      const { origin, pathname } = window.location;
-      setShareUrl(`${origin}${pathname}?b=${code}`);
+      const packed = encodeBoard(played);
+      const { origin: host, pathname } = window.location;
+      setCode(packed);
+      setShareUrl(`${host}${pathname}?b=${packed}`);
+      return packed;
     } catch {
       // A board that will not encode simply cannot be shared; the review is
       // still perfectly usable, so there is nothing to report.
+      setCode(undefined);
       setShareUrl(undefined);
+      return undefined;
     }
   }
 
-  /** Opens a board someone sent you, straight into its review. */
-  async function openSharedBoard(code: string) {
+  /**
+   * Opens a packed board straight into its review — someone else's link, or one
+   * of your own boards picked out of the history.
+   */
+  async function openBoardCode(packed: string) {
     generation += 1;
     const mine = generation;
 
-    let record: BoardRecord;
+    let opened: BoardRecord;
     try {
-      record = decodeBoard(code);
+      opened = decodeBoard(packed);
     } catch {
       setStatus("That link did not describe a board, so here is a fresh one.");
       window.history.replaceState(null, "", window.location.pathname);
@@ -477,40 +532,83 @@ const BridgeGame: Component = () => {
       return;
     }
 
-    setShared(true);
-    setBoardNumber(record.boardNumber);
-    setBoard({
-      number: record.boardNumber,
-      dealer: record.dealer,
-      vulnerability: record.vulnerability,
-      hands: record.hands,
-    });
-    setAuction(record.auction);
     // Replaying the trace gives the scoreboard its contract and trick count, so
     // a shared review reads exactly like one you played yourself.
-    const finished = replayRecord(record);
-    setState(finished);
-    setPhase("analysing");
-    setStatus("Working out what the cards were worth…");
+    const finished = replayRecord(opened);
+    // As in `startBoard`: one board goes on screen at a time, so the review of
+    // the board you are leaving is never shown the incoming board's cards.
+    batch(() => {
+      // Your own boards are in the history under the code they are shared by,
+      // so a row you click is a board you played rather than one you were sent.
+      setOrigin(
+        history().some((entry) => entry.code === packed) ? "history" : "link",
+      );
+      setBoardNumber(opened.boardNumber);
+      setBoard({
+        number: opened.boardNumber,
+        dealer: opened.dealer,
+        vulnerability: opened.vulnerability,
+        hands: opened.hands,
+      });
+      setAuction(opened.auction);
+      setRecord(opened);
+      setCode(packed);
+      setShareUrl(undefined);
+      setAnalysis(undefined);
+      setSelectedCard(undefined);
+      setSelectedCall(undefined);
+      setDisplayTrick(undefined);
+      setBusy(false);
+      setState(finished);
+      setPhase("analysing");
+      setStatus("Working out what the cards were worth…");
+    });
 
     try {
       const result = await engine()!.analyse({
-        hands: record.hands,
-        auction: record.auction,
-        trace: record.trace,
-        dealer: record.dealer,
-        vulnerability: record.vulnerability,
+        hands: opened.hands,
+        auction: opened.auction,
+        trace: opened.trace,
+        dealer: opened.dealer,
+        vulnerability: opened.vulnerability,
         seat: HUMAN,
         declarerTricks: finished ? finished.declarerTricks : 0,
       });
       if (generation !== mine) return;
       setAnalysis(result);
-      setShareUrl(window.location.href);
+      const { origin: host, pathname } = window.location;
+      setShareUrl(`${host}${pathname}?b=${packed}`);
       setPhase("review");
       setStatus("");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : String(cause));
     }
+  }
+
+  /** Opens a board from the history table without leaving the page. */
+  function openFromHistory(packed: string) {
+    // Replaced rather than pushed: the history table is on screen in every
+    // review, so it is the way back rather than the browser's back button.
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}?b=${packed}`,
+    );
+    void openBoardCode(packed);
+  }
+
+  /**
+   * The board to deal next. Playing on from a board you opened rather than
+   * dealt carries on from the highest board you have played, so the numbering
+   * keeps moving forward instead of restarting.
+   */
+  function nextBoardNumber(): number {
+    if (origin() === "dealt") return boardNumber() + 1;
+    return (
+      history().reduce((highest, entry) => {
+        return Math.max(highest, entry.boardNumber);
+      }, 0) + 1
+    );
   }
 
   // ------------------------------------------------------------------
@@ -689,9 +787,14 @@ const BridgeGame: Component = () => {
           analysis={analysis()!}
           hands={board()!.hands}
           seat={HUMAN}
+          record={record()}
           shareUrl={shareUrl()}
-          shared={shared()}
-          onNextBoard={() => void startBoard(shared() ? 1 : boardNumber() + 1)}
+          origin={origin()}
+          history={history()}
+          currentCode={code()}
+          onOpenBoard={openFromHistory}
+          onClearHistory={() => setHistory(clearHistory())}
+          onNextBoard={() => void startBoard(nextBoardNumber())}
         />
       </Show>
 

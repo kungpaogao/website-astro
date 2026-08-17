@@ -20,7 +20,11 @@ import {
 } from "../../lib/bridge/auction";
 import type { BoardAnalysis } from "../../lib/bridge/analysis";
 import type { Hands } from "../../lib/bridge/deal";
-import { HandText, suitColor } from "./parts";
+import type { BoardRecord } from "../../lib/bridge/share";
+import type { HistoryEntry } from "../../lib/bridge/history";
+import { AuctionTable, HandText, suitColor } from "./parts";
+import { Replay } from "./Replay";
+import { HistoryTable } from "./History";
 
 /**
  * A block of the post mortem. The review is a long read, so it runs flush with
@@ -119,14 +123,30 @@ export const Review: Component<{
   analysis: BoardAnalysis;
   hands: Hands;
   seat: Seat;
+  /** The whole board, which is what the replay walks through. */
+  record?: BoardRecord;
   /** Link that reopens this exact board, deal, auction and play included. */
   shareUrl?: string;
-  /** True when this board arrived from someone else's link. */
-  shared?: boolean;
+  /** How this board got here: dealt at the table, opened from a link, or revisited. */
+  origin: "dealt" | "link" | "history";
+  /** Boards played in this browser, most recent first. */
+  history: HistoryEntry[];
+  /** The code of the board on screen, so its own row is not a link back to it. */
+  currentCode?: string;
+  onOpenBoard: (code: string) => void;
+  onClearHistory: () => void;
   onNextBoard: () => void;
 }> = (props) => {
   const bidding = () => props.analysis.bidding;
   const play = () => props.analysis.play;
+  const contract = () => props.analysis.contract;
+  const replayable = () => {
+    const record = props.record;
+    const current = contract();
+    return record && current && record.trace.length > 0
+      ? { record, contract: current }
+      : undefined;
+  };
   const [copyState, setCopyState] = createSignal<"idle" | "copied" | "failed">(
     "idle",
   );
@@ -147,10 +167,13 @@ export const Review: Component<{
 
   return (
     <div class="flex flex-col gap-6">
-      <Show when={props.shared}>
+      <Show when={props.origin !== "dealt"}>
         <p class="text-sm text-stone-600">
-          This board came from a link. The review below is the whole hand as it
-          was played.
+          {props.origin === "history"
+            ? "You played this board earlier."
+            : "This board came from a link."}{" "}
+          The review below is the whole hand as it was played, and the replay
+          walks through it card by card.
         </p>
       </Show>
 
@@ -222,6 +245,14 @@ export const Review: Component<{
       </Section>
 
       <Section title="The auction">
+        <Show when={props.record}>
+          {(record) => (
+            <div class="mb-3 max-w-xs">
+              <AuctionTable auction={record().auction} />
+            </div>
+          )}
+        </Show>
+
         <p class="text-stone-700">{bidding().summary}</p>
 
         <Show when={bidding().best}>
@@ -310,6 +341,25 @@ export const Review: Component<{
         </Show>
       </Section>
 
+      <Show when={replayable()}>
+        {(board) => (
+          <Section title="Replay the board">
+            <p class="mb-3 text-sm text-stone-600">
+              All four hands are face up. Step through the cards to see how the
+              tricks actually went; where the review had something to say about
+              a card, it appears as that card is played.
+            </p>
+            <Replay
+              hands={board().record.hands}
+              contract={board().contract}
+              trace={board().record.trace}
+              seat={props.seat}
+              notes={play().notes}
+            />
+          </Section>
+        )}
+      </Show>
+
       <Section title="Makeable contracts">
         <DoubleDummyTable analysis={props.analysis} />
       </Section>
@@ -357,13 +407,28 @@ export const Review: Component<{
         )}
       </Show>
 
+      <Show when={props.history.length > 1}>
+        <Section title="Boards you have played">
+          <p class="mb-2 text-sm text-stone-600">
+            Every board you finish is filed here by its code, so any of them can
+            be opened again — review, replay and all.
+          </p>
+          <HistoryTable
+            entries={props.history}
+            currentCode={props.currentCode}
+            onOpen={props.onOpenBoard}
+            onClear={props.onClearHistory}
+          />
+        </Section>
+      </Show>
+
       <div class="flex flex-wrap items-center gap-2">
         <button
           type="button"
           onClick={props.onNextBoard}
           class="bg-stone-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-700"
         >
-          {props.shared ? "Play a board" : "Next board"}
+          {props.origin === "dealt" ? "Next board" : "Play a board"}
         </button>
       </div>
     </div>

@@ -24,6 +24,7 @@ import {
   legalPlays,
   playCard,
   playedCards,
+  replayTrace,
   seatToPlay,
   trickWinnerIndex,
 } from "../bridge/play";
@@ -77,6 +78,61 @@ describe("trick play", () => {
     );
     if (held.length > 0) expect(legalPlays(next)).toEqual(held);
     else expect(legalPlays(next).length).toBe(next.hands[follower].length);
+  });
+});
+
+describe("replaying a trace", () => {
+  /** Plays a board out with random legal cards, which is enough for a replay. */
+  function playedBoard(seed: number) {
+    const random = seededRandom(seed);
+    const board = createBoard(1, random);
+    const contract = {
+      level: 3,
+      strain: Strain.NoTrump,
+      declarer: Seat.South,
+      doubled: "none",
+    } as const;
+
+    let state = createPlayState(contract, board.hands);
+    while (!isPlayComplete(state)) {
+      const options = legalPlays(state, seatToPlay(state));
+      state = playCard(state, options[Math.floor(random() * options.length)]);
+    }
+    return { hands: board.hands, contract, trace: playedCards(state), state };
+  }
+
+  it("gives one position per card, ending in the finished hand", () => {
+    const { hands, contract, trace, state } = playedBoard(11);
+    const states = replayTrace(contract, hands, trace);
+
+    expect(trace).toHaveLength(52);
+    expect(states).toHaveLength(53);
+    expect(states[0].tricks).toEqual([]);
+    expect(states[0].hands.map((hand) => hand.length)).toEqual([
+      13, 13, 13, 13,
+    ]);
+    expect(isPlayComplete(states.at(-1)!)).toBe(true);
+    expect(states.at(-1)!.declarerTricks).toBe(state.declarerTricks);
+    expect(states.at(-1)!.defenderTricks).toBe(state.defenderTricks);
+  });
+
+  it("holds the position as it stood before each card was played", () => {
+    const { hands, contract, trace } = playedBoard(12);
+    const states = replayTrace(contract, hands, trace);
+
+    states.forEach((state, ply) => {
+      // Everything played so far, and nothing more.
+      expect(playedCards(state)).toEqual(trace.slice(0, ply));
+      const remaining = state.hands.reduce(
+        (count, hand) => count + hand.length,
+        0,
+      );
+      expect(remaining).toBe(52 - ply);
+      // The card about to be played is still in the hand that plays it.
+      if (ply < trace.length) {
+        expect(state.hands[seatToPlay(state)]).toContain(trace[ply]);
+      }
+    });
   });
 });
 
