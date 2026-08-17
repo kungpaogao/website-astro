@@ -468,6 +468,12 @@ your play. Everything runs in the browser — there is no server component.
 
 ### Key invariants
 
+- **You turn both of your side's hands.** `controlledSeats` in `play.ts` is the
+  one answer to "whose cards does South play": declaring, it is declarer's and
+  dummy's, whichever of the two the auction sat you in — so a board where South
+  is dummy is played from North rather than watched. The table's `humanControls`
+  and the play review in `analysis.ts` both read it, so what you were allowed to
+  play and what you get marked on cannot drift apart.
 - **Robots cannot cheat.** `buildPlayRequest` copies only the cards a seat is
   entitled to see into the worker message, so a hidden hand is not in the
   payload at all.
