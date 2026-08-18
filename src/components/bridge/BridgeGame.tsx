@@ -48,6 +48,7 @@ import {
 import { buildPlayRequest } from "../../lib/bridge/bot-play";
 import { BridgeEngine } from "../../lib/bridge/engine-client";
 import {
+  controlledSeats,
   createPlayState,
   dummySeat,
   isDummyVisible,
@@ -168,15 +169,18 @@ const BridgeGame: Component = () => {
 
   /**
    * Seats whose cards you play. Declarer plays dummy's cards as well as their
-   * own; when you are dummy your partner plays both hands and you just watch.
+   * own, and when the auction makes you dummy you take over declarer's hand
+   * across the table rather than watching a robot play the board out: either
+   * way, if your side is declaring you turn both hands.
    */
   const humanControls = (seat: SeatType) => {
-    const declaring = declarer();
-    if (declaring === undefined) return seat === HUMAN;
-    if (declaring === HUMAN) return seat === HUMAN || seat === dummy();
-    if (dummy() === HUMAN) return false;
-    return seat === HUMAN;
+    const current = contract();
+    if (!current) return seat === HUMAN;
+    return controlledSeats(current, HUMAN).includes(seat);
   };
+
+  /** True when the auction made you dummy, so you are playing partner's hand. */
+  const playingForPartner = () => dummy() === HUMAN;
 
   const yourTurnToPlay = () => {
     const current = state();
@@ -379,7 +383,7 @@ const BridgeGame: Component = () => {
       return "Working out what the cards were worth…";
     const seat = seatToPlay(current);
     if (!humanControls(seat)) return `${SEAT_NAMES[seat]} is thinking…`;
-    return seat === HUMAN ? "Your turn." : "Play a card from dummy.";
+    return seat === dummy() ? "Play a card from dummy." : "Your turn.";
   }
 
   /** Plays a card and, when it completes a trick, holds it on screen briefly. */
@@ -615,13 +619,18 @@ const BridgeGame: Component = () => {
   // Derived display values
   // ------------------------------------------------------------------
 
-  /** The cards you are allowed to look at, for any seat. */
+  /**
+   * The cards you are allowed to look at, for any seat. Hands you play are face
+   * up from the first card — when you are dummy that includes declarer's, which
+   * is the hand you are now playing from — and dummy is face up for everyone
+   * once the opening lead has been made.
+   */
   const visibleHand = (seat: SeatType): readonly Card[] | undefined => {
     const current = state();
     const currentBoard = board();
     if (!currentBoard) return undefined;
     if (!current) return seat === HUMAN ? currentBoard.hands[seat] : undefined;
-    if (seat === HUMAN) return current.hands[seat];
+    if (humanControls(seat)) return current.hands[seat];
     if (seat === dummy() && isDummyVisible(current)) return current.hands[seat];
     return undefined;
   };
@@ -661,12 +670,22 @@ const BridgeGame: Component = () => {
     return legalPlays(current, seatToPlay(current)).includes(card);
   };
 
+  /**
+   * Seat name plus whatever the seat is on this board. The roles stack because
+   * they answer different questions — "(you, dummy)" says the hand in front of
+   * you is the one being played on the table, and "(declarer, you play)" says
+   * the hand across from you is yours to turn.
+   */
   const seatLabel = (seat: SeatType) => {
-    const parts: string[] = [SEAT_NAMES[seat]];
-    if (seat === HUMAN) parts.push("(you)");
-    else if (seat === dummy()) parts.push("(dummy)");
-    else if (seat === declarer()) parts.push("(declarer)");
-    return parts.join(" ");
+    const roles: string[] = [];
+    if (seat === HUMAN) roles.push("you");
+    if (seat === declarer()) roles.push("declarer");
+    else if (seat === dummy()) roles.push("dummy");
+    if (seat !== HUMAN && humanControls(seat) && playingForPartner())
+      roles.push("you play");
+    return roles.length === 0
+      ? SEAT_NAMES[seat]
+      : `${SEAT_NAMES[seat]} (${roles.join(", ")})`;
   };
 
   /**
@@ -817,10 +836,11 @@ const BridgeGame: Component = () => {
             */}
             <div class="mx-auto w-full max-w-3xl">
               {/*
-                North and South both get the full width of the table. When you
-                are declarer, North is the dummy you have to play from, so its
-                cards need to be the same size and just as easy to hit as your
-                own.
+                North and South both get the full width of the table. Whenever
+                your side is declaring you play North's cards too — as the dummy
+                opposite when you are declarer, and as the declarer opposite when
+                the auction makes you dummy — so they need to be the same size
+                and just as easy to hit as your own.
               */}
               <div class="mb-3 border-b border-white/10 pb-3">
                 <SeatHand seat={Seat.North} large />

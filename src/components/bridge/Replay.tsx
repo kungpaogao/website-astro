@@ -179,12 +179,15 @@ export const Replay: Component<{
 
   const trickNumber = () => Math.min(13, state().tricks.length + 1);
 
+  /** Roles stack, as they do at the table: `South (you, declarer)`. */
   const seatLabel = (seat: Seat) => {
-    const parts: string[] = [SEAT_NAMES[seat]];
-    if (seat === props.seat) parts.push("(you)");
-    if (seat === props.contract.declarer) parts.push("(declarer)");
-    else if (seat === dummySeat(props.contract)) parts.push("(dummy)");
-    return parts.join(" ");
+    const roles: string[] = [];
+    if (seat === props.seat) roles.push("you");
+    if (seat === props.contract.declarer) roles.push("declarer");
+    else if (seat === dummySeat(props.contract)) roles.push("dummy");
+    return roles.length === 0
+      ? SEAT_NAMES[seat]
+      : `${SEAT_NAMES[seat]} (${roles.join(", ")})`;
   };
 
   /** Whose turn it is, or how the board finished once the cards run out. */

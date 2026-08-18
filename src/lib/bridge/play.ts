@@ -64,6 +64,21 @@ export function dummySeat(contract: Contract): Seat {
   return partnerOf(contract.declarer);
 }
 
+/**
+ * The seats one player turns the cards for.
+ *
+ * Declaring, that is both hands — declarer's and dummy's — whichever of the two
+ * the auction sat you in. A player the auction makes dummy therefore takes the
+ * declarer's hand rather than sitting the board out watching partner play it.
+ * Defending, you play your own cards and nobody else's.
+ */
+export function controlledSeats(contract: Contract, seat: Seat): Seat[] {
+  const dummy = dummySeat(contract);
+  return isSameSide(seat, contract.declarer)
+    ? [contract.declarer, dummy]
+    : [seat];
+}
+
 export function isDummyVisible(state: PlayState): boolean {
   return state.tricks.length > 0 || state.current.cards.length > 0;
 }

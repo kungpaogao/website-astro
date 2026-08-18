@@ -48,7 +48,12 @@ import {
   solvePosition,
   type DoubleDummyTable,
 } from "./dds-solver";
-import { replayTrace, trumpSuit, type PlayState } from "./play";
+import {
+  controlledSeats,
+  replayTrace,
+  trumpSuit,
+  type PlayState,
+} from "./play";
 import { imps, scoreContract } from "./scoring";
 import { suggestCall } from "./bidding";
 
@@ -426,6 +431,12 @@ function reviewPlay(
   const states = replayTrace(contract, hands, trace);
   const declaring = isSameSide(seat, contract.declarer);
   const dummy = partnerOf(contract.declarer);
+  /**
+   * The cards you were answerable for. Declaring, that is both hands whichever
+   * seat the auction sat you in: made dummy, you played declarer's cards from
+   * across the table, and they are as much your play as your own hand's.
+   */
+  const yours = controlledSeats(contract, seat);
 
   const notes: PlayNote[] = [];
   let totalTricksLost = 0;
@@ -434,11 +445,7 @@ function reviewPlay(
     const state = states[ply];
     const player = nextSeat(state.current.leader, state.current.cards.length);
 
-    // Review the cards the human was responsible for, including dummy's when
-    // they were declarer.
-    const mine =
-      player === seat || (seat === contract.declarer && player === dummy);
-    if (!mine) continue;
+    if (!yours.includes(player)) continue;
 
     const before = values[ply];
     const after = values[ply + 1];
@@ -483,7 +490,9 @@ function reviewPlay(
         best,
         lost,
         contract,
-        player === seat ? "You" : "You, from dummy,",
+        // Naming the seat rather than comparing against your own keeps the
+        // wording right when you were dummy and played declarer's hand.
+        player === dummy ? "You, from dummy," : "You",
       ),
     });
   }
