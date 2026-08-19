@@ -474,17 +474,17 @@ export const Review: Component<{
       <div class="flex flex-wrap items-center gap-2">
         <button
           type="button"
-          onClick={props.onNextBoard}
-          class="bg-stone-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-700"
-        >
-          {props.origin === "dealt" ? "Next board" : "Play a board"}
-        </button>
-        <button
-          type="button"
           onClick={props.onPlayAgain}
           class="border border-stone-300 bg-white px-4 py-2 text-sm text-stone-700 transition hover:border-stone-800"
         >
           Play this hand again
+        </button>
+        <button
+          type="button"
+          onClick={props.onNextBoard}
+          class="bg-stone-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-700"
+        >
+          Play next hand
         </button>
       </div>
     </div>

@@ -258,10 +258,13 @@ const BridgeGame: Component = () => {
     const result = analysis();
     if (!current) return;
 
+    // Someone else's link is a first go at the deal for you, whatever it cost
+    // them, so there is nothing of yours to count it against.
+    const yours = origin() !== "link";
     await beginBoard(
       current,
-      attempt() + 1,
-      result
+      yours ? attempt() + 1 : 1,
+      yours && result
         ? {
             contract: contractLabel(result),
             score: result.score,
