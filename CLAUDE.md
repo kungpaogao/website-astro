@@ -505,17 +505,30 @@ your play. Everything runs in the browser — there is no server component.
 - **A board goes on screen whole.** The review reads several signals at once —
   the analysis, the record the replay walks, the board itself — and a replay
   handed one board's cards with another's contract throws on the first card it
-  cannot play. `startBoard`, `openBoardCode` and the end of `reviewBoard`
+  cannot play. `beginBoard`, `openBoardCode` and the end of `reviewBoard`
   therefore write their signals inside Solid's `batch`, so no render ever sees
   half of one board and half of the next.
 
-### Replay and history
+### Replay, replaying, and history
 
-The review is not the end of a board. `Replay.tsx` walks the trace one card at a
-time — the four hands as a bridge diagram, the trick in the middle of it, and the
-play review's note on a card shown as that card comes up. It works from the same
-`BoardRecord` the share link carries, so a board someone sent you replays exactly
-like one you played.
+The review is not the end of a board, and two different things there are called
+replaying: watching the hand back, and playing it again.
+
+`Replay.tsx` walks the trace one card at a time — the four hands as a bridge
+diagram, the trick in the middle of it, and the play review's note on a card shown
+as that card comes up. It works from the same `BoardRecord` the share link carries,
+so a board someone sent you replays exactly like one you played.
+
+**Play this hand again** deals the same fifty two cards, dealer and vulnerability
+back for another go from the first call. `beginBoard` in `BridgeGame.tsx` is the
+single way a board goes up to be bid and played — `startBoard` hands it a freshly
+dealt board, `playHandAgain` hands it the one already on screen, which is why a
+board opened from a link or the history can be played as well as read. The robots
+bid from their own cards and the auction in front of them, so the auction only
+diverges where you do; their card play resamples the hidden hands, so the defense
+does not repeat itself. Each go is filed separately, since a different auction or
+play is a different board code, and carries its `attempt` number: that is what the
+review compares against and what tells two rows of board 3 apart in the table.
 
 `history.ts` files every finished board in `localStorage` under its board code,
 which doubles as the entry's identity: reopening a board does not file it twice.
@@ -925,6 +938,13 @@ Brief description of changes
 ---
 
 ## Important Conventions
+
+### Say Less
+
+Keep prose short — on the page and in comments alike. A control that reads
+clearly does not need a paragraph under it explaining itself, and code that
+reads clearly does not need its mechanics narrated. Comment the reason for
+something surprising, not the thing itself, and cut a line rather than pad it.
 
 ### File Naming
 

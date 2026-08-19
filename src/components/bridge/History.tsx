@@ -48,6 +48,13 @@ export const HistoryTable: Component<{
                   <tr class="border-t border-stone-100">
                     <td class="py-1 text-stone-500 tabular-nums">
                       {entry.boardNumber}
+                      {/* Two rows can share a board number once the same deal
+                          has been played twice; the go number tells them apart. */}
+                      <Show when={(entry.attempt ?? 1) > 1}>
+                        <span class="ml-1 text-xs text-stone-400">
+                          #{entry.attempt}
+                        </span>
+                      </Show>
                     </td>
                     {/*
                       The contract carries the link rather than the board number:

@@ -92,6 +92,20 @@ type Phase = "loading" | "bidding" | "play" | "analysing" | "review";
 /** Where the board under review came from, which is all the review says about it. */
 type Origin = "dealt" | "link" | "history";
 
+/**
+ * What a finished go at a deal came to.
+ *
+ * Kept from one go to the next so that playing a hand again can be scored
+ * against the way it went the first time, which is the whole point of asking
+ * for the same cards back.
+ */
+interface Attempt {
+  contract: string;
+  score: number;
+  /** Nobody bid, so the sentence about it needs different words. */
+  passedOut: boolean;
+}
+
 interface DisplayTrick {
   leader: SeatType;
   cards: Card[];
@@ -136,6 +150,10 @@ const BridgeGame: Component = () => {
   const [origin, setOrigin] = createSignal<Origin>("dealt");
   /** Boards finished in this browser, most recent first. */
   const [history, setHistory] = createSignal<HistoryEntry[]>([]);
+  /** Which go at the deal on screen this is. One until you play it again. */
+  const [attempt, setAttempt] = createSignal(1);
+  /** How the previous go at this deal finished, when there was one. */
+  const [previous, setPrevious] = createSignal<Attempt>();
 
   let generation = 0;
   /**
@@ -223,17 +241,60 @@ const BridgeGame: Component = () => {
   // ------------------------------------------------------------------
 
   async function startBoard(number: number) {
+    await beginBoard(createBoard(number), 1, undefined);
+  }
+
+  /**
+   * Deals the board on screen again: the same fifty two cards, the same dealer
+   * and the same vulnerability, from the first call.
+   *
+   * The robots bid from their cards and the auction so far, so a call you repeat
+   * is answered exactly as it was the first time — the auction only diverges
+   * where you do. Their card play samples the hands they cannot see, so the
+   * defense will not repeat itself trick for trick.
+   */
+  async function playHandAgain() {
+    const current = board();
+    const result = analysis();
+    if (!current) return;
+
+    // Someone else's link is a first go at the deal for you, whatever it cost
+    // them, so there is nothing of yours to count it against.
+    const yours = origin() !== "link";
+    await beginBoard(
+      current,
+      yours ? attempt() + 1 : 1,
+      yours && result
+        ? {
+            contract: contractLabel(result),
+            score: result.score,
+            passedOut: result.contract === undefined,
+          }
+        : undefined,
+    );
+  }
+
+  /**
+   * Puts a board up to be bid and played, whether it was just dealt or is the
+   * one on screen coming round again.
+   */
+  async function beginBoard(
+    playing: Board,
+    attemptNumber: number,
+    earlier: Attempt | undefined,
+  ) {
     generation += 1;
     const mine = generation;
 
-    const created = createBoard(number);
     // Batched, so the review never renders half of one board and half of the
     // next: the analysis on screen belongs to the deal it was made from, and a
     // replay handed one board's cards and another's contract cannot be played.
     batch(() => {
-      setBoardNumber(number);
-      setBoard(created);
-      setAuction(createAuction(created.dealer));
+      setBoardNumber(playing.number);
+      setBoard(playing);
+      setAttempt(attemptNumber);
+      setPrevious(earlier);
+      setAuction(createAuction(playing.dealer));
       setState(undefined);
       setAnalysis(undefined);
       setDisplayTrick(undefined);
@@ -243,10 +304,12 @@ const BridgeGame: Component = () => {
       setShareUrl(undefined);
       setCode(undefined);
       setRecord(undefined);
+      // A board you are playing is your own, whatever brought its cards here.
       setOrigin("dealt");
       setPhase("bidding");
     });
-    // A dealt board is not the shared one any more, so stop advertising it.
+    // The board being played is no longer the one the link described — the
+    // auction alone will see to that — so stop advertising it.
     if (new URLSearchParams(window.location.search).has("b")) {
       window.history.replaceState(null, "", window.location.pathname);
     }
@@ -490,6 +553,7 @@ const BridgeGame: Component = () => {
               contract: contractLabel(result),
               score: result.score,
               playedAt: Date.now(),
+              attempt: attempt(),
             }),
           );
         }
@@ -557,6 +621,8 @@ const BridgeGame: Component = () => {
       setAuction(opened.auction);
       setRecord(opened);
       setCode(packed);
+      setAttempt(1);
+      setPrevious(undefined);
       setShareUrl(undefined);
       setAnalysis(undefined);
       setSelectedCard(undefined);
@@ -796,6 +862,11 @@ const BridgeGame: Component = () => {
             <strong class="text-stone-900">{theirTricks()}</strong>
           </span>
         </Show>
+        <Show when={attempt() > 1}>
+          <span class="text-stone-500">
+            Attempt <strong class="text-stone-900">{attempt()}</strong>
+          </span>
+        </Show>
         <span class="ml-auto text-stone-500 italic">
           {confirmPrompt() ?? status()}
         </span>
@@ -811,8 +882,11 @@ const BridgeGame: Component = () => {
           origin={origin()}
           history={history()}
           currentCode={code()}
+          attempt={attempt()}
+          previous={previous()}
           onOpenBoard={openFromHistory}
           onClearHistory={() => setHistory(clearHistory())}
+          onPlayAgain={() => void playHandAgain()}
           onNextBoard={() => void startBoard(nextBoardNumber())}
         />
       </Show>
