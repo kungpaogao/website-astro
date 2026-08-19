@@ -7,7 +7,6 @@ import { createSignal, For, Show, type Component, type JSX } from "solid-js";
 import {
   cardName,
   cardSuit,
-  SEAT_LETTERS,
   SEAT_NAMES,
   SEATS,
   STRAIN_SYMBOLS,
@@ -341,7 +340,17 @@ export const Review: Component<{
         </Show>
       </Section>
 
-      <Show when={replayable()}>
+      <Show
+        when={replayable()}
+        fallback={
+          <Section title="The deal">
+            <AllHands hands={props.hands} declarer={contract()?.declarer} />
+            <p class="mt-3 text-xs text-stone-500">
+              You sat {SEAT_NAMES[props.seat]}.
+            </p>
+          </Section>
+        }
+      >
         {(board) => (
           <Section title="Replay the board">
             <p class="mb-3 text-sm text-stone-600">
@@ -362,16 +371,6 @@ export const Review: Component<{
 
       <Section title="Makeable contracts">
         <DoubleDummyTable analysis={props.analysis} />
-      </Section>
-
-      <Section title="All four hands">
-        <AllHands
-          hands={props.hands}
-          declarer={props.analysis.contract?.declarer}
-        />
-        <p class="mt-3 text-xs text-stone-500">
-          You sat {SEAT_NAMES[props.seat]} ({SEAT_LETTERS[props.seat]}).
-        </p>
       </Section>
 
       <Show when={props.shareUrl}>
