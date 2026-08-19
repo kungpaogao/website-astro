@@ -340,9 +340,6 @@ export const Review: Component<{
         </Show>
       </Section>
 
-      {/* The replay lays the four hands out itself, so only a board without one
-          — passed out, or opened from a link that carries no play — still needs
-          the deal spelled out. */}
       <Show
         when={replayable()}
         fallback={
