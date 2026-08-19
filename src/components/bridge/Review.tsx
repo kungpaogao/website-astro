@@ -470,30 +470,22 @@ export const Review: Component<{
         </Section>
       </Show>
 
-      <div class="flex flex-col gap-2">
-        {/* Moving on stays the default; the same cards again are the option. */}
-        <div class="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={props.onNextBoard}
-            class="bg-stone-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-700"
-          >
-            {props.origin === "dealt" ? "Next board" : "Play a board"}
-          </button>
-          <button
-            type="button"
-            onClick={props.onPlayAgain}
-            class="border border-stone-300 bg-white px-4 py-2 text-sm text-stone-700 transition hover:border-stone-800"
-          >
-            Play this hand again
-          </button>
-        </div>
-        <p class="text-xs text-stone-500">
-          Playing again deals these same fifty two cards from the first call.
-          The robots bid from their own cards and the auction in front of them,
-          so the auction only changes where you do — but they sample the hands
-          they cannot see afresh, so the play will not repeat itself exactly.
-        </p>
+      {/* Moving on stays the default; the same cards again are the option. */}
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={props.onNextBoard}
+          class="bg-stone-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-700"
+        >
+          {props.origin === "dealt" ? "Next board" : "Play a board"}
+        </button>
+        <button
+          type="button"
+          onClick={props.onPlayAgain}
+          class="border border-stone-300 bg-white px-4 py-2 text-sm text-stone-700 transition hover:border-stone-800"
+        >
+          Play this hand again
+        </button>
       </div>
     </div>
   );

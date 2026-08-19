@@ -939,6 +939,13 @@ Brief description of changes
 
 ## Important Conventions
 
+### Say Less
+
+Keep prose short — on the page and in comments alike. A control that reads
+clearly does not need a paragraph under it explaining itself, and code that
+reads clearly does not need its mechanics narrated. Comment the reason for
+something surprising, not the thing itself, and cut a line rather than pad it.
+
 ### File Naming
 
 - **Components:** PascalCase (e.g., `Navigation.tsx`, `Map.tsx`)
