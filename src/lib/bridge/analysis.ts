@@ -50,8 +50,7 @@ import {
 } from "./dds-solver";
 import {
   controlledSeats,
-  createPlayState,
-  playCard,
+  replayTrace,
   trumpSuit,
   type PlayState,
 } from "./play";
@@ -337,22 +336,6 @@ function biddingSummary(
 // Play review
 // --------------------------------------------------------------------------
 
-/** Rebuilds the position before every card of the trace. */
-function replayStates(
-  contract: Contract,
-  hands: Hands,
-  trace: readonly Card[],
-): PlayState[] {
-  const states: PlayState[] = [];
-  let state = createPlayState(contract, hands);
-  for (const card of trace) {
-    states.push(state);
-    state = playCard(state, card);
-  }
-  states.push(state);
-  return states;
-}
-
 /** Where in the trick a card was played, which drives most of the advice. */
 function positionInTrick(
   state: PlayState,
@@ -445,7 +428,7 @@ function reviewPlay(
 ): PlayReview {
   const openingLeader = nextSeat(contract.declarer);
   const values = analysePlay(dds, hands, contract.strain, openingLeader, trace);
-  const states = replayStates(contract, hands, trace);
+  const states = replayTrace(contract, hands, trace);
   const declaring = isSameSide(seat, contract.declarer);
   const dummy = partnerOf(contract.declarer);
   /**

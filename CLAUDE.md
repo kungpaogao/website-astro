@@ -465,6 +465,7 @@ your play. Everything runs in the browser — there is no server component.
 | `engine-client.ts` | Main thread promise API over the worker |
 | `analysis.ts` | Post mortem: par, best contract, per-bid and per-card review |
 | `share.ts` | Packs a finished board into a ~50 character URL code |
+| `history.ts` | The boards you have finished, kept in `localStorage` |
 
 ### Key invariants
 
@@ -501,13 +502,35 @@ your play. Everything runs in the browser — there is no server component.
   cards by their position in the legal move list, so any change to `legalPlays`
   ordering or to the field layout must bump `VERSION` or old links will decode
   to the wrong board.
+- **A board goes on screen whole.** The review reads several signals at once —
+  the analysis, the record the replay walks, the board itself — and a replay
+  handed one board's cards with another's contract throws on the first card it
+  cannot play. `startBoard`, `openBoardCode` and the end of `reviewBoard`
+  therefore write their signals inside Solid's `batch`, so no render ever sees
+  half of one board and half of the next.
+
+### Replay and history
+
+The review is not the end of a board. `Replay.tsx` walks the trace one card at a
+time — the four hands as a bridge diagram, the trick in the middle of it, and the
+play review's note on a card shown as that card comes up. It works from the same
+`BoardRecord` the share link carries, so a board someone sent you replays exactly
+like one you played.
+
+`history.ts` files every finished board in `localStorage` under its board code,
+which doubles as the entry's identity: reopening a board does not file it twice.
+`History.tsx` puts the table below the share link once there is more than one
+board in it, and each row links to `?b=<code>` — a real link, so it opens in a new
+tab, but clicked plainly it swaps the board in place. Storage is optional
+throughout; a browser that refuses it loses the table and nothing else.
 
 ### Tests
 
 `bridge-dds` (solver conventions), `bridge-bidding` (auction mechanics, openings,
 responses, 200 random auctions that must terminate), `bridge-game` (a full board
-bid and played by robots, then reviewed), and `bridge-share` (board code round
-trips, including passed out and redoubled boards).
+bid and played by robots, then reviewed, plus the replay's per-card positions),
+`bridge-share` (board code round trips, including passed out and redoubled
+boards), and `bridge-history` (storage, deduplication and junk in the store).
 
 ---
 

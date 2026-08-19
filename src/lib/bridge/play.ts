@@ -171,6 +171,30 @@ export function isPlayComplete(state: PlayState): boolean {
   return state.tricks.length === 13;
 }
 
+/**
+ * Every position the hand passed through, one per card of the trace plus the
+ * position it ended in — so `states[i]` is the table as it stood before
+ * `trace[i]` was played, and the last entry is the finished hand.
+ *
+ * Both the post mortem and the replay viewer walk a hand this way, and a trace
+ * is at most 52 cards, so rebuilding the whole sequence is cheaper than trying
+ * to step a single state backwards.
+ */
+export function replayTrace(
+  contract: Contract,
+  hands: Hands,
+  trace: readonly Card[],
+): PlayState[] {
+  const states: PlayState[] = [];
+  let state = createPlayState(contract, hands);
+  for (const card of trace) {
+    states.push(state);
+    state = playCard(state, card);
+  }
+  states.push(state);
+  return states;
+}
+
 /** Every card played so far, in order, as a flat list. */
 export function playedCards(state: PlayState): Card[] {
   return [
