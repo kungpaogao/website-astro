@@ -28,6 +28,11 @@ export interface HistoryEntry {
   score: number;
   /** When the board finished, in epoch milliseconds. */
   playedAt: number;
+  /**
+   * Which go at this deal it was: one the first time, two after you asked for
+   * the same cards back. Absent on boards filed before replaying was possible.
+   */
+  attempt?: number;
 }
 
 function storage(): Storage | undefined {
@@ -47,7 +52,8 @@ function isEntry(value: unknown): value is HistoryEntry {
     typeof entry.boardNumber === "number" &&
     typeof entry.contract === "string" &&
     typeof entry.score === "number" &&
-    typeof entry.playedAt === "number"
+    typeof entry.playedAt === "number" &&
+    (entry.attempt === undefined || typeof entry.attempt === "number")
   );
 }
 

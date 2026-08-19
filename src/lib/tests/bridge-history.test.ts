@@ -71,6 +71,14 @@ describe("Bridge history", () => {
     expect(rows.at(-1)!.code).toBe("code-5");
   });
 
+  it("keeps which go at a deal a board was", () => {
+    saveBoard(entry({ code: "first" }));
+    saveBoard(entry({ code: "second", score: 620, attempt: 2 }));
+
+    const rows = loadHistory();
+    expect(rows.map((row) => row.attempt)).toEqual([2, undefined]);
+  });
+
   it("clears", () => {
     saveBoard(entry());
     expect(clearHistory()).toEqual([]);
@@ -85,7 +93,12 @@ describe("Bridge history", () => {
 
     storage.setItem(
       "bridge.history.v1",
-      JSON.stringify([entry(), { code: "half a row" }, 7]),
+      JSON.stringify([
+        entry(),
+        { code: "half a row" },
+        7,
+        { ...entry({ code: "bad attempt" }), attempt: "twice" },
+      ]),
     );
     expect(loadHistory().map((row) => row.code)).toEqual(["AAAA"]);
   });

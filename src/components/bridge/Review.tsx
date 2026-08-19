@@ -35,6 +35,8 @@ import { HistoryTable } from "./History";
  * post. It is spelled out here rather than inherited from `.prose`, whose list
  * and table rules would take over the notes and the double dummy grid.
  */
+const signed = (score: number) => `${score >= 0 ? "+" : ""}${score}`;
+
 const Section: Component<{ title?: string; children: JSX.Element }> = (
   props,
 ) => (
@@ -133,8 +135,14 @@ export const Review: Component<{
   history: HistoryEntry[];
   /** The code of the board on screen, so its own row is not a link back to it. */
   currentCode?: string;
+  /** Which go at this deal this was. One unless you asked for the cards back. */
+  attempt: number;
+  /** How the previous go at this deal finished, when there was one. */
+  previous?: { contract: string; score: number; passedOut: boolean };
   onOpenBoard: (code: string) => void;
   onClearHistory: () => void;
+  /** Deals these same cards again, from the first call. */
+  onPlayAgain: () => void;
   onNextBoard: () => void;
 }> = (props) => {
   const bidding = () => props.analysis.bidding;
@@ -229,6 +237,46 @@ export const Review: Component<{
             )}
           </Show>
         </div>
+
+        <Show when={props.attempt > 1 && props.previous}>
+          {(earlier) => {
+            const gain = () => props.analysis.score - earlier().score;
+            return (
+              <p class="mt-3 border-l-2 border-stone-300 pl-3 text-sm text-stone-600">
+                Attempt {props.attempt} at this deal.{" "}
+                <Show
+                  when={!earlier().passedOut}
+                  fallback={<>Last time the board was passed out</>}
+                >
+                  Last time you played{" "}
+                  <strong class="font-medium text-stone-900">
+                    {earlier().contract}
+                  </strong>
+                </Show>{" "}
+                for <span class="tabular-nums">{signed(earlier().score)}</span>;{" "}
+                <strong
+                  class={clsx(
+                    "font-medium",
+                    gain() > 0
+                      ? "text-emerald-700"
+                      : gain() < 0
+                        ? "text-amber-700"
+                        : "text-stone-700",
+                  )}
+                >
+                  <Show
+                    when={gain() !== 0}
+                    fallback={<>this time the same score</>}
+                  >
+                    this time {signed(props.analysis.score)}, {Math.abs(gain())}{" "}
+                    {gain() > 0 ? "better" : "worse"}
+                  </Show>
+                </strong>
+                .
+              </p>
+            );
+          }}
+        </Show>
 
         <p class="mt-3 border-t border-stone-100 pt-2 text-xs text-stone-500">
           <strong class="text-stone-600">Best available</strong> is the par
@@ -422,14 +470,30 @@ export const Review: Component<{
         </Section>
       </Show>
 
-      <div class="flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          onClick={props.onNextBoard}
-          class="bg-stone-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-700"
-        >
-          {props.origin === "dealt" ? "Next board" : "Play a board"}
-        </button>
+      <div class="flex flex-col gap-2">
+        {/* Moving on stays the default; the same cards again are the option. */}
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={props.onNextBoard}
+            class="bg-stone-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-700"
+          >
+            {props.origin === "dealt" ? "Next board" : "Play a board"}
+          </button>
+          <button
+            type="button"
+            onClick={props.onPlayAgain}
+            class="border border-stone-300 bg-white px-4 py-2 text-sm text-stone-700 transition hover:border-stone-800"
+          >
+            Play this hand again
+          </button>
+        </div>
+        <p class="text-xs text-stone-500">
+          Playing again deals these same fifty two cards from the first call.
+          The robots bid from their own cards and the auction in front of them,
+          so the auction only changes where you do — but they sample the hands
+          they cannot see afresh, so the play will not repeat itself exactly.
+        </p>
       </div>
     </div>
   );
