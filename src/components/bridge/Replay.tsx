@@ -262,7 +262,7 @@ export const Replay: Component<{
         </div>
       </div>
 
-      <p class="text-sm text-stone-600">
+      <p class="text-stone-600">
         <span class="tabular-nums">
           Trick {trickNumber()} of 13 · card {ply()} of {last()}
         </span>{" "}
@@ -284,7 +284,7 @@ export const Replay: Component<{
 
       <Show when={note()}>
         {(entry) => (
-          <p class="border-l-2 border-amber-300 pl-3 text-sm text-amber-800">
+          <p class="border-l-2 border-amber-300 pl-3 text-amber-800">
             {entry().explanation}
           </p>
         )}
@@ -345,7 +345,7 @@ export const Replay: Component<{
         </button>
       </div>
 
-      <label class="flex items-center gap-3 text-xs text-stone-500">
+      <label class="flex items-center gap-3 text-stone-500">
         <span class="sr-only">Card played</span>
         <input
           type="range"
@@ -363,7 +363,7 @@ export const Replay: Component<{
         />
       </label>
 
-      <p class="text-xs text-stone-500">
+      <p class="text-stone-600">
         Arrow keys step through the cards once the replay has focus.
       </p>
     </div>

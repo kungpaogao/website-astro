@@ -10,6 +10,7 @@
 import clsx from "clsx";
 import {
   batch,
+  createEffect,
   createSignal,
   onCleanup,
   onMount,
@@ -87,6 +88,16 @@ import {
 
 const HUMAN: SeatType = Seat.South;
 
+/**
+ * The page's standfirst, which the game hides once a board is under review.
+ *
+ * It introduces the table, and the review is long enough without a paragraph
+ * about robots at the top of it. The paragraph lives in `bridge.astro` so that
+ * it is server rendered with the title, which leaves reaching for it by id as
+ * the way to put it away.
+ */
+const INTRO_ID = "bridge-intro";
+
 type Phase = "loading" | "bidding" | "play" | "analysing" | "review";
 
 /** Where the board under review came from, which is all the review says about it. */
@@ -158,6 +169,11 @@ const BridgeGame: Component = () => {
       .then(() => (shared ? openBoardCode(shared) : startBoard(1)))
       .catch((cause: Error) => setError(cause.message));
     onCleanup(() => created.dispose());
+  });
+
+  createEffect(() => {
+    const intro = document.getElementById(INTRO_ID);
+    if (intro) intro.hidden = phase() === "review";
   });
 
   const contract = (): Contract | undefined => state()?.contract;

@@ -263,7 +263,6 @@ function reviewBidding(
     actual,
     contract,
     seat,
-    par,
     notes,
     combinedHcp,
     closing,
@@ -273,29 +272,29 @@ function reviewBidding(
   return { notes, best, actual, par, costImps, combinedHcp, closing, summary };
 }
 
+/**
+ * Par is deliberately absent here: the review states it once, in the result,
+ * where it is labelled and explained. Repeating it under the auction only
+ * crowded the sentence that was trying to say how the bidding went.
+ */
 function biddingSummary(
   best: ContractOption | undefined,
   actual: ContractOption | undefined,
   contract: Contract | undefined,
   seat: Seat,
-  par: { score: number; contracts: string[] },
   notes: BiddingNote[],
   combinedHcp: number,
   closing: { seat: Seat; call: Call } | undefined,
 ): string {
-  const parText = par.contracts.length
-    ? `Par on this board is ${par.contracts.join(" or ")} for ${par.score >= 0 ? "+" : ""}${par.score} to North-South.`
-    : "";
-
   if (!contract) {
     if (best) {
-      return `The board was passed out. ${contractToString(best.contract)} was there for the taking — worth ${best.score} points. ${parText}`;
+      return `The board was passed out. ${contractToString(best.contract)} was there for the taking — worth ${best.score} points.`;
     }
-    return `The board was passed out, and neither side could make anything. ${parText}`;
+    return `The board was passed out, and neither side could make anything.`;
   }
 
   if (!best) {
-    return `Your side had no making contract on this deal, so defending was the right idea. ${parText}`;
+    return `Your side had no making contract on this deal, so defending was the right idea.`;
   }
 
   const ours = isSameSide(contract.declarer, seat);
@@ -303,16 +302,16 @@ function biddingSummary(
   const target = contractToString(best.contract);
 
   if (ours && reached === target) {
-    return `The auction landed on ${reached}, which is exactly the best contract available to your side. ${parText}`;
+    return `The auction landed on ${reached}, which is exactly the best contract available to your side.`;
   }
 
   if (!ours) {
-    return `The opponents played ${reached}. Your side could have made ${target} for ${best.score}. ${parText}`;
+    return `The opponents played ${reached}. Your side could have made ${target} for ${best.score}.`;
   }
 
   const gap = actual ? best.score - actual.score : 0;
   if (gap <= 0) {
-    return `You played ${reached} and did at least as well as the ${target} the cards were worth. ${parText}`;
+    return `You played ${reached} and did at least as well as the ${target} the cards were worth.`;
   }
 
   const worth = `worth ${gap} more points (${imps(gap)} IMPs)`;
@@ -326,10 +325,10 @@ function biddingSummary(
     const closedBy = closing
       ? `${closing.seat === seat ? "your own" : "partner's"} ${callToString(closing.call)} ended the auction`
       : `the auction ended`;
-    return `You played ${reached}, and every call of yours was standard. ${target} is cold with all four hands face up — ${worth} — but ${closedBy} with ${combinedHcp} HCP between the two of you. ${parText}`;
+    return `You played ${reached}, and every call of yours was standard. ${target} is cold with all four hands face up — ${worth} — but ${closedBy} with ${combinedHcp} HCP between the two of you.`;
   }
 
-  return `You played ${reached}; ${target} was the better spot, ${worth}. ${parText}`;
+  return `You played ${reached}; ${target} was the better spot, ${worth}.`;
 }
 
 // --------------------------------------------------------------------------
