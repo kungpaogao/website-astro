@@ -398,12 +398,7 @@ export const Review: Component<{
       <Show when={props.shareUrl}>
         {(url) => (
           <Section title="Share this board">
-            <p class="mb-2 text-stone-600">
-              The whole board — the deal, the auction and all fifty two cards —
-              packs into this link, so anyone who opens it sees exactly this
-              review.
-            </p>
-            <div class="flex flex-wrap gap-2">
+            <div class="mt-2 flex flex-wrap gap-2">
               <input
                 type="text"
                 readonly
