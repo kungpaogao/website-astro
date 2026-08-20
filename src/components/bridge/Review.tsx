@@ -63,8 +63,7 @@ const DoubleDummyTable: Component<{ analysis: BoardAnalysis }> = (props) => (
         across the page and leave the strains stranded from their declarer. */}
     <table class="w-full max-w-md min-w-[18rem] text-center text-sm">
       <caption class="mb-2 text-left text-stone-600">
-        Tricks each declarer can take with perfect play by everybody. Seven
-        tricks is a contract at the one level.
+        Tricks each declarer can take with perfect play by everybody.
       </caption>
       <thead>
         <tr class="text-xs text-stone-500">
