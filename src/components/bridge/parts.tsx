@@ -457,7 +457,12 @@ export const InfoTip: Component<{
   });
 
   return (
-    <span class="relative inline-flex" ref={root}>
+    /*
+      `align-middle` belongs on this span rather than on the button inside it:
+      a flex item's vertical-align is ignored, so aligning the button left the
+      icon sitting on the text baseline with its whole height above the line.
+    */
+    <span class="relative inline-flex align-middle" ref={root}>
       <button
         type="button"
         ref={button}
@@ -468,7 +473,7 @@ export const InfoTip: Component<{
           setOpen(!open());
         }}
         class={clsx(
-          "cursor-pointer align-middle transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-800",
+          "cursor-pointer transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-800",
           open() ? "text-stone-800" : "text-stone-400 hover:text-stone-800",
         )}
       >

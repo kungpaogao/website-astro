@@ -135,7 +135,11 @@ export const Review: Component<{
   record?: BoardRecord;
   /** Link that reopens this exact board, deal, auction and play included. */
   shareUrl?: string;
-  /** How this board got here: dealt at the table, opened from a link, or revisited. */
+  /**
+   * How this board got here: dealt at the table, opened from a link, or
+   * revisited. All it decides now is whether the button at the end offers the
+   * next board or a first one.
+   */
   origin: "dealt" | "link" | "history";
   /** Boards played in this browser, most recent first. */
   history: HistoryEntry[];
@@ -175,16 +179,6 @@ export const Review: Component<{
 
   return (
     <div class="flex flex-col gap-6">
-      <Show when={props.origin !== "dealt"}>
-        <p class="text-stone-600">
-          {props.origin === "history"
-            ? "You played this board earlier."
-            : "This board came from a link."}{" "}
-          The review below is the whole hand as it was played, and the replay
-          walks through it card by card.
-        </p>
-      </Show>
-
       <Section title="Result">
         <p class="text-stone-700">{props.analysis.headline}</p>
         <div class="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-stone-600">
