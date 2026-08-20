@@ -458,11 +458,13 @@ export const InfoTip: Component<{
 
   return (
     /*
-      `align-middle` belongs on this span rather than on the button inside it:
-      a flex item's vertical-align is ignored, so aligning the button left the
-      icon sitting on the text baseline with its whole height above the line.
+      The icon is sized and placed against the capitals beside it: a circle as
+      tall as the text's em box reads low next to them, because it centers on
+      the x-height and hangs below the baseline. 0.85em tall, dropped 0.05em,
+      puts its center on the cap height instead. The wrapper does the aligning
+      because vertical-align is ignored on a flex item.
     */
-    <span class="relative inline-flex align-middle" ref={root}>
+    <span class="inline-block align-[-0.05em]" ref={root}>
       <button
         type="button"
         ref={button}
@@ -473,14 +475,14 @@ export const InfoTip: Component<{
           setOpen(!open());
         }}
         class={clsx(
-          "cursor-pointer transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-800",
+          "block cursor-pointer transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-800",
           open() ? "text-stone-800" : "text-stone-400 hover:text-stone-800",
         )}
       >
         <svg
           viewBox="0 0 16 16"
           aria-hidden="true"
-          class="h-[1em] w-[1em]"
+          class="block h-[0.85em] w-[0.85em]"
           fill="none"
           stroke="currentColor"
           stroke-width="1.4"
