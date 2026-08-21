@@ -3,7 +3,15 @@
  */
 
 import clsx from "clsx";
-import { For, Show, type Component, type JSX } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  For,
+  onCleanup,
+  Show,
+  type Component,
+  type JSX,
+} from "solid-js";
 import {
   bySuit,
   cardRank,
@@ -389,6 +397,115 @@ export const BiddingBox: Component<{
         </For>
       </div>
     </div>
+  );
+};
+
+/**
+ * A definition kept out of the way until it is asked for.
+ *
+ * The review is full of bridge vocabulary — par, IMPs, double dummy — that a
+ * reader either knows cold or wants a sentence about. Spelling each one out in
+ * the text buried the numbers they were explaining, so the sentence now sits
+ * behind an icon beside the term it belongs to.
+ *
+ * The bubble is positioned against the viewport rather than against the icon:
+ * the terms it explains sit in a wrapping row of figures, so an icon can end up
+ * hard against either edge of a phone, where a bubble anchored to it would hang
+ * off the page. Measuring on open and clamping keeps it on screen wherever the
+ * row happens to break, at the cost of closing on scroll.
+ */
+export const InfoTip: Component<{
+  /** Named in the button's label: "what IMPs means". */
+  label: string;
+  children: JSX.Element;
+}> = (props) => {
+  const [open, setOpen] = createSignal(false);
+  const [box, setBox] = createSignal({ top: 0, left: 0, width: 0 });
+  let root: HTMLSpanElement | undefined;
+  let button: HTMLButtonElement | undefined;
+
+  function place() {
+    if (!button) return;
+    const rect = button.getBoundingClientRect();
+    const width = Math.min(320, window.innerWidth - 24);
+    const left = Math.min(
+      Math.max(12, rect.left + rect.width / 2 - width / 2),
+      window.innerWidth - width - 12,
+    );
+    setBox({ top: rect.bottom + 8, left, width });
+  }
+
+  createEffect(() => {
+    if (!open()) return;
+    const dismiss = (event: Event) => {
+      if (!root?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    const close = () => setOpen(false);
+    document.addEventListener("pointerdown", dismiss);
+    document.addEventListener("keydown", onKey);
+    window.addEventListener("scroll", close, { passive: true });
+    window.addEventListener("resize", close);
+    onCleanup(() => {
+      document.removeEventListener("pointerdown", dismiss);
+      document.removeEventListener("keydown", onKey);
+      window.removeEventListener("scroll", close);
+      window.removeEventListener("resize", close);
+    });
+  });
+
+  return (
+    /*
+      The icon is sized and placed against the capitals beside it: a circle as
+      tall as the text's em box reads low next to them, because it centers on
+      the x-height and hangs below the baseline. 0.85em tall, dropped 0.05em,
+      puts its center on the cap height instead. The wrapper does the aligning
+      because vertical-align is ignored on a flex item.
+    */
+    <span class="inline-block align-[-0.05em]" ref={root}>
+      <button
+        type="button"
+        ref={button}
+        aria-expanded={open()}
+        aria-label={`What ${props.label} means`}
+        onClick={() => {
+          if (!open()) place();
+          setOpen(!open());
+        }}
+        class={clsx(
+          "block cursor-pointer transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-800",
+          open() ? "text-stone-800" : "text-stone-400 hover:text-stone-800",
+        )}
+      >
+        <svg
+          viewBox="0 0 16 16"
+          aria-hidden="true"
+          class="block h-[0.85em] w-[0.85em]"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.4"
+        >
+          <circle cx="8" cy="8" r="6.4" />
+          <path d="M8 7.2v4" stroke-linecap="round" />
+          <circle cx="8" cy="4.6" r="0.8" fill="currentColor" stroke="none" />
+        </svg>
+      </button>
+      <Show when={open()}>
+        <span
+          role="note"
+          class="fixed z-30 block border border-stone-300 bg-white p-3 text-sm leading-relaxed font-normal text-stone-600 shadow-lg"
+          style={{
+            top: `${box().top}px`,
+            left: `${box().left}px`,
+            width: `${box().width}px`,
+          }}
+        >
+          {props.children}
+        </span>
+      </Show>
+    </span>
   );
 };
 

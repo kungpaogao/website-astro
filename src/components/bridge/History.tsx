@@ -28,7 +28,7 @@ export const HistoryTable: Component<{
     <>
       <div class="overflow-x-auto">
         <table class="w-full min-w-[18rem] text-left text-sm">
-          <caption class="mb-2 text-left text-xs text-stone-500">
+          <caption class="mb-2 text-left text-stone-600">
             Kept in this browser only. {props.entries.length} boards, net{" "}
             <span class="tabular-nums">{signed(total())}</span>.
           </caption>

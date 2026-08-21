@@ -21,7 +21,7 @@ import type { BoardAnalysis } from "../../lib/bridge/analysis";
 import type { Hands } from "../../lib/bridge/deal";
 import type { BoardRecord } from "../../lib/bridge/share";
 import type { HistoryEntry } from "../../lib/bridge/history";
-import { AuctionTable, HandText, suitColor } from "./parts";
+import { AuctionTable, HandText, InfoTip, suitColor } from "./parts";
 import { Replay } from "./Replay";
 import { HistoryTable } from "./History";
 
@@ -47,14 +47,23 @@ const Section: Component<{ title?: string; children: JSX.Element }> = (
   </section>
 );
 
+/**
+ * A heading inside a section, matching an h3 in `prose.css` the way `Section`
+ * matches an h2.
+ */
+const Subheading: Component<{ children: JSX.Element }> = (props) => (
+  <h3 class="mt-5 mb-2 font-serif text-xl leading-tight font-medium text-stone-900">
+    {props.children}
+  </h3>
+);
+
 const DoubleDummyTable: Component<{ analysis: BoardAnalysis }> = (props) => (
   <div class="overflow-x-auto">
     {/* Five narrow columns of digits: left to itself the table would stretch
         across the page and leave the strains stranded from their declarer. */}
     <table class="w-full max-w-md min-w-[18rem] text-center text-sm">
-      <caption class="mb-2 text-left text-xs text-stone-500">
-        Tricks each declarer can take with perfect play by everybody. Seven
-        tricks is a contract at the one level.
+      <caption class="mb-2 text-left text-stone-600">
+        Tricks each declarer can take with perfect play by everybody.
       </caption>
       <thead>
         <tr class="text-xs text-stone-500">
@@ -126,7 +135,11 @@ export const Review: Component<{
   record?: BoardRecord;
   /** Link that reopens this exact board, deal, auction and play included. */
   shareUrl?: string;
-  /** How this board got here: dealt at the table, opened from a link, or revisited. */
+  /**
+   * How this board got here: dealt at the table, opened from a link, or
+   * revisited. All it decides now is whether the button at the end offers the
+   * next board or a first one.
+   */
   origin: "dealt" | "link" | "history";
   /** Boards played in this browser, most recent first. */
   history: HistoryEntry[];
@@ -166,19 +179,9 @@ export const Review: Component<{
 
   return (
     <div class="flex flex-col gap-6">
-      <Show when={props.origin !== "dealt"}>
-        <p class="text-sm text-stone-600">
-          {props.origin === "history"
-            ? "You played this board earlier."
-            : "This board came from a link."}{" "}
-          The review below is the whole hand as it was played, and the replay
-          walks through it card by card.
-        </p>
-      </Show>
-
       <Section title="Result">
         <p class="text-stone-700">{props.analysis.headline}</p>
-        <div class="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-stone-600">
+        <div class="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-stone-600">
           <span>
             Your score:{" "}
             <strong
@@ -192,7 +195,15 @@ export const Review: Component<{
             </strong>
           </span>
           <span>
-            Best available:{" "}
+            Best available{" "}
+            <InfoTip label="best available">
+              The par score: what the board is worth with everyone, you
+              included, bidding and playing perfectly and all four hands face
+              up. It is an equilibrium between two perfect sides rather than a
+              ceiling on your own result, so it can be negative when the cards
+              belong to the opponents, and you can beat it when a robot errs.
+            </InfoTip>
+            :{" "}
             <strong class="text-stone-900 tabular-nums">
               {props.analysis.parScore >= 0 ? "+" : ""}
               {props.analysis.parScore}
@@ -216,9 +227,33 @@ export const Review: Component<{
                 {props.analysis.impsVsPar > 0 ? "+" : ""}
                 {props.analysis.impsVsPar} IMPs
               </strong>{" "}
+              <InfoTip label="IMPs">
+                International Match Points, the scale team bridge uses to
+                compare two results on the same board. It compresses the score
+                difference, so a swing of 500 is worth 11 IMPs and one of 50 is
+                worth 2 — a part score misjudged costs little, a game or a slam
+                missed costs a lot.
+              </InfoTip>{" "}
               {props.analysis.impsVsPar > 0 ? "better than" : "off"} par
             </Show>
           </span>
+          <Show when={props.analysis.par.contracts.length > 0}>
+            <span>
+              Par{" "}
+              <InfoTip label="par">
+                Where the board ends when both sides bid and play perfectly.
+                Level and strain come first, then who declares — a seat, or a
+                side when either hand of it can — and then any tricks over or
+                under what the contract needs. 3C-W+1 is West in three clubs
+                taking ten tricks where nine would do; 7N-NS is North-South in
+                seven no trumps, making exactly.
+              </InfoTip>
+              :{" "}
+              <strong class="text-stone-900">
+                {props.analysis.par.contracts.join(" or ")}
+              </strong>
+            </span>
+          </Show>
           <Show when={props.analysis.contract}>
             {(contract) => (
               <span>
@@ -228,19 +263,6 @@ export const Review: Component<{
             )}
           </Show>
         </div>
-
-        <p class="mt-3 border-t border-stone-100 pt-2 text-xs text-stone-500">
-          <strong class="text-stone-600">Best available</strong> is the par
-          score — what you would have scored if every player at the table, you
-          included, had bid and played perfectly with all four hands face up. It
-          is an equilibrium between two perfect sides rather than a ceiling on
-          your own result, so it can be negative when the cards belong to the
-          opponents, and you can beat it when a robot errs.
-          <Show when={props.analysis.par.contracts.length > 0}>
-            {" "}
-            Par here is {props.analysis.par.contracts.join(" or ")}.
-          </Show>
-        </p>
       </Section>
 
       <Section title="The auction">
@@ -256,25 +278,23 @@ export const Review: Component<{
 
         <Show when={bidding().best}>
           {(best) => (
-            <>
-              <p class="mt-2 text-sm text-stone-600">
-                Best contract double dummy:{" "}
-                <strong class="text-stone-900">
-                  {contractToString(best().contract)} by{" "}
-                  {SEAT_NAMES[best().contract.declarer]}
-                </strong>{" "}
-                — {best().tricks} tricks, worth {best().score}. Your side held{" "}
-                {bidding().combinedHcp} HCP between the two hands.
-              </p>
-              <p class="mt-2 text-xs text-stone-500">
-                That is the most the cards are worth with all four hands face
-                up, not a contract the bidding was meant to find. Game is
-                normally bid on about 25 combined points and a small slam on
-                about 33, so a double dummy contract well above what your side
-                held is a fact about how the cards lie rather than a bid you
-                missed.
-              </p>
-            </>
+            <p class="mt-2 text-stone-600">
+              Best contract double dummy{" "}
+              <InfoTip label="the best contract double dummy">
+                The most the cards are worth with all four hands face up, not a
+                spot the bidding was meant to find. Game is bid on about 25
+                combined points and a small slam on about 33, so a double dummy
+                contract well above what your side held says how the cards lie
+                rather than that you missed a bid.
+              </InfoTip>
+              :{" "}
+              <strong class="text-stone-900">
+                {contractToString(best().contract)} by{" "}
+                {SEAT_NAMES[best().contract.declarer]}
+              </strong>{" "}
+              — {best().tricks} tricks, worth {best().score}. Your side held{" "}
+              {bidding().combinedHcp} HCP between the two hands.
+            </p>
           )}
         </Show>
 
@@ -282,18 +302,18 @@ export const Review: Component<{
           <ul class="mt-3 flex flex-col gap-3">
             <For each={bidding().notes}>
               {(note) => (
-                <li class="text-sm">
-                  <div class="flex items-baseline gap-2">
+                <li>
+                  <div class="flex flex-wrap items-baseline gap-2">
                     <span class="font-medium text-stone-900">
                       You bid {callToString(note.call)}
                     </span>
                     <Show
                       when={!note.agreed}
                       fallback={
-                        <span class="text-xs text-emerald-700">standard</span>
+                        <span class="text-sm text-emerald-700">standard</span>
                       }
                     >
-                      <span class="text-xs text-amber-700">
+                      <span class="text-sm text-amber-700">
                         standard bid: {callToString(note.suggested)}
                       </span>
                     </Show>
@@ -312,9 +332,9 @@ export const Review: Component<{
           <ul class="mt-3 flex flex-col gap-3">
             <For each={play().notes}>
               {(note) => (
-                <li class="text-sm">
-                  <div class="flex items-baseline gap-2">
-                    <span class="text-xs tracking-wide text-stone-500 uppercase">
+                <li>
+                  <div class="flex flex-wrap items-baseline gap-2">
+                    <span class="text-sm tracking-wide text-stone-500 uppercase">
                       Trick {note.trick}
                     </span>
                     <span
@@ -325,10 +345,10 @@ export const Review: Component<{
                     >
                       {cardName(note.card)}
                     </span>
-                    <span class="text-xs text-amber-700">
+                    <span class="text-sm text-amber-700">
                       −{note.tricksLost} trick{note.tricksLost === 1 ? "" : "s"}
                     </span>
-                    <span class="text-xs text-stone-500">
+                    <span class="text-sm text-stone-500">
                       better: {note.best.map(cardName).join(", ")}
                     </span>
                   </div>
@@ -338,35 +358,30 @@ export const Review: Component<{
             </For>
           </ul>
         </Show>
+
+        <Show when={replayable()}>
+          {(board) => (
+            <>
+              <Subheading>Replay</Subheading>
+              <Replay
+                hands={board().record.hands}
+                contract={board().contract}
+                trace={board().record.trace}
+                seat={props.seat}
+                notes={play().notes}
+              />
+            </>
+          )}
+        </Show>
       </Section>
 
-      <Show
-        when={replayable()}
-        fallback={
-          <Section title="The deal">
-            <AllHands hands={props.hands} declarer={contract()?.declarer} />
-            <p class="mt-3 text-xs text-stone-500">
-              You sat {SEAT_NAMES[props.seat]}.
-            </p>
-          </Section>
-        }
-      >
-        {(board) => (
-          <Section title="Replay the board">
-            <p class="mb-3 text-sm text-stone-600">
-              All four hands are face up. Step through the cards to see how the
-              tricks actually went; where the review had something to say about
-              a card, it appears as that card is played.
-            </p>
-            <Replay
-              hands={board().record.hands}
-              contract={board().contract}
-              trace={board().record.trace}
-              seat={props.seat}
-              notes={play().notes}
-            />
-          </Section>
-        )}
+      {/* The replay lays all four hands out face up, so the deal only needs
+          showing on the boards that have no replay. */}
+      <Show when={!replayable()}>
+        <Section title="The deal">
+          <AllHands hands={props.hands} declarer={contract()?.declarer} />
+          <p class="mt-3 text-stone-600">You sat {SEAT_NAMES[props.seat]}.</p>
+        </Section>
       </Show>
 
       <Section title="Makeable contracts">
@@ -376,19 +391,14 @@ export const Review: Component<{
       <Show when={props.shareUrl}>
         {(url) => (
           <Section title="Share this board">
-            <p class="mb-2 text-sm text-stone-600">
-              The whole board — the deal, the auction and all fifty two cards —
-              packs into this link, so anyone who opens it sees exactly this
-              review.
-            </p>
-            <div class="flex flex-wrap gap-2">
+            <div class="mt-2 flex flex-wrap gap-2">
               <input
                 type="text"
                 readonly
                 value={url()}
                 aria-label="Link to this board"
                 onFocus={(event) => event.currentTarget.select()}
-                class="min-w-0 flex-1 border border-stone-300 bg-stone-50 px-3 py-2 font-mono text-xs text-stone-700"
+                class="min-w-0 flex-1 border border-stone-300 bg-stone-50 px-3 py-2 font-mono text-sm text-stone-700"
               />
               <button
                 type="button"
@@ -407,11 +417,7 @@ export const Review: Component<{
       </Show>
 
       <Show when={props.history.length > 1}>
-        <Section title="Boards you have played">
-          <p class="mb-2 text-sm text-stone-600">
-            Every board you finish is filed here by its code, so any of them can
-            be opened again — review, replay and all.
-          </p>
+        <Section title="History">
           <HistoryTable
             entries={props.history}
             currentCode={props.currentCode}
